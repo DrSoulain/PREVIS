@@ -1,30 +1,39 @@
 PREVIS: Python Request Engine for Virtual Interferometric Survey
 ================================================================
 
-Previs is a module to easely get the observability of a target or a
-list of targets with the different beam combiners from the VLTI and 
-CHARA interferometers. Previs perform a research in the Virtual
-Observatory (OV) to get useful informations as:
+PREVIS is a module to easely know if an astronomical source is observable 
+with the actual interferometric facilities in the world. It can perform
+a single object research (previs_search) or a multiple object research (previs_survey).
+This research take benefit of the Virtual Observatory (OV) to get useful informations as:
+ 
+- Spectral Energy Distribution (SED) from Vizier (http://vizier.u-strasbg.fr/vizier/sed/). 
+- Magnitudes: visible (V, R, G), near-infrared (J, H, K) and mid-infrared (L, M, N). The SED 
+  is used to extract the missing magnitudes of Simbad (http://simbad.u-strasbg.fr/simbad/). 
+  Especially L (3.5 µm), M (4.5 µm), and N (10 µm) magnitudes which are not often included 
+  in the standard catalogs,
+- Spectral type,
+- Celestial coordinates,
+- Gaia DR2 informations (if exist).
 
-- Spectral Energy Distribution (SED) from Vizier (http://vizier.u-strasbg.fr/vizier/sed/). The SED is 
-used to extract magnitudes (especially L, M, and N mag which are not often included in the standard catalogs),
+PREVIS compare the magnitudes to the current limiting magnitudes of each instruments to know if
+the target is observable given the current performances. The actual instruments are installed at:
 
-- Gaia DR2 distances.
+- Europeean Very Large Telescope Interferometer (VLTI, https://www.eso.org/sci/facilities/paranal/telescopes/vlti.html),
+  with PIONIER (H band), GRAVITY (K band) and MATISSE (L, M, N bands).
+- American Center for Hight Angular Resolution Astronomy (CHARA, http://www.chara.gsu.edu), with 
+  VEGA (V band), PAVO (R bands), MIRC (H band), CLIMB (K band) and CLASSIC (H, K bands).
 
-Previs compare these magnitudes to the current limiting magnitudes
-of each instruments. It also use the V or G magnitudes to check the
-guiding issues or the tip/tilt correction limit. For the VLTI: If 
-the star is too faint in G mag, Previs research the list of stars around
-the target (57 arcsec) with the appropriate magnitude and give the
-list of celestial coordinates usable as guiding star. Of course,
-previs check also the on-site observability given the latitude of 
+PREVIS also use the V or G magnitudes to check the guiding issues or the tip/tilt correction limit. 
+For the VLTI: If the star is too faint in G mag, PREVIS research the list of stars around
+the target (57 arcsec) with the appropriate magnitude and give the list of celestial coordinates
+usable as guiding star. Of course, PREVIS check also the on-site observability given the latitude of 
 both observatory.
 
 
 Recommandation for installation:
 -------------------------------
 
-In the terminal, go in the downloaded directory PREVIS._version_.
+From the downloaded directory PREVIS._version_.
 
 Firstly, install dependencies using Conda. It's recommended to create a specific environment 
 using (conda create -n env_name) but you can use your base env. If you don't use Conda, you can use pip instead.
@@ -34,7 +43,6 @@ In your Conda env (Conda activate env_name):
 - Install python dependencies: 
 
 >> conda install --file requirements.txt 
-
 
 Some dependencies are not in the general Conda channel, so use the command to specify the required channel:
 
@@ -56,8 +64,8 @@ previs use also web request, lxml could not be included in your system. If so, a
 
 >> pip install lxml
 
-Example:
---------
+Example use of PREVIS:
+----------------------
 
 An example script example.py is included to test the previs possibilities. The example include a single target
 research using previs_search (from previs.core), a visualisation solution for the VLTI (plot_VLTI) and CHARA (plot_CHARA). 
