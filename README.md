@@ -32,7 +32,7 @@ both observatory.
 Recommandation for installation:
 -------------------------------
 
-From the downloaded directory PREVIS._version_.
+In the terminal, from the downloaded directory PREVIS:
 
 Firstly, install dependencies using Conda. It's recommended to create a specific environment 
 using (conda create -n env_name) but you can use your base env. If you don't use Conda, you can use pip instead.
@@ -83,9 +83,9 @@ For example, if you use previs_search (previs.core) to get informations about th
 
 On [FIG1](doc/figure_1.png), you can see multiple informations:
 
-- *Upper left*: the name of target with a green cirle if the star is observable from the VLTI, red if not,
+- *Upper left*: the name of the target with a green cirle if the star is observable from the VLTI, red if not,
 - *Upper right*: appropriate magnitudes for the VLTI instruments,
-- The green square at the bottom of the target indicate the information of the guiding star: 
+- The round square at the bottom of the target indicate the information of the guiding star: 
   - 'Science': the target is bright enought to be used as guiding star, 
   - 'off axis': the coudé off-axis guiding need to be used,
   - 'off axis*', the coudé off-axis guiding can only be performed in visitor mode.
