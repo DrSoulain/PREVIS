@@ -46,8 +46,7 @@ In your Conda env (Conda activate env_name):
 
 Some dependencies are not in the general Conda channel, so use the command to specify the required channel:
 
->> conda install -c astropy astroquery
-
+>> conda install -c astropy astroquery\n
 >> conda install -c conda-forge uncertainties
 
 - Then, install previs package:
