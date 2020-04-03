@@ -24,7 +24,7 @@ if len(list_no_simbad) > 0:
     print('Warning: some stars are not in Simbad:', 'red')
     print(list_no_simbad)
 
-# Print the list of observable stars (sum up):
+# Print the list of observable stars (resume):
 print(result_survey)
 
 # plot the histogram of the survey:
