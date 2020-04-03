@@ -91,12 +91,8 @@ def limit_ESO_matisse_web(check):
 
         at_lim_good = np.array([x.split('Jy')[0]
                                 for x in list_limit_abs[:, 1]]).astype(float)
-        at_lim_mid = np.array([x.split('Jy')[0]
-                               for x in list_limit_abs[:, 2]]).astype(float)
         ut_lim_good = np.array([x.split('Jy')[0]
                                 for x in list_limit_abs[:, 3]]).astype(float)
-        ut_lim_mid = np.array([x.split('Jy')[0]
-                               for x in list_limit_abs[:, 4]]).astype(float)
 
         at_lim_good_rel = np.array([x.split('Jy')[0]
                                     for x in list_limit_rel[:, 1]]).astype(float)
@@ -227,7 +223,6 @@ def matisse_limit(magL, magM, magN, magK, source='ESO', check=True):
 
     if source == 'ESO':
         dic_limit = limit_ESO_matisse_web(check=check)
-        dic_eso = dic_limit
     else:
         dic_limit = limit_commissioning_matisse()
 
