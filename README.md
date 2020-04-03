@@ -1,5 +1,4 @@
-PREVIS: Python Request Engine for Virtual Interferometric Survey
-================================================================
+# PREVIS: [P]ython [R]equest [E]ngine for [V]irtual [I]nterferometric [S]urvey
 
 PREVIS is a module to easely know if an astronomical source is observable 
 with the actual interferometric facilities in the world. It can perform
@@ -41,21 +40,20 @@ using (conda create -n env_name) but you can use your base env. If you don't use
 In your Conda env (Conda activate env_name):
 
 Install python dependencies:
-
 ```
 conda install --file requirements.txt 
 ```
 
 Some dependencies are not in the general Conda channel, so use the command to specify the required channel:
-
 ```
-conda install -c astropy astroquery\n
+conda install -c astropy astroquery
 conda install -c conda-forge uncertainties
 ```
 
 - Then, install previs package:
-
->> pip install .
+```
+pip install .
+```
 
 Additionnal step:
 ----------------
