@@ -18,9 +18,9 @@ PREVIS compare the magnitudes to the current limiting magnitudes of each instrum
 the target is observable given the current performances. The actual instruments are installed at:
 
 - The europeean Very Large Telescope Interferometer (VLTI, https://www.eso.org/sci/facilities/paranal/telescopes/vlti.html),
-  with PIONIER (H band), GRAVITY (K band) and MATISSE (L, M, N bands),
+  with **PIONIER** (H band), **GRAVITY** (K band) and **MATISSE** (L, M, N bands),
 - The American Center for Hight Angular Resolution Astronomy (CHARA, http://www.chara.gsu.edu), with 
-  VEGA (V band), PAVO (R bands), MIRC (H band), CLIMB (K band) and CLASSIC (H, K bands).
+  **VEGA** (V band), **PAVO** (R bands), **MIRC** (H band), **CLIMB** (K band) and **CLASSIC** (H, K bands).
 
 PREVIS also use the V or G magnitudes to check the guiding issues or the tip/tilt correction limit. 
 For the VLTI: If the star is too faint in G mag, PREVIS research the list of stars around
@@ -39,7 +39,7 @@ using (conda create -n env_name) but you can use your base env. If you don't use
 
 In your Conda env (Conda activate env_name):
 
-Install python dependencies:
+- Install python dependencies:
 ```
 conda install --file requirements.txt 
 ```
@@ -59,12 +59,13 @@ Additionnal step:
 ----------------
 
 On macOS (or Linux-like), additional visualisation libraries could be required. We use the Qt5Agg to show figures. If problems appear, you can run the two following commands to install gt5. If you don't want to use qt5, you can remove the line mpl.use('Qt5Agg') (l30) from previs.core.
-
->> pip install PyQt5
-
+```
+pip install PyQt5
+```
 previs use also web request, lxml could not be included in your system. If so, an error can appear like "ImportError: lxml not found, please install it". It's can be fix installing lxml:
-
->> pip install lxml
+```
+pip install lxml
+```
 
 Example use of PREVIS:
 ----------------------
@@ -72,7 +73,7 @@ Example use of PREVIS:
 An example script example.py is included to test the previs possibilities. The example include a single target
 research using previs_search (from previs.core), a visualisation solution for the VLTI (plot_VLTI) and CHARA (plot_CHARA). 
 The example also presents the survey possibility of previs. See example.py for details.
-
->> python example.py
-
+```
+python example.py
+```
 
