@@ -36,7 +36,6 @@ import time
 import warnings
 
 import astropy.coordinates as ac
-import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 from astropy import units as u
@@ -52,8 +51,6 @@ from uncertainties import ufloat
 
 warnings.filterwarnings('ignore')
 warnings.filterwarnings('ignore', module='scipy.interpolate.interp1d')
-
-mpl.use('Qt5Agg')
 
 
 def previs_search(star, source='ESO', check=False, verbose=True):

@@ -58,7 +58,7 @@ pip install .
 Additionnal step:
 ----------------
 
-On macOS (or Linux-like), additional visualisation libraries could be required. We use the Qt5Agg to show figures. If problems appear, you can run the two following commands to install gt5. If you don't want to use qt5, you can remove the line mpl.use('Qt5Agg') (l30) from previs.core.
+On macOS (or Linux-like), additional visualisation libraries could be required. We use the Qt5Agg to show figures. If visualisation problems appear, you can run the following command to install gt5. If you don't want to use qt5, you can remove the line mpl.use('Qt5Agg') (l30) from previs.core.
 ```
 pip install PyQt5
 ```

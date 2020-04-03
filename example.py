@@ -9,8 +9,6 @@ from termcolor import cprint
 
 mpl.use('Qt5Agg')
 
-print('test 1')
-
 # Perform previs research on one object:
 data = previs_search('Antares')
 
