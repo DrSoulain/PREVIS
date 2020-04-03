@@ -17,7 +17,6 @@ estimated performances are used.
 
 import os
 import pickle
-import urllib.request
 
 import numpy as np
 import pandas as pd

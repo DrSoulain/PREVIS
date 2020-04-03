@@ -11,12 +11,7 @@ import urllib.request
 import warnings
 
 import astropy.io.votable as vo
-import astropy.units as u
-import matplotlib.pyplot as plt
 import numpy as np
-from astropy.time import Time
-from astroquery.vizier import Vizier
-from numpy import ma
 from scipy.interpolate import interp1d
 
 warnings.filterwarnings("ignore", module='astropy.io.votable.tree')
