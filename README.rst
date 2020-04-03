@@ -42,7 +42,7 @@ In your Conda env (Conda activate env_name):
 
 - Install python dependencies: 
 ```
->> conda install --file requirements.txt 
+conda install --file requirements.txt 
 ```
 Some dependencies are not in the general Conda channel, so use the command to specify the required channel:
 
