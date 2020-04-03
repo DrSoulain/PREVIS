@@ -30,10 +30,7 @@ usable as guiding star. Of course, PREVIS checks also the on-site observability 
 both observatory.
 
 
-## Installation
-
-
-### for conda-based systems
+## Installation (for conda-based systems)
 
 It is recommended (though not mandatory) to create a seperate environment with `conda create -n <env_name>`.
 Then, within your Conda env (`conda activate <env_name>`):
@@ -53,11 +50,6 @@ conda install -c conda-forge uncertainties
 pip install .
 # alternatively, to install in dev mode
 conda develop .
-```
-
-### with pip (for non-conda-based systems)
-```bash
-pip install .
 ```
 
 ### troubleshooting
