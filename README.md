@@ -58,17 +58,17 @@ pip install .
 Additionnal step:
 ----------------
 
-On macOS (or Linux-like), additional visualisation libraries could be required. We use the Qt5Agg to show figures. If visualisation problems appear, you can run the following command to install gt5. If you don't want to use qt5, you can remove the line mpl.use('Qt5Agg') (l30) from previs.core.
+On macOS (or Linux-like), additional visualisation libraries could be required. We use the Qt5Agg to show figures. If visualisation problems appear, you can run the following command to install gt5. If you don't want to use qt5, you can remove the line mpl.use('Qt5Agg') (l30) from example.py.
 ```
 pip install PyQt5
 ```
-previs use also web request, lxml could not be included in your system. If so, an error can appear like "ImportError: lxml not found, please install it". It's can be fix installing lxml:
+PREVIS use also web requests, lxml could not be installed in your system. If so, an error can appear like "ImportError: lxml not found, please install it". It's can be fixed installing lxml:
 ```
 pip install lxml
 ```
 
-Example use of PREVIS:
-----------------------
+What can do PREVIS for you?:
+----------------------------
 
 An example script example.py is included to test the previs possibilities. The example include a single target
 research using previs_search (from previs.core), a visualisation solution for the VLTI (plot_VLTI) and CHARA (plot_CHARA). 
