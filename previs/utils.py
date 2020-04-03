@@ -11,10 +11,14 @@ This file contains general function.
 
 import time
 
+from termcolor import colored
+
+# on windows, colorama should help making termcolor compatible
 try:
     import colorama
+    colorama.init()
 except ImportError:
-    colorama = None
+    pass # todo: log a proper warning if plateform is windows
 
 def printtime(n, start_time):
     t = time.time() - start_time
@@ -32,15 +36,16 @@ def print_list_survey(result_survey):
 class SurveyResults(dict):
     def __repr__(self):
         res = '\n'.join([
-            'VLTI: ', # TODO: green
-            '-----', # TODO: green
+            colored('VLTI:', 'green'),
+            colored('-----', 'green'),
             'MATISSE (AT): %s' % str(self['MATISSE']['AT']['noft']['L']['LR']),
             '        (UT): %s' % str(self['MATISSE']['UT']['noft']['L']['LR']),
             'GRAVITY (AT): %s' % str(self['GRAVITY']['AT']['HR']),
             '        (UT): %s' % str(self['GRAVITY']['UT']['HR']),
             'PIONIER (AT/UT): %s' % str(self['PIONIER']),
-            '\nCHARA:', # TODO: green
-            '------', # TODO: green
+            '',
+            colored('CHARA:', 'green'),
+            colored('------', 'green'),
             'VEGA: %s' % str(self['VEGA']['LR']),
             'PAVO: %s' % str(self['PAVO']),
             'MIRC: %s' % str(self['MIRC']['H']),
