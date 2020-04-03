@@ -11,6 +11,10 @@ This file contains general function.
 
 import time
 
+try:
+    import colorama
+except ImportError:
+    colorama = None
 
 def printtime(n, start_time):
     t = time.time() - start_time
@@ -18,3 +22,29 @@ def printtime(n, start_time):
     m = t//60
     print("==> %s (%d min %2.3f s)" % (n, m, t-m*60))
     return t0
+
+
+def print_list_survey(result_survey):
+    """ Plot list of stars observable with CHARA and VLTI interferometers."""
+    print("WARNING: print_list_survey is deprecated, just print the dict")
+    print(result_survey)
+
+class SurveyResults(dict):
+    def __repr__(self):
+        res = '\n'.join([
+            'VLTI: ', # TODO: green
+            '-----', # TODO: green
+            'MATISSE (AT): %s' % str(self['MATISSE']['AT']['noft']['L']['LR']),
+            '        (UT): %s' % str(self['MATISSE']['UT']['noft']['L']['LR']),
+            'GRAVITY (AT): %s' % str(self['GRAVITY']['AT']['HR']),
+            '        (UT): %s' % str(self['GRAVITY']['UT']['HR']),
+            'PIONIER (AT/UT): %s' % str(self['PIONIER']),
+            '\nCHARA:', # TODO: green
+            '------', # TODO: green
+            'VEGA: %s' % str(self['VEGA']['LR']),
+            'PAVO: %s' % str(self['PAVO']),
+            'MIRC: %s' % str(self['MIRC']['H']),
+            'CLIMB: %s' % str(self['CLIMB']),
+            'CLASSIC: %s' % str(self['CLASSIC']['H'])
+        ])
+        return res
