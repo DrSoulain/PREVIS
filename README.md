@@ -50,7 +50,9 @@ conda install -c astropy astroquery
 conda install -c conda-forge uncertainties
 
 # Finally, install PREVIS
-conda install .
+pip install .
+# alternatively, to install in dev mode
+conda develop .
 ```
 
 ### with pip (for non-conda-based systems)
