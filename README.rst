@@ -19,7 +19,7 @@ PREVIS compare the magnitudes to the current limiting magnitudes of each instrum
 the target is observable given the current performances. The actual instruments are installed at:
 
 - The europeean Very Large Telescope Interferometer (VLTI, https://www.eso.org/sci/facilities/paranal/telescopes/vlti.html),
-  with PIONIER (H band), GRAVITY (K band) and MATISSE (L, M, N bands).
+  with PIONIER (H band), GRAVITY (K band) and MATISSE (L, M, N bands),
 - The American Center for Hight Angular Resolution Astronomy (CHARA, http://www.chara.gsu.edu), with 
   VEGA (V band), PAVO (R bands), MIRC (H band), CLIMB (K band) and CLASSIC (H, K bands).
 
@@ -47,6 +47,7 @@ In your Conda env (Conda activate env_name):
 Some dependencies are not in the general Conda channel, so use the command to specify the required channel:
 
 >> conda install -c astropy astroquery
+
 >> conda install -c conda-forge uncertainties
 
 - Then, install previs package:
