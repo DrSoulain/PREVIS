@@ -5,9 +5,10 @@ Previs is a module to easely get the observability of a target or a
 list of targets with the different beam combiners from the VLTI and 
 CHARA interferometers. Previs perform a research in the Virtual
 Observatory (OV) to get useful informations as:
-- Spectral Energy Distribution (SED) from Vizier (). The SED is used to
- extract magnitudes (especially L, M, and N mag which are not often included in the 
-standard catalogs),
+
+- Spectral Energy Distribution (SED) from Vizier (http://vizier.u-strasbg.fr/vizier/sed/). The SED is 
+used to extract magnitudes (especially L, M, and N mag which are not often included in the standard catalogs),
+
 - Gaia DR2 distances.
 
 Previs compare these magnitudes to the current limiting magnitudes
