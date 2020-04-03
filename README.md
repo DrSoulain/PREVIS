@@ -58,7 +58,7 @@ conda install .
 pip install .
 ```
 
-## Additionnal step
+### troubleshooting
 
 On UNIX systems (Linux, macOS), additional visualisation libraries could be required. We use the Qt5Agg to display figures. If visualisation problems appear, you can run the following command to install gt5. If you do not want to use qt5, you can remove the line mpl.use('Qt5Agg') (l30) from [example.py](example.py) .
 ```bash
