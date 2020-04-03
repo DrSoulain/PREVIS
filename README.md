@@ -79,5 +79,4 @@ python example.py
 
 For example, if you use previs_search to get informations about the star Altair, you can display the resulting observability with the VLTI instruments with plot_VLTI:
 
-![Figure 1](doc/example_vlti_Altair.png)
-
+![Figure 1](doc/figure_1.png)
