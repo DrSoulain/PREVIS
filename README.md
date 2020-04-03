@@ -77,6 +77,17 @@ The example also presents the survey possibility of previs. See example.py for d
 python example.py
 ```
 
-For example, if you use previs_search to get informations about the star Altair, you can display the resulting observability with the VLTI instruments with plot_VLTI:
+For example, if you use previs_search (previs.core) to get informations about the star Altair, you can display the resulting observability with the VLTI instruments with plot_VLTI (previs.display):
 
 ![Figure 1](doc/figure_1.png)
+
+On the Fig. [FIG1](doc/figure_1.png), you can see multiple informations:
+
+- Upper right: appropriate magnitudes for the VLTI instruments,
+- Upper left: the name of target with a green cirle if the star is observable from the VLTI, red if not,
+- The green square at the bottom of the target indicate the information of the guiding star: if 'Science', the target is bright enought to be used as guiding star, if 'off axis', the coudé off-axis guiding need to be used. If 'off axis*', the coudé off-axis guiding can only be performed in visitor mode.
+- The organigram of each instrument:
+    - The blue/green octogone indicate the telescope (UT (8m) or AT (1.8m)),
+    - The pink circle indicate if fringe tracker is used (GRA4MAT),
+    - The colored squares indicates the observing bands (same color as magnitude),
+    - The points indicates if the target is observable for each spectral resolution (low (LR), medium (MR) or high (HR)).
