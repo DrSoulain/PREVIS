@@ -10,7 +10,7 @@ This file contains general function.
 """
 
 import time
-
+import os
 from termcolor import colored
 
 # on windows, colorama should help making termcolor compatible
@@ -18,7 +18,8 @@ try:
     import colorama
     colorama.init()
 except ImportError:
-    pass # todo: log a proper warning if plateform is windows
+    if os.name == 'nt':  # Windows plateform detected
+        print("Warning: in Windows, some prints might not work properly. Install colorama to fix this.")
 
 def printtime(n, start_time):
     t = time.time() - start_time
