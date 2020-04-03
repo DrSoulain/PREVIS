@@ -1,5 +1,6 @@
 # PREVIS
 (**P**ython **R**equest **E**ngine for **V**irtual **I**nterferometric **S**urvey)
+[![astropy](http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat)](http://www.astropy.org/)
 
 PREVIS is a module to easily determine whether an astronomical source is observable 
 with the current interferometric facilities in the world. It can perform
