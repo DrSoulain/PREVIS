@@ -40,15 +40,15 @@ using (conda create -n env_name) but you can use your base env. If you don't use
 
 In your Conda env (Conda activate env_name):
 
-- Install python dependencies: 
+Install python dependencies: 
 ```
 conda install --file requirements.txt 
 ```
 Some dependencies are not in the general Conda channel, so use the command to specify the required channel:
-
->> conda install -c astropy astroquery\n
->> conda install -c conda-forge uncertainties
-
+```
+conda install -c astropy astroquery\n
+conda install -c conda-forge uncertainties
+```
 - Then, install previs package:
 
 >> pip install .
