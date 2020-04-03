@@ -10,7 +10,7 @@ from termcolor import cprint
 mpl.use('Qt5Agg')
 
 # Perform previs research on one object:
-data = previs_search('Antares')
+data = previs_search('Altair')
 
 # Plot the observability from VLTI and CHARA (using output of previs_search).
 plot_VLTI(data)
