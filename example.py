@@ -2,18 +2,19 @@
 
 import matplotlib as mpl
 from matplotlib import pyplot as plt
-from termcolor import cprint
-
 from previs.core import previs_search, previs_survey
 from previs.display import (count_survey, plot_CHARA, plot_histo_survey,
                             plot_VLTI, print_list_survey)
+from termcolor import cprint
 
 mpl.use('Qt5Agg')
+
+print('test 1')
 
 # Perform previs research on one object:
 data = previs_search('Antares')
 
-# Plot the observability from VLTI and CHARA (using output of previs_search). 
+# Plot the observability from VLTI and CHARA (using output of previs_search).
 plot_VLTI(data)
 plot_CHARA(data)
 
