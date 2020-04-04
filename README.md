@@ -3,10 +3,10 @@
 
 [![astropy](http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat)](http://www.astropy.org/)
 
-PREVIS is a module to easily determine whether an astronomical source is observable 
-with the current interferometric facilities in the world. It can perform
-a single object research (`previs_search`) or a multiple object research (`previs_survey`).
-This search uses data from the Virtual Observatory (OV), such as:
+PREVIS is a Python module that provides functions to help determine the observability of astronomical sources
+in a few lines of code.
+One can perform a single object search (`previs_search`) or a multiple-objects search (`previs_survey`).
+These functions use data from the Virtual Observatory (OV), such as:
  
 - Spectral Energy Distribution (SED) from [Vizier](http://vizier.u-strasbg.fr/vizier/sed/). 
 - Magnitudes: visible (V, R, G), near-infrared (J, H, K) and mid-infrared (L, M, N). The SED 
