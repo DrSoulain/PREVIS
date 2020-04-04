@@ -60,16 +60,6 @@ On UNIX systems (Linux, macOS), additional visualisation libraries could be requ
 ```bash
 pip install PyQt5
 ```
-PREVIS also uses web requests, lxml may not be installed in your system. If so, this error can appear
-```python
-ImportError: lxml not found, please install it
-```
-It is fixed by installing lxml
-```bash
-conda install lxml
-# or
-pip install lxml
-```
 
 ## What can PREVIS do for you?
 
