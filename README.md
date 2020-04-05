@@ -50,8 +50,6 @@ conda install -c conda-forge uncertainties
 
 # Finally, install PREVIS
 pip install .
-# alternatively, to install in dev mode
-conda develop .
 ```
 
 ### troubleshooting
