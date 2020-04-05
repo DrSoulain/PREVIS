@@ -32,7 +32,7 @@ usable as guiding star. Of course, PREVIS checks also the on-site observability 
 both observatory.
 
 
-## Installation (for conda-based systems)
+## Install from source (for conda-based systems)
 
 It is recommended (though not mandatory) to create a seperate environment with `conda create -n <env_name>`.
 Then, within your Conda env (`conda activate <env_name>`):
