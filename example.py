@@ -16,7 +16,7 @@ stars = ['Betelgeuse', 'Altair']
 
 survey = previs.survey(stars, namelist='survey_example', upload=True)
 
-# Count the observable star with each instruments (mode, telescope, spectral resolution, etc.)
+# Count observable stars with each instruments (mode, telescope, spectral resolution, etc.)
 result_survey, list_no_simbad = previs.count_survey(survey)
 
 # If some stars of the list are not in the Simbad database, they will appear here:
