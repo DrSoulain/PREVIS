@@ -1,0 +1,15 @@
+
+name: previs
+channels:
+  - default
+  - conda-forge
+  - astropy
+dependencies: 
+  - scipy
+  - matplotlib
+  - astropy
+  - astroquery
+  - uncertainties
+  - termcolor
+  - pandas
+  - lxml
