@@ -28,12 +28,6 @@ def printtime(n, start_time):
     print("==> %s (%d min %2.3f s)" % (n, m, t-m*60))
     return t0
 
-
-def print_list_survey(result_survey):
-    """ Plot list of stars observable with CHARA and VLTI interferometers."""
-    print("WARNING: print_list_survey is deprecated, just print the dict")
-    print(result_survey)
-
 class SurveyResults(dict):
     def __repr__(self):
         res = '\n'.join([
