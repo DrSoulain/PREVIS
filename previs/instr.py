@@ -17,6 +17,8 @@ estimated performances are used.
 
 import os
 import pickle
+from pathlib import Path
+import json
 
 import numpy as np
 import pandas as pd
@@ -25,7 +27,7 @@ import previs
 
 templates_dir = os.path.join(os.path.dirname(previs.__file__), 'files')
 
-dirname = (previs.__file__.split('__init__'))[0]
+store_directory = Path(previs.__file__).parent() / "files"
 
 
 def MagToJy(m, band, reverse=False):
@@ -74,12 +76,28 @@ def MagToJy(m, band, reverse=False):
 
 def limit_ESO_matisse_web(check):
     """ Extract limiting flux (Jy) from ESO MATISSE instrument descriptions and
-    return magnitude (optimal 10% seeing conditions). """
-    link = 'http://www.eso.org/sci/facilities/paranal/instruments/matisse/inst.html'
+    return magnitude (optimal 10% seeing conditions).
+    
+    Parameters
+    ----------
 
-    if check:
+    check : bool
+        choose whether to request data from web (True) or use on disk data (False)
+
+    Returns
+    -------
+
+    limits_data : dict
+    """
+    url = 'http://www.eso.org/sci/facilities/paranal/instruments/matisse/inst.html'
+    stored_data_filepath = store_directory / 'eso_limits_matisse.json'
+    new_data_filepath = store_directory / 'eso_limits_matisse_new.json'
+
+    if Path(stored_data_filepath).is_file() and not check:
+        with open(stored_data_filepath, mode='rt') as ofile:
+            limits_data = json.load(ofile)
+    else:
         print('Check MATISSE limits from ESO web site...')
-        url = link
         tables = pd.read_html(url)  # Returns list of all tables on page
         limit_MATISSE_abs = tables[4]  # Select table of interest
         limit_MATISSE_rel = tables[5]
@@ -89,6 +107,7 @@ def limit_ESO_matisse_web(check):
         list_limit_rel = np.array(limit_MATISSE_rel)
         list_limit_gra4mat = np.array(limit_MATISSE_gra4mat)
 
+<<<<<<< HEAD
         at_lim_good = np.array([x.split('Jy')[0]
                                 for x in list_limit_abs[:, 1]]).astype(float)
         ut_lim_good = np.array([x.split('Jy')[0]
@@ -106,40 +125,59 @@ def limit_ESO_matisse_web(check):
 
         at_noft_L = MagToJy(np.array(
             [at_lim_good[0], at_lim_good[2], at_lim_good_rel[3]]), 'L', reverse=True)
+=======
+        at_lim_good = [x.split('Jy')[0]
+                                for x in list_limit_abs[:, 1]]
+        at_lim_mid = [x.split('Jy')[0]
+                               for x in list_limit_abs[:, 2]]
+        ut_lim_good = [x.split('Jy')[0]
+                                for x in list_limit_abs[:, 3]]
+        ut_lim_mid = [x.split('Jy')[0]
+                               for x in list_limit_abs[:, 4]]
+
+        at_lim_good_rel = [x.split('Jy')[0]
+                                    for x in list_limit_rel[:, 1]]
+        ut_lim_good_rel = [x.split('Jy')[0]
+                                    for x in list_limit_rel[:, 3]]
+
+        at_L_gra4mat = [x.split('Jy')[0]
+                                 for x in list_limit_gra4mat[1:, 1]]
+        at_M_gra4mat = [x.split('Jy')[0]
+                                 for x in list_limit_gra4mat[1:, 3]]
+
+        at_noft_L = MagToJy(
+            [at_lim_good[0], at_lim_good[2], at_lim_good_rel[3]], 'L', reverse=True)
+>>>>>>> fd6eec0... switch from pickle to json to store dict
         at_noft_M = MagToJy(
-            np.array([at_lim_good[1], at_lim_good_rel[2]]), 'M', reverse=True)
+            [at_lim_good[1], at_lim_good_rel[2]], 'M', reverse=True)
         at_noft_N = MagToJy(
-            np.array([at_lim_good[4], at_lim_good_rel[4]]), 'N', reverse=True)
+            [at_lim_good[4], at_lim_good_rel[4]], 'N', reverse=True)
 
-        ut_noft_L = MagToJy(np.array(
-            [ut_lim_good[0], ut_lim_good_rel[1], ut_lim_good_rel[3]]), 'L', reverse=True)
+        ut_noft_L = MagToJy(
+            [ut_lim_good[0], ut_lim_good_rel[1], ut_lim_good_rel[3]], 'L', reverse=True)
         ut_noft_M = MagToJy(
-            np.array([ut_lim_good[1], ut_lim_good_rel[2]]), 'M', reverse=True)
+            [ut_lim_good[1], ut_lim_good_rel[2]], 'M', reverse=True)
         ut_noft_N = MagToJy(
-            np.array([ut_lim_good[4], ut_lim_good_rel[4]]), 'N', reverse=True)
+            [ut_lim_good[4], ut_lim_good_rel[4]], 'N', reverse=True)
 
-        at_ft_L = MagToJy(np.array([at_L_gra4mat[0], at_L_gra4mat[1],
-                                    at_L_gra4mat[2]]).astype(float), 'L', reverse=True)
-        at_ft_M = MagToJy(np.array([at_M_gra4mat[0], at_M_gra4mat[1]]).astype(float),
+        at_ft_L = MagToJy([at_L_gra4mat[0], at_L_gra4mat[1],
+                                    at_L_gra4mat[2]], 'L', reverse=True)
+        at_ft_M = MagToJy([at_M_gra4mat[0], at_M_gra4mat[1]],
                           'M', reverse=True)
         at_ft_N = []  # not commisionned (see estimated performance)
 
-        dic_web = {'at': {'noft': {'L': at_noft_L, 'M': at_noft_M, 'N': at_noft_N, },
+        limits_data = {'at': {'noft': {'L': at_noft_L, 'M': at_noft_M, 'N': at_noft_N, },
                           'ft': {'L': at_ft_L, 'M': at_ft_M, 'N': at_ft_N}
                           },
                    'ut': {'noft': {'L': ut_noft_L, 'M': ut_noft_M, 'N': ut_noft_N, },
                           'ft': {'L': [], 'M': [], 'N': []}
                           }
                    }
-        file = open(dirname + 'files/eso_limits_matisse.dpy', 'wb')
-        pickle.dump(dic_web, file, 2)
-        file.close()
-    else:
-        file = open(dirname + 'files/eso_limits_matisse.dpy', 'rb')
-        dic_web = pickle.load(file)
-        file.close()
 
-    return dic_web
+        with open(new_data_filepath, mode='wt') as ofile:
+            json.dump(limits_data, ofile, indent="  ")
+
+    return limits_data
 
 
 def limit_commissioning_matisse():
