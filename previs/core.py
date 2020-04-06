@@ -24,8 +24,8 @@ list of celestial coordinates usable as guiding star. Of course,
 previs check also the on-site observability given the latitude of 
 both observatory.
 
-This file contains the core of previs: previs_search to use previs
-on one target, and previs_survey to use it on a list of targets.
+This file contains the core of previs: previs.search to use previs
+on one target, and previs.survey to use it on a list of targets.
 
 -------------------------------------------------------------------- 
 """
