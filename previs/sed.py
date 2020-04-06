@@ -19,7 +19,7 @@ warnings.filterwarnings("ignore", module='astropy.io.votable.xmlutil')
 warnings.filterwarnings('ignore', module='scipy.interpolate.interp1d')
 
 
-def getSed(star, coord='', upload=False):
+def getSed(coord):
     r"""
     Short Summary
     -------------
@@ -29,8 +29,6 @@ def getSed(star, coord='', upload=False):
     Parameters.
     -----------
 
-    `star` : {str}
-        Name of the requested star (if in Simbad, else use coordinates),\n
     `coord` : {str}
         Coordinates of the target (format: RA DEC).
 
@@ -49,7 +47,7 @@ def getSed(star, coord='', upload=False):
         response = urllib.request.urlopen(
             'http://vizier.u-strasbg.fr/viz-bin/sed?-c=' + c + '&-c.rs=2')
 
-        name_file = 'sed_' + star + '.vot'
+        name_file = 'sed.vot'
         output = open(name_file, 'wb')
         output.write(response.read())
         output.close()

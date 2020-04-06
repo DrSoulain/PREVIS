@@ -124,7 +124,7 @@ def search(star, source='ESO', check=False, verbose=True):
     # --------------------------------------
     #                 SED
     # --------------------------------------
-    sed = getSed(star, coord=coordo, upload=True)
+    sed = getSed(coordo)
     data['SED'] = sed
 
     # --------------------------------------

@@ -30,3 +30,4 @@ result_survey.print_log()
 # plot the histogram of the survey:
 fig = previs.plot_histo_survey(result_survey)
 fig.show()
+
