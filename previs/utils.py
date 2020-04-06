@@ -9,8 +9,9 @@ PREVIS: Python Request Engine for Virtual Interferometric Survey
 This file contains general function.
 """
 
-import time
 import os
+import time
+
 from termcolor import colored
 
 # on windows, colorama should help making termcolor compatible
@@ -21,12 +22,14 @@ except ImportError:
     if os.name == 'nt':  # Windows plateform detected
         print("Warning: in Windows, some prints might not work properly. Install colorama to fix this.")
 
+
 def printtime(n, start_time):
     t = time.time() - start_time
     t0 = time.time()
     m = t//60
     print("==> %s (%d min %2.3f s)" % (n, m, t-m*60))
     return t0
+
 
 class SurveyResults(dict):
     def print_log(self):
@@ -47,4 +50,5 @@ class SurveyResults(dict):
             'CLIMB: %s' % str(self['CLIMB']),
             'CLASSIC: %s' % str(self['CLASSIC']['H'])
         ])
+        print(res)
         return res

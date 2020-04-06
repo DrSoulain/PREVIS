@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from termcolor import cprint
 
-from .utils import SurveyResults, print_list_survey
+from .utils import SurveyResults
 
 color = {'True': 'g', 'False': '#e23449'}
 
@@ -32,8 +32,7 @@ def plot_mat(data, inst, tel, ft, band, x0, y0, off):
                 c_L = True
             else:
                 c_L = False
-            plt.scatter(
-                x0, y0, 100, color=color[str(c_L)], edgecolors='#364f6b')
+            plt.scatter(x0, y0, 100, color=color[str(c_L)], edgecolors='#364f6b')
         except:
             pass
         try:
