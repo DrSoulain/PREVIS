@@ -2,7 +2,7 @@
 import previs
 
 # Perform previs research on one object:
-data = previs.search('Altair')
+data = previs.search('Altair', check=True)
 
 # Plot the observability from VLTI and CHARA
 fig = previs.plot_VLTI(data)

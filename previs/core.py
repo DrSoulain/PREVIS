@@ -63,7 +63,7 @@ def search(star, source='ESO', check=False, verbose=True):
         the ESO website, else estimated performance are used,\n
     `check` : {bool}, (optional)
         If True, check MATISSE limiting magnitude in the ESO websites, by default False. Previs come with
-        saved limiting magnitudes as in Jan. 2020 (P105). The informations are stored in files/eso_limits_matisse.dpy.
+        saved limiting magnitudes as in Jan. 2020 (P105). The informations are stored in data/eso_limits_matisse.json.
 
     Returns
     -------
@@ -281,7 +281,7 @@ def search(star, source='ESO', check=False, verbose=True):
     return data
 
 
-def survey(list_star, namelist='survey', upload=True):
+def survey(list_star, namelist='survey', update=True):
     """ Perform previs research on a list of stars.
 
     Parameters
@@ -290,15 +290,15 @@ def survey(list_star, namelist='survey', upload=True):
         List of stars,\n
     `namelist` : {str}, (optional)
         Name of the file to save as .dpy, by default 'survey',\n
-    `upload` : {bool}, (optional)
-        If True, perform the survey, else load the .dpy file, by default True.
-
+    `update` : {bool}, (optional)
+        If True, perform the survey and save it as namelist.dpy (default=True).
+        If False, the namelist.dpy is loaded.
     Returns
     -------
     `out`: {dict}
         Dictionnary containing previs research for all stars.
     """
-    if upload:
+    if update:
         cprint('\nBegin survey on %i stars:' % len(list_star), 'cyan')
         cprint('-------------------------', 'cyan')
         out = {}

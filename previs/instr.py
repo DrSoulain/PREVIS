@@ -15,10 +15,10 @@ of MATISSE are not yet commissioned (UT with GRA4MAT), so only
 estimated performances are used.
 """
 
+import json
 import os
 import pickle
 from pathlib import Path
-import json
 
 import numpy as np
 import pandas as pd
@@ -26,21 +26,23 @@ import pandas as pd
 store_directory = Path(__file__).parent / "data"
 
 
-def MagToJy(m, band, reverse=False):
+def JyToMag(f, band):
     """
-    Convert Johnson magnitudes into Jy.
+    Convert flux density in Jy to Johnson mag.
 
     Parameters:
     -----------
-        m (float):
-            Johnson magnitude,
-        band (str):
-            Photometric band name (B, V, R, L, etc.).
+
+    `f`: {array}:
+        Flux density [Jy],\n
+    `band`: {str}
+        Photometric band name (B, V, R, L, etc.).
 
     Returns:
     --------
-        F (float):
-            Converted flux in Jy unit.
+
+    `m`: {array}:
+            Johnson magnitudes.
     """
 
     conv_flux = {'B': {'wl': 0.44, 'F0': 4260},
@@ -58,22 +60,15 @@ def MagToJy(m, band, reverse=False):
                  'Q': {'wl': 20.13, 'F0': 9.7}
                  }
 
-    if not reverse:
-        try:
-            F0 = conv_flux[band]['F0']
-            out = F0 * (10**(m / -2.5))
-        except:
-            out = np.nan
-    else:
-        out = -2.5*np.log10(m/conv_flux[band]['F0'])
-
-    return out
+    F = np.array(f).astype(float)
+    out = -2.5*np.log10(F/conv_flux[band]['F0'])
+    return list(out)
 
 
 def limit_ESO_matisse_web(check):
     """ Extract limiting flux (Jy) from ESO MATISSE instrument descriptions and
     return magnitude (optimal 10% seeing conditions).
-    
+
     Parameters
     ----------
 
@@ -104,51 +99,49 @@ def limit_ESO_matisse_web(check):
         list_limit_gra4mat = np.array(limit_MATISSE_gra4mat)
 
         at_lim_good = [x.split('Jy')[0]
-                                for x in list_limit_abs[:, 1]]
+                       for x in list_limit_abs[:, 1]]
         at_lim_mid = [x.split('Jy')[0]
-                               for x in list_limit_abs[:, 2]]
+                      for x in list_limit_abs[:, 2]]
         ut_lim_good = [x.split('Jy')[0]
-                                for x in list_limit_abs[:, 3]]
+                       for x in list_limit_abs[:, 3]]
         ut_lim_mid = [x.split('Jy')[0]
-                               for x in list_limit_abs[:, 4]]
+                      for x in list_limit_abs[:, 4]]
 
         at_lim_good_rel = [x.split('Jy')[0]
-                                    for x in list_limit_rel[:, 1]]
+                           for x in list_limit_rel[:, 1]]
         ut_lim_good_rel = [x.split('Jy')[0]
-                                    for x in list_limit_rel[:, 3]]
+                           for x in list_limit_rel[:, 3]]
 
         at_L_gra4mat = [x.split('Jy')[0]
-                                 for x in list_limit_gra4mat[1:, 1]]
+                        for x in list_limit_gra4mat[1:, 1]]
         at_M_gra4mat = [x.split('Jy')[0]
-                                 for x in list_limit_gra4mat[1:, 3]]
+                        for x in list_limit_gra4mat[1:, 3]]
 
-        at_noft_L = MagToJy(
-            [at_lim_good[0], at_lim_good[2], at_lim_good_rel[3]], 'L', reverse=True)
-        at_noft_M = MagToJy(
-            [at_lim_good[1], at_lim_good_rel[2]], 'M', reverse=True)
-        at_noft_N = MagToJy(
-            [at_lim_good[4], at_lim_good_rel[4]], 'N', reverse=True)
+        at_noft_L = JyToMag([at_lim_good[0], at_lim_good[2],
+                             at_lim_good_rel[3]], 'L')
+        at_noft_M = JyToMag([at_lim_good[1], at_lim_good_rel[2]], 'M')
+        at_noft_N = JyToMag([at_lim_good[4], at_lim_good_rel[4]], 'N')
 
-        ut_noft_L = MagToJy(
-            [ut_lim_good[0], ut_lim_good_rel[1], ut_lim_good_rel[3]], 'L', reverse=True)
-        ut_noft_M = MagToJy(
-            [ut_lim_good[1], ut_lim_good_rel[2]], 'M', reverse=True)
-        ut_noft_N = MagToJy(
-            [ut_lim_good[4], ut_lim_good_rel[4]], 'N', reverse=True)
+        ut_noft_L = JyToMag([ut_lim_good[0], ut_lim_good_rel[1], ut_lim_good_rel[3]],
+                            'L')
+        ut_noft_M = JyToMag([ut_lim_good[1], ut_lim_good_rel[2]],
+                            'M')
+        ut_noft_N = JyToMag([ut_lim_good[4], ut_lim_good_rel[4]],
+                            'N')
 
-        at_ft_L = MagToJy([at_L_gra4mat[0], at_L_gra4mat[1],
-                                    at_L_gra4mat[2]], 'L', reverse=True)
-        at_ft_M = MagToJy([at_M_gra4mat[0], at_M_gra4mat[1]],
-                          'M', reverse=True)
+        at_ft_L = JyToMag([at_L_gra4mat[0], at_L_gra4mat[1],
+                           at_L_gra4mat[2]], 'L')
+        at_ft_M = JyToMag([at_M_gra4mat[0], at_M_gra4mat[1]],
+                          'M')
         at_ft_N = []  # not commisionned (see estimated performance)
 
         limits_data = {'at': {'noft': {'L': at_noft_L, 'M': at_noft_M, 'N': at_noft_N, },
-                          'ft': {'L': at_ft_L, 'M': at_ft_M, 'N': at_ft_N}
-                          },
-                   'ut': {'noft': {'L': ut_noft_L, 'M': ut_noft_M, 'N': ut_noft_N, },
-                          'ft': {'L': [], 'M': [], 'N': []}
-                          }
-                   }
+                              'ft': {'L': at_ft_L, 'M': at_ft_M, 'N': at_ft_N}
+                              },
+                       'ut': {'noft': {'L': ut_noft_L, 'M': ut_noft_M, 'N': ut_noft_N, },
+                              'ft': {'L': [], 'M': [], 'N': []}
+                              }
+                       }
 
         with open(new_data_filepath, mode='wt') as ofile:
             json.dump(limits_data, ofile, indent="  ")
