@@ -14,6 +14,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from termcolor import cprint
 
+from .utils import SurveyResults, print_list_survey
+
 color = {'True': 'g', 'False': '#e23449'}
 
 plt.close('all')
@@ -149,7 +151,7 @@ def count_survey(survey):
     print('Observability: %i (%2.1f %%) from the VLTI, %i (%2.1f %%) from the CHARA.\n' %
           (n_vlti, 100*float(n_vlti)/n_star, n_chara, 100*float(n_chara)/n_star))
 
-    dic = {'MATISSE': {'UT': {'noft': {'L': {'LR': [], 'HR': []}, 'N': {'LR': [], 'HR': []}},
+    dic = SurveyResults({'MATISSE': {'UT': {'noft': {'L': {'LR': [], 'HR': []}, 'N': {'LR': [], 'HR': []}},
                               'ft': {'L': {'LR': [], 'HR': []}, 'N': {'LR': [], 'HR': []}}
                               },
                        'AT': {'noft': {'L': {'LR': [], 'HR': []}, 'N': {'LR': [], 'HR': []}},
@@ -168,7 +170,7 @@ def count_survey(survey):
            'MYSTIC': [],
            'MIRC': {'H': [], 'K': []},
            'VEGA': {'LR': [], 'MR': [], 'HR': []},
-           }
+           })
 
     list_no_simbad = []
     for star in list_star:
@@ -223,25 +225,6 @@ def count_survey(survey):
             list_no_simbad.append(star)
 
     return dic, list_no_simbad
-
-
-def print_list_survey(result_survey):
-    """ Plot list of stars observable with CHARA and VLTI interferometers."""
-    cprint('\nVLTI:', 'green')
-    cprint('-----', 'green')
-    print('MATISSE (AT):', result_survey['MATISSE']['AT']['noft']['L']['LR'])
-    print('        (UT):', result_survey['MATISSE']['UT']['noft']['L']['LR'])
-    print('GRAVITY (AT):', result_survey['GRAVITY']['AT']['HR'])
-    print('        (UT):', result_survey['GRAVITY']['UT']['HR'])
-    print('PIONIER (AT/UT):', result_survey['PIONIER'])
-    cprint('\nCHARA:', 'green')
-    cprint('------', 'green')
-    print('VEGA:', result_survey['VEGA']['LR'])
-    print('PAVO:', result_survey['PAVO'])
-    print('MIRC:', result_survey['MIRC']['H'])
-    print('CLIMB:', result_survey['CLIMB'])
-    print('CLASSIC:', result_survey['CLASSIC']['H'])
-    return None
 
 
 def plot_histo_survey(dic, setlog=False):
