@@ -14,7 +14,7 @@ fig.show()
 # Perform previs research on a list of stars:
 stars = ['Betelgeuse', 'Altair']
 
-survey = previs.survey(stars, namelist='survey_example', upload=True)
+survey = previs.survey(stars, namelist='survey_example', update=True)
 
 # Count observable stars with each instruments (mode, telescope, spectral resolution, etc.)
 result_survey, list_no_simbad = previs.count_survey(survey)
