@@ -25,9 +25,7 @@ import pandas as pd
 
 import previs
 
-templates_dir = os.path.join(os.path.dirname(previs.__file__), 'files')
-
-store_directory = Path(previs.__file__).parent() / "files"
+store_directory = Path(previs.__file__).parent() / "data"
 
 
 def MagToJy(m, band, reverse=False):
@@ -107,25 +105,6 @@ def limit_ESO_matisse_web(check):
         list_limit_rel = np.array(limit_MATISSE_rel)
         list_limit_gra4mat = np.array(limit_MATISSE_gra4mat)
 
-<<<<<<< HEAD
-        at_lim_good = np.array([x.split('Jy')[0]
-                                for x in list_limit_abs[:, 1]]).astype(float)
-        ut_lim_good = np.array([x.split('Jy')[0]
-                                for x in list_limit_abs[:, 3]]).astype(float)
-
-        at_lim_good_rel = np.array([x.split('Jy')[0]
-                                    for x in list_limit_rel[:, 1]]).astype(float)
-        ut_lim_good_rel = np.array([x.split('Jy')[0]
-                                    for x in list_limit_rel[:, 3]]).astype(float)
-
-        at_L_gra4mat = np.array([x.split('Jy')[0]
-                                 for x in list_limit_gra4mat[1:, 1]])
-        at_M_gra4mat = np.array([x.split('Jy')[0]
-                                 for x in list_limit_gra4mat[1:, 3]])
-
-        at_noft_L = MagToJy(np.array(
-            [at_lim_good[0], at_lim_good[2], at_lim_good_rel[3]]), 'L', reverse=True)
-=======
         at_lim_good = [x.split('Jy')[0]
                                 for x in list_limit_abs[:, 1]]
         at_lim_mid = [x.split('Jy')[0]
@@ -147,7 +126,6 @@ def limit_ESO_matisse_web(check):
 
         at_noft_L = MagToJy(
             [at_lim_good[0], at_lim_good[2], at_lim_good_rel[3]], 'L', reverse=True)
->>>>>>> fd6eec0... switch from pickle to json to store dict
         at_noft_M = MagToJy(
             [at_lim_good[1], at_lim_good_rel[2]], 'M', reverse=True)
         at_noft_N = MagToJy(
