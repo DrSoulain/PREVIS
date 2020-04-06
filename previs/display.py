@@ -125,8 +125,7 @@ def add_vs_mode_gravity(out, dic, star, cond_VLTI, cond_guid):
 def autolabel(bars, add, ind, fontsize=11):
     """ Plot the number associated to each histogram column."""
     for ii, bar in enumerate(bars):
-        height = bars[ii]
-        plt.text(ind[ii]+add, height+0.1, '%s' % (str(bars[ii])),
+        plt.text(ind[ii]+add, bar+0.1, '%s' % str(bar),
                  ha='center', va='bottom', fontsize=fontsize,
                  zorder=30, color='#364f6b')
 
