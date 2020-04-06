@@ -25,7 +25,7 @@ import pandas as pd
 
 import previs
 
-store_directory = Path(previs.__file__).parent() / "data"
+store_directory = Path(previs.__file__).parent / "data"
 
 
 def MagToJy(m, band, reverse=False):
