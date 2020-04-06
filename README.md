@@ -5,7 +5,7 @@
 
 PREVIS is a Python module that provides functions to help determine the observability of astronomical sources
 in a few lines of code.
-One can perform a single object search (`previs_search`) or a multiple-objects search (`previs_survey`).
+One can perform a single object search (`previs.search`) or a multiple-objects search (`previs.survey`).
 These functions use data from the Virtual Observatory (OV), such as:
  
 - Spectral Energy Distribution (SED) from [Vizier](http://vizier.u-strasbg.fr/vizier/sed/). 
@@ -62,10 +62,10 @@ pip install PyQt5
 ## What can PREVIS do for you?
 
 An example script [example.py](example.py) is included to test the possibilities offered by PREVIS. The example includes a single target
-research using `previs.core.previs_search`, a visualisation solution for the VLTI (`previs.display.plot_VLTI`) and CHARA (`previs.display.plot_CHARA`). 
+research using `previs.search`, a visualisation solution for the VLTI (`previs.plot_VLTI`) and CHARA (`previs.plot_CHARA`). 
 The example also presents the survey capabilities of the module.
 
-For instance, if you use `previs_search` to fetch data about the star Altair, you can display the resulting observability with the VLTI instruments with `plot_VLTI`:
+For instance, if you use `previs.search` to fetch data about the star Altair, you can display the resulting observability with the VLTI instruments with `previs.plot_VLTI`:
 
 ![Figure 1](doc/figure_1.png)
 
