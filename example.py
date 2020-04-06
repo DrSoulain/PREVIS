@@ -4,7 +4,7 @@ import matplotlib as mpl
 from matplotlib import pyplot as plt
 from previs.core import previs_search, previs_survey
 from previs.display import (count_survey, plot_CHARA, plot_histo_survey,
-                            plot_VLTI, print_list_survey)
+                            plot_VLTI)
 from termcolor import cprint
 
 mpl.use('Qt5Agg')
@@ -29,8 +29,8 @@ if len(list_no_simbad) > 0:
     cprint('Warning: some stars are not in Simbad:', 'red')
     print(list_no_simbad)
 
-# Print the list of observable stars (resume):
-print_list_survey(result_survey)
+# Print the list of observable stars (sum up):
+print(result_survey)
 
 # plot the histogram of the survey:
 plot_histo_survey(result_survey)

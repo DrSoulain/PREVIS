@@ -475,10 +475,6 @@ def plot_VLTI(data):
         return None
 
     ins = data['Ins']
-    if (data['Gaia_dr2']['check']):
-        display_gaia = '(D = %2.1f kpc)' % (data['Gaia_dr2']['Dkpc'])
-    else:
-        display_gaia = '(Not in Gaia)'
 
     # Observability from VLTI site lattitude and guiding limit
     if (type(data['Guiding_star']) == str):
@@ -518,8 +514,8 @@ def plot_VLTI(data):
     x_star, y_star = 0.15, 0.9
     x_mag, y_mag, fs_mag = 3, 16, 9
     y_tel_mat, y_tel_grav = 3, 0.8
-    off_button, off_res = 0.06, 0.5
-    dec_res, dec_label = 0.5, 1.7
+    off_res = 0.5
+    dec_label = 1.7
     lw = 1
 
     fig = plt.figure(figsize=(4, 6))
@@ -597,7 +593,6 @@ def plot_VLTI(data):
 
     y_band_matisse = [y_matisse-5+0.5, y_matisse -
                       2+0.5, y_matisse+1+0.5, y_matisse+4+0.5]
-    dec_x_band = 0.05
     for y in y_band_matisse:
         plt.text(x_band, y+1, 'L', ha='center', va='center', color='w',
                  bbox=dict(boxstyle='square', edgecolor='#364f6b',

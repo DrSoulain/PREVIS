@@ -36,7 +36,6 @@ import time
 import warnings
 
 import astropy.coordinates as ac
-import matplotlib.pyplot as plt
 import numpy as np
 from astropy import units as u
 from astroquery.simbad import Simbad
@@ -45,7 +44,6 @@ from previs.instr import (chara_limit, gravity_limit, matisse_limit,
                           pionier_limit)
 from previs.sed import getSed, sed2mag
 from previs.utils import printtime
-from scipy import interpolate as ip
 from termcolor import cprint
 from uncertainties import ufloat
 
