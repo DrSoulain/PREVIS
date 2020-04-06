@@ -222,7 +222,11 @@ def count_survey(survey):
         else:
             list_no_simbad.append(star)
 
-    return dic, list_no_simbad
+    if list_no_simbad:
+        cprint('Warning: some stars are not in Simbad:', 'red')
+        print(list_no_simbad)
+    dic["unavailable"] = list_no_simbad
+    return dic
 
 
 def plot_histo_survey(dic, setlog=False):
