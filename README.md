@@ -29,7 +29,7 @@ PREVIS also uses the V or G magnitudes to check the guiding issues or the tip/ti
 For the VLTI: if the star is too faint in G mag, PREVIS will research the list of stars around
 the target (57 arcsec) with the appropriate magnitude and give the list of celestial coordinates
 usable as guiding star. Of course, PREVIS checks also the on-site observability given the latitude of 
-both observatory.
+both observatories.
 
 
 ## What can PREVIS do for you?
