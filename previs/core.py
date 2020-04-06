@@ -51,7 +51,7 @@ warnings.filterwarnings('ignore')
 warnings.filterwarnings('ignore', module='scipy.interpolate.interp1d')
 
 
-def previs_search(star, source='ESO', check=False, verbose=True):
+def search(star, source='ESO', check=False, verbose=True):
     """Perform a large research to get informations about target (observability, magnitude, distance, sed, etc.)
 
     Parameters
@@ -281,7 +281,7 @@ def previs_search(star, source='ESO', check=False, verbose=True):
     return data
 
 
-def previs_survey(list_star, namelist='survey', upload=True):
+def survey(list_star, namelist='survey', upload=True):
     """ Perform previs research on a list of stars.
 
     Parameters
@@ -308,7 +308,7 @@ def previs_survey(list_star, namelist='survey', upload=True):
             size_str = 'Progress: %2.1f %% (%s)        ' % (100.*(i+1)/n, star)
             sys.stdout.flush()
             sys.stdout.write('%s\r' % size_str)
-            out[star] = previs_search(star, verbose=False)
+            out[star] = search(star, verbose=False)
             i += 1
         file = open(namelist + '.dpy', 'wb')
         pickle.dump(out, file, 2)
