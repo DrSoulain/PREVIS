@@ -25,7 +25,7 @@ if len(list_no_simbad) > 0:
     print(list_no_simbad)
 
 # Print the list of observable stars (resume):
-print(result_survey)
+result_survey.print_log()
 
 # plot the histogram of the survey:
 fig = previs.plot_histo_survey(result_survey)

@@ -29,7 +29,7 @@ def printtime(n, start_time):
     return t0
 
 class SurveyResults(dict):
-    def __repr__(self):
+    def print_log(self):
         res = '\n'.join([
             colored('VLTI:', 'green'),
             colored('-----', 'green'),
