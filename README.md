@@ -34,7 +34,7 @@ both observatory.
 
 ## Install from source (for conda-based systems)
 
-It is recommended (though not mandatory) to create a seperate environment with `conda create -n <env_name>`.
+It is recommended (though not mandatory) to create a separate environment with `conda create -n <env_name>`.
 Then, within your Conda env (`conda activate <env_name>`):
 
 ```bash

@@ -21,7 +21,7 @@ result_survey, list_no_simbad = previs.count_survey(survey)
 
 # If some stars of the list are not in the Simbad database, they will appear here:
 if len(list_no_simbad) > 0:
-    print('Warning: some stars are not in Simbad:', 'red')
+    print('Warning: some stars are not in Simbad:')
     print(list_no_simbad)
 
 # Print the list of observable stars (resume):
@@ -29,5 +29,4 @@ result_survey.print_log()
 
 # plot the histogram of the survey:
 fig = previs.plot_histo_survey(result_survey)
-
 fig.show()
