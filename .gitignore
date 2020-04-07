@@ -3,3 +3,4 @@ previs/.DS_Store
 previs/data/eso_limits_matisse_new.json
 *.json
 .DS_Store
+myexample.py
