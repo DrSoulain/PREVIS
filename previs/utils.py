@@ -13,6 +13,7 @@ import json
 import os
 import time
 import urllib.request
+from pathlib import Path
 
 from termcolor import colored, cprint
 
@@ -58,21 +59,31 @@ def printtime(n, start_time):
     print("==> %s (%d min %2.3f s)" % (n, m, t-m*60))
     return t0
 
+def sanitize_survey_file(survey_file):
+    assert isinstance(survey_file, os.PathLike)
+    survey_file = Path(survey_file)
+
+    if survey_file.suffix == '':
+        survey_file = survey_file.with_suffix(".json")
+
+    return survey_file
 
 def save_survey(survey, survey_file):
     """ Save the survey as json file named survey_file.json. """
-    with open(survey_file + '.json', mode='wt') as ofile:
+    survey_file = sanitize_survey_file(survey_file)
+    if survey_file.exists():
+        raise FileExistsError(survey_file)
+
+    with open(survey_file, mode='wt') as ofile:
         json.dump(survey, ofile)
 
 
 def load_survey(survey_file):
     """ Load the survey from the json file named survey_file.json. """
     # if Path(survey_file + 'json').is_file():
-    with open(survey_file + '.json', mode='rt') as ofile:
+    survey_file = sanitize_survey_file(survey_file)
+    with open(survey_file, mode='rt') as ofile:
         survey = json.load(ofile)
-    # else:
-    #    print('Error: %s.json does not exist.'%survey_file)
-    #    survey = None
     return survey
 
 

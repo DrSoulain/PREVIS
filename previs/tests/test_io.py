@@ -8,7 +8,7 @@ from previs import survey, save_survey, load_survey
 TEST_DATA_DIR = Path(__file__).parent / "data"
 ARTIFACTS_DIR = TEST_DATA_DIR / ".artifacts"
 small_survey_file = TEST_DATA_DIR / "small_survey.json"
-small_survey_sans_ext = Path(str(small_survey_file)[:-4])
+small_survey_sans_ext = small_survey_file.with_suffix('')
 
 
 @pytest.mark.parametrize(
