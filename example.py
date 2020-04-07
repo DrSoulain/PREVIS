@@ -31,3 +31,4 @@ count_survey.print_log()
 # plot the histogram of the observable stars (survey.count):
 fig = previs.plot_histo_survey(count_survey)
 fig.show()
+
