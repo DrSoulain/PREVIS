@@ -21,11 +21,15 @@ def test_load_survey(filepath):
 
 
 def test_reproduce_survey():
-    s = load_survey(small_survey_file)
-    stars = list(s.keys())
+    s1 = load_survey(small_survey_file)
+    stars = list(s1.keys())
 
     s2 = survey(stars)
-    # assert s1 == s2
+    assert isinstance(s2, dict)
+    assert len(s1) == len(s2)
+    for star in s1:
+        assert star in s2
+        assert set(list(s1[star].keys())) == set(list(s2[star].keys()))
 
 
 def test_overwrite():
