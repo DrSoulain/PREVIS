@@ -68,10 +68,10 @@ def sanitize_survey_file(survey_file):
 
     return survey_file
 
-def save_survey(survey, survey_file):
+def save_survey(survey, survey_file, overwrite=False):
     """ Save the survey as json file named survey_file.json. """
     survey_file = sanitize_survey_file(survey_file)
-    if survey_file.exists():
+    if survey_file.exists() and not overwrite:
         raise FileExistsError(survey_file)
 
     if not survey_file.parent.is_dir():
