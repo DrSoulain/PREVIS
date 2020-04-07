@@ -26,7 +26,7 @@ the target is observable with current performances. The actual instruments are i
   **VEGA** (V band), **PAVO** (R bands), **MIRC** (H band), **CLIMB** (K band) and **CLASSIC** (H, K bands).
 
 PREVIS also uses the V or G magnitudes to check the guiding issues or the tip/tilt correction limit. 
-For the VLTI: if the star is too faint in G mag, PREVIS will research the list of stars around
+For the VLTI: if the star is too faint in G mag, PREVIS will look for the list of stars around
 the target (57 arcsec) with the appropriate magnitude and give the list of celestial coordinates
 usable as guiding star. Of course, PREVIS checks also the on-site observability given the latitude of 
 both observatories.
