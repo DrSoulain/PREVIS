@@ -7,9 +7,8 @@ from previs import survey, save_survey, load_survey
 
 TEST_DIR = Path(__file__).parent
 TEST_DATA_DIR = TEST_DIR / "data"
-ARTIFACTS_DIR = TEST_DIR / ".artifacts"
 small_survey_file = TEST_DATA_DIR / "small_survey.json"
-small_survey_sans_ext = small_survey_file.with_suffix('')
+small_survey_sans_ext = small_survey_file.with_suffix("")
 
 
 @pytest.mark.parametrize(
@@ -32,12 +31,11 @@ def test_reproduce_survey():
         assert set(list(s1[star].keys())) == set(list(s2[star].keys()))
 
 
-def test_overwrite():
+def test_overwrite(tmpdir):
     s = load_survey(small_survey_file)
 
-    target_file = ARTIFACTS_DIR / "dont_touch_me.json"
-    with open(target_file, "wt") as ofile:
-        ofile.write("")
+    target_file = Path(tmpdir.join("already_there.json"))
+    target_file.touch()
 
     with pytest.raises(FileExistsError):
         save_survey(s, target_file)
@@ -46,15 +44,12 @@ def test_overwrite():
 
 
 @pytest.mark.parametrize("filepath", ["s0", "s1.json"])
-def test_save_survey(filepath):
+def test_save_survey(tmpdir, filepath):
     s = load_survey(small_survey_file)
-    savefile = ARTIFACTS_DIR / filepath
-    savefile.unlink(missing_ok=True)
+    savefile = Path(tmpdir.join(filepath))
     savepath = save_survey(s, savefile)
-    try:
-        assert savepath.is_file()
-        # json validation
-        with open(savepath, mode="rt") as ofile:
-            d = json.load(ofile)
-    finally:
-        savepath.unlink(missing_ok=True)
+
+    assert savepath.is_file()
+    # json validation
+    with open(savepath, mode="rt") as ofile:
+        d = json.load(ofile)
