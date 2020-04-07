@@ -11,13 +11,10 @@ each VLTI and CHARA instruments. The limiting magnitudes are extracted
 from the ESO website or the CHARA website. In the case of MATISSE,
 the limiting magnitude can be extracted automaticaly from the actual
 performances (P106, 2020) or estimated performances (2017). Some mode
-of MATISSE are not yet commissioned (UT with GRA4MAT), so only 
-estimated performances are used.
+of MATISSE are not yet commissioned (UT with GRA4MAT), so only estimated performances are used.
 """
 
 import json
-import os
-import pickle
 from pathlib import Path
 
 import numpy as np
@@ -71,14 +68,13 @@ def limit_ESO_matisse_web(check):
 
     Parameters
     ----------
-
-    check : bool
-        choose whether to request data from web (True) or use on disk data (False)
+    `check`: {bool}
+        choose whether to request data from web (True) or use on disk data (False).
 
     Returns
     -------
-
-    limits_data : dict
+    `limits_data`: {dict}
+        Limiting magnitudes of MATISSE.
     """
     url = 'http://www.eso.org/sci/facilities/paranal/instruments/matisse/inst.html'
     stored_data_filepath = store_directory / 'eso_limits_matisse.json'
@@ -100,12 +96,8 @@ def limit_ESO_matisse_web(check):
 
         at_lim_good = [x.split('Jy')[0]
                        for x in list_limit_abs[:, 1]]
-        at_lim_mid = [x.split('Jy')[0]
-                      for x in list_limit_abs[:, 2]]
         ut_lim_good = [x.split('Jy')[0]
                        for x in list_limit_abs[:, 3]]
-        ut_lim_mid = [x.split('Jy')[0]
-                      for x in list_limit_abs[:, 4]]
 
         at_lim_good_rel = [x.split('Jy')[0]
                            for x in list_limit_rel[:, 1]]
@@ -150,9 +142,7 @@ def limit_ESO_matisse_web(check):
 
 
 def limit_commissioning_matisse():
-    """ Estimated performance of MATISSE during testing and 
-    commissioning.
-    """
+    """ Estimated performance of MATISSE during testing and commissioning. """
     at_noft_L = [4.2, 0.9, -1.5]
     at_noft_M = [3.24, 1]
     at_noft_N = [-0.35, -2.2]
@@ -218,8 +208,14 @@ def matisse_limit(magL, magM, magN, magK, source='ESO', check=True):
 
     Parameters:
     -----------
-
-    magL {float} : L-band magnitude (3.5micron).
+    `magL`, `magM`, `magN`, `magK`: {float}
+        Magnitudes in near- and mid-infrared (K=2.2, L=3.5, M=4.5, N=10 µm),\n
+    `source`: {str}
+        Source of the limiting magnitudes. If source = 'ESO' (default), the ESO website 
+        is checked to extract these limits. Otherwise, the estimated limits are used,\n
+    `check`: {bool}
+        If True, check the actual MATISSE performances on the ESO website (default=True).
+        Otherwise, the data/eso_limits_matisse.json are used (perfomance in P105/2020).
     """
     dic = {}
     dic['AT'] = {'ft': {'L': {'LR': False}, 'M': {'LR': False}, 'N': {'LR': False}}, 'noft': {'L': {
@@ -268,7 +264,7 @@ def matisse_limit(magL, magM, magN, magK, source='ESO', check=True):
 
     lim = dic_limit['ut']['ft']['M']
     if len(lim) == 0:
-        #print('Not commisionned yet (M): use estimated sensitivity.')
+        # print('Not commisionned yet (M): use estimated sensitivity.')
         lim = limit_commissioning_matisse()['ut']['ft']['M']
 
     if (magM <= lim[0]):
@@ -280,7 +276,6 @@ def matisse_limit(magL, magM, magN, magK, source='ESO', check=True):
 
     lim = dic_limit['ut']['ft']['N']
     if len(lim) == 0:
-        #print('Not commisionned yet (N): use estimated sensitivity.')
         lim = limit_commissioning_matisse()['ut']['ft']['N']
     if (magN <= lim[1]):
         dic['UT']['ft']['N']['LR'] = True
@@ -366,7 +361,6 @@ def matisse_limit(magL, magM, magN, magK, source='ESO', check=True):
 
     lim = dic_limit['at']['ft']['N']
     if len(lim) == 0:
-        #print('Not commisionned yet (ft/N): use estimated sensitivity.')
         lim = limit_commissioning_matisse()['at']['ft']['N']
     if (magN <= lim[1]):
         dic['AT']['ft']['N']['LR'] = True
@@ -422,7 +416,7 @@ def matisse_limit(magL, magM, magN, magK, source='ESO', check=True):
     return dic
 
 
-def pionier_limit(magH, magV):
+def pionier_limit(magH):
     """ Return observability with PIONIER instrument."""
     dic = {}
     if (magH >= -1.) & (magH <= 9.):
@@ -435,12 +429,12 @@ def pionier_limit(magH, magV):
 def chara_limit(magK, magH, magR, magV):
     """ Return observability of the different instruments of CHARA."""
     dic = {}
-    dic['PAVO'] = {'R': 0}
-    dic['CLASSIC'] = {'K': 0, 'H': 0, 'V': 0}
-    dic['CLIMB'] = {'K': 0}
-    dic['MIRC'] = {'H': 0, 'K': 0}
-    dic['MYSTIC'] = {'K': 0}
-    dic['VEGA'] = {'LR': 0, 'MR': 0, 'HR': 0}
+    dic['PAVO'] = {'R': False}
+    dic['CLASSIC'] = {'K': False, 'H': False, 'V': False}
+    dic['CLIMB'] = {'K': False}
+    dic['MIRC'] = {'H': False, 'K': False}
+    dic['MYSTIC'] = {'K': False}
+    dic['VEGA'] = {'LR': False, 'MR': False, 'HR': False}
 
     if np.min([magV, magR]) <= 10:
         dic['Guiding'] = True
@@ -448,24 +442,24 @@ def chara_limit(magK, magH, magR, magV):
         dic['Guiding'] = False
 
     # CLASSIC
-    dic['CLASSIC']['K'] = (magK <= 6.5)
-    dic['CLASSIC']['H'] = (magH <= 7)
-    dic['CLASSIC']['V'] = (magV <= 10)
+    dic['CLASSIC']['K'] = bool(magK <= 6.5)
+    dic['CLASSIC']['H'] = bool(magH <= 7)
+    dic['CLASSIC']['V'] = bool(magV <= 10)
 
     # CLIMB
-    dic['CLIMB']['K'] = (magK <= 6.)
+    dic['CLIMB']['K'] = bool(magK <= 6.)
 
     # PAVO
-    dic['PAVO']['R'] = (magR <= 7.)
+    dic['PAVO']['R'] = bool(magR <= 7.)
 
     # MIRC
-    dic['MIRC']['H'] = (magH <= 6.5)
-    dic['MIRC']['K'] = (magK <= 3)
+    dic['MIRC']['H'] = bool(magH <= 6.5)
+    dic['MIRC']['K'] = bool(magK <= 3)
 
-    dic['MYSTIC']['K'] = (magK <= 6)
+    dic['MYSTIC']['K'] = bool(magK <= 6)
 
     # VEGA
-    dic['VEGA']['HR'] = (magV <= 4.2)
-    dic['VEGA']['MR'] = (magV <= 5.8)
-    dic['VEGA']['LR'] = (magV <= 7.2)
+    dic['VEGA']['HR'] = bool(magV <= 4.2)
+    dic['VEGA']['MR'] = bool(magV <= 5.8)
+    dic['VEGA']['LR'] = bool(magV <= 7.2)
     return dic

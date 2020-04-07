@@ -7,7 +7,7 @@ PREVIS: Python Request Engine for Virtual Interferometric Survey
 --------------------------------------------------------------------
 
 previs is a module to easely get the observability of a target or a
-list of targets with the different beam combiners from the VLTI and 
+list of targets with the different beam combiners from the VLTI and
 CHARA interferometers. Previs perform a research in the Virtual
 Observatory (OV) to get useful informations as:
 - Spectral Energy Distribution (SED), used to extract magnitudes 
@@ -30,7 +30,6 @@ on one target, and previs.survey to use it on a list of targets.
 -------------------------------------------------------------------- 
 """
 
-import pickle
 import sys
 import time
 import warnings
@@ -52,7 +51,7 @@ warnings.filterwarnings('ignore', module='scipy.interpolate.interp1d')
 
 
 def search(star, source='ESO', check=False, verbose=True):
-    """Perform a large research to get informations about target (observability, magnitude, distance, sed, etc.)
+    """Perform a large search to get informations about target (observability, magnitude, distance, sed, etc.)
 
     Parameters
     ----------
@@ -96,8 +95,8 @@ def search(star, source='ESO', check=False, verbose=True):
     # --------------------------------------
     coord = {}
     customSimbad = Simbad()
-    customSimbad.add_votable_fields(
-        'parallax', 'sptype', 'id', 'flux(V)',  'flux(B)')
+    customSimbad.add_votable_fields('parallax', 'sptype', 'id',
+                                    'flux(V)', 'flux(B)')
 
     try:
         objet = customSimbad.query_object(star)
@@ -116,7 +115,7 @@ def search(star, source='ESO', check=False, verbose=True):
         data['sp_type'] = sptype
         # else:
         #    pass
-    except:
+    except Exception:
         pass
 
     if not data['Simbad']:
@@ -141,13 +140,13 @@ def search(star, source='ESO', check=False, verbose=True):
             magV = objet['FLUX_V'][0]
             if magV is np.ma.masked:
                 magV = np.nan
-        except:
+        except Exception:
             pass
     try:
         magB = objet['FLUX_B'][0]
         if magB is np.ma.masked:
             magB = np.nan
-    except:
+    except Exception:
         magB = np.nan
 
     data['Mag'] = {'magB': float(magB),
@@ -197,13 +196,13 @@ def search(star, source='ESO', check=False, verbose=True):
         data['Gaia_dr2']['Teff'] = float(
             np.ma.getdata(res['I/345/gaia2']['Teff'])[0])
 
-        plx = ufloat(data['Gaia_dr2']['Plx'],  data['Gaia_dr2']['e_Plx'])
+        plx = ufloat(data['Gaia_dr2']['Plx'], data['Gaia_dr2']['e_Plx'])
 
         Dkpc = 1./plx
         data['Gaia_dr2']['check'] = True
         data['Gaia_dr2']['Dkpc'] = Dkpc.nominal_value
         data['Gaia_dr2']['e_Dkpc'] = Dkpc.std_dev
-    except:
+    except Exception:
         data['Gaia_dr2']['check'] = False
         data['Gaia_dr2']['Dkpc'] = np.nan
         data['Gaia_dr2']['e_Dkpc'] = np.nan
@@ -243,7 +242,7 @@ def search(star, source='ESO', check=False, verbose=True):
                 guid2.append([ra2[i], dec2[i], gmag2[i]])
 
             data['Guiding_star'] = [np.array(guid1), np.array(guid2)]
-        except:
+        except Exception:
             data['Guiding_star'] = 'ERROR'
     else:
         data['Guiding_star'] = 'Science star'
@@ -281,42 +280,28 @@ def search(star, source='ESO', check=False, verbose=True):
     return data
 
 
-def survey(list_star, namelist='survey', update=True):
-    """ Perform previs research on a list of stars.
+def survey(list_star):
+    """ Perform previs search on a list of stars.
 
     Parameters
     ----------
     `list_star` : {list}
-        List of stars,\n
-    `namelist` : {str}, (optional)
-        Name of the file to save as .dpy, by default 'survey',\n
-    `update` : {bool}, (optional)
-        If True, perform the survey and save it as namelist.dpy (default=True).
-        If False, the namelist.dpy is loaded.
+        List of stars.\n
     Returns
     -------
-    `out`: {dict}
-        Dictionnary containing previs research for all stars.
+    `survey`: {dict}
+        Dictionnary containing previs search for all stars.
     """
-    if update:
-        cprint('\nBegin survey on %i stars:' % len(list_star), 'cyan')
-        cprint('-------------------------', 'cyan')
-        out = {}
-        n = float(len(list_star))
-        i = 0
-        for star in list_star:
-            size_str = 'Progress: %2.1f %% (%s)        ' % (100.*(i+1)/n, star)
-            sys.stdout.flush()
-            sys.stdout.write('%s\r' % size_str)
-            out[star] = search(star, verbose=False)
-            i += 1
-        file = open(namelist + '.dpy', 'wb')
-        pickle.dump(out, file, 2)
-        file.close()
-        print('\nDone.')
-    else:
-        file = open(namelist + '.dpy', 'rb')
-        out = pickle.load(file)
-        file.close()
-
+    cprint('\nStarting survey on %i stars:' % len(list_star), 'cyan')
+    cprint('-------------------------', 'cyan')
+    out = {}
+    n = float(len(list_star))
+    i = 0
+    for star in list_star:
+        size_str = 'Progress: %2.1f %% (%s)        ' % (100.*(i+1)/n, star)
+        sys.stdout.flush()
+        sys.stdout.write('%s\r' % size_str)
+        out[star] = search(star, verbose=False)
+        i += 1
+    print('\nDone.\n')
     return out

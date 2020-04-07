@@ -61,17 +61,17 @@ def getSed(coord):
         freq = tab['sed_freq'][cond]
         c = 299792458.
         wl = c/(freq*1e9)*1e6
-        flux = tab['sed_flux'][cond]
-        err = tab['sed_eflux'][cond]
+        flux = tab['sed_flux'][cond].astype(float)
+        err = tab['sed_eflux'][cond].astype(float)
 
-        data = {'Flux': flux,
-                'Err': err,
-                'Freq': freq,
-                'wl': wl,
-                'name': ins_name
+        data = {'Flux': list(flux),
+                'Err': list(err),
+                'Freq': list(freq),
+                'wl': list(wl),
+                'name': list(ins_name)
                 }
         os.remove(name_file)
-    except:
+    except Exception:
         data = None
     return data
 
@@ -105,7 +105,7 @@ def sed2mag(sed, bands):
             F0 = conv_flux[b]['F0']
             m = -2.5*np.log10(F/F0)
             l_m.append(m)
-        except:
+        except Exception:
             l_m.append(np.nan)
     return l_m
 

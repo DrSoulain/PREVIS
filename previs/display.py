@@ -14,8 +14,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from termcolor import cprint
 
-from .utils import SurveyResults
-
 color = {'True': 'g', 'False': '#e23449'}
 
 plt.close('all')
@@ -23,8 +21,8 @@ plt.close('all')
 
 def plot_mat(data, inst, tel, ft, band, x0, y0, off):
     """ Plot observability with MATISSE given spectral resolution:
-        low (LR: 34/L and 30/N), medium (MR: 506/L and no N) and 
-        high (HR: 959/L and 218/N) resolution."""
+        low (LR: 34/L and 30/N), medium (MR: 506/L and no N) and high
+        (HR: 959/L and 218/N) resolution."""
     ins = data['Ins']
     if inst == 'MATISSE':
         try:
@@ -32,8 +30,9 @@ def plot_mat(data, inst, tel, ft, band, x0, y0, off):
                 c_L = True
             else:
                 c_L = False
-            plt.scatter(x0, y0, 100, color=color[str(c_L)], edgecolors='#364f6b')
-        except:
+            plt.scatter(x0, y0, 100, color=color[str(c_L)],
+                        edgecolors='#364f6b')
+        except Exception:
             pass
         try:
             if (ins['MATISSE'][tel][ft][band]['MR'] & data['Observability']['VLTI']):
@@ -42,7 +41,7 @@ def plot_mat(data, inst, tel, ft, band, x0, y0, off):
                 c_M = False
             plt.scatter(x0+0.5*off, y0, 100,
                         color=color[str(c_M)], edgecolors='#364f6b')
-        except:
+        except Exception:
             pass
         try:
             if (ins['MATISSE'][tel][ft][band]['HR'] & data['Observability']['VLTI']):
@@ -51,7 +50,7 @@ def plot_mat(data, inst, tel, ft, band, x0, y0, off):
                 c_N = False
             plt.scatter(x0+off, y0, 100,
                         color=color[str(c_N)], edgecolors='#364f6b')
-        except:
+        except Exception:
             pass
     else:
         plt.plot(x0, y0, 'o', color=color[str(ins[inst][tel][band])], ms=10)
@@ -87,39 +86,18 @@ def fancy_button_rel(x, y, t, ax, fs=8):
                        facecolor='#364f6b', alpha=1), zorder=49)
 
 
-def plot_diag(x0, x1, y, off=0, l=3, lw=1):
-    if l == 3:
+def plot_diag(x0, x1, y, off=0, n_line=3, lw=1):
+    """ Small function to plot lines in the organigram. """
+    if n_line == 3:
         plt.plot([x0, x1], [y, y+off], ls='-', c='#364f6b', lw=lw)
         plt.plot([x0, x1], [y, y], ls='-', c='#364f6b', lw=lw)
         plt.plot([x0, x1], [y, y-off], ls='-', c='#364f6b', lw=lw)
-    elif l == 2:
+    elif n_line == 2:
         plt.plot([x0, x1], [y, y+off], ls='-', c='#364f6b', lw=lw, zorder=-1)
         plt.plot([x0, x1], [y, y-off], ls='-', c='#364f6b', lw=lw, zorder=-1)
-    elif l == 1:
+    elif n_line == 1:
         plt.plot([x0, x1], [y, y], ls='-', c='#364f6b', lw=lw, zorder=-1)
     return None
-
-
-def add_vs_mode_matisse(out, dic, star, cond_VLTI, cond_guid):
-    """ Small function for count_survey. Counts MATISSE observability for each mode."""
-    for tel in ['AT', 'UT']:
-        for ft in ['noft', 'ft']:
-            for band in ['L', 'N']:
-                for res in ['LR', 'HR']:
-                    cond_ins = out[star]['Ins']['MATISSE'][tel][ft][band][res]
-                    if cond_VLTI and cond_guid and cond_ins:
-                        dic['MATISSE'][tel][ft][band][res].append(star)
-    return dic
-
-
-def add_vs_mode_gravity(out, dic, star, cond_VLTI, cond_guid):
-    """ Small function for count_survey. Counts GTAVITY observability for each mode."""
-    for tel in ['AT', 'UT']:
-        for res in ['MR', 'HR']:
-            cond_ins = out[star]['Ins']['GRAVITY'][tel]['K'][res]
-            if cond_VLTI and cond_guid and cond_ins:
-                dic['GRAVITY'][tel][res].append(star)
-    return dic
 
 
 def autolabel(bars, add, ind, fontsize=11):
@@ -130,108 +108,9 @@ def autolabel(bars, add, ind, fontsize=11):
                  zorder=30, color='#364f6b')
 
 
-def count_survey(survey):
-    """ Count the number of star observable with each HRA instrument."""
-    list_star = survey.keys()
-    n_star = len(list_star)
-
-    n_chara, n_vlti = 0, 0
-    for x in list_star:
-        if survey[x]['Simbad']:
-            if not survey[x]['SED'] == None:
-                if survey[x]['Observability']['VLTI']:
-                    n_vlti += 1
-                if survey[x]['Observability']['CHARA']:
-                    n_chara += 1
-
-    cprint('\nYour list contain %i stars:' % n_star, 'cyan')
-    cprint('-------------------------', 'cyan')
-    print('Observability: %i (%2.1f %%) from the VLTI, %i (%2.1f %%) from the CHARA.\n' %
-          (n_vlti, 100*float(n_vlti)/n_star, n_chara, 100*float(n_chara)/n_star))
-
-    dic = SurveyResults({'MATISSE': {'UT': {'noft': {'L': {'LR': [], 'HR': []}, 'N': {'LR': [], 'HR': []}},
-                              'ft': {'L': {'LR': [], 'HR': []}, 'N': {'LR': [], 'HR': []}}
-                              },
-                       'AT': {'noft': {'L': {'LR': [], 'HR': []}, 'N': {'LR': [], 'HR': []}},
-                              'ft': {'L': {'LR': [], 'HR': []}, 'N': {'LR': [], 'HR': []}}
-                              },
-                       },
-           'GRAVITY': {'UT': {'MR': [],
-                              'HR': []},
-                       'AT': {'MR': [],
-                              'HR': []}
-                       },
-           'PIONIER': [],
-           'PAVO': [],
-           'CLASSIC': {'V': [], 'H': [], 'K': []},
-           'CLIMB': [],
-           'MYSTIC': [],
-           'MIRC': {'H': [], 'K': []},
-           'VEGA': {'LR': [], 'MR': [], 'HR': []},
-           })
-
-    list_no_simbad = []
-    for star in list_star:
-        if survey[star]['Simbad']:
-            if type(survey[star]['Guiding_star']) == list:
-                if (len(survey[star]['Guiding_star'][0]) > 0) or (len(survey[star]['Guiding_star'][1]) > 0):
-                    guid = True
-                else:
-                    guid = False
-            elif survey[star]['Guiding_star'] == 'Science star':
-                guid = True
-            else:
-                guid = False
-
-            cond_VLTI = survey[star]['Observability']['VLTI']
-            cond_guid = guid
-            cond_CHARA = survey[star]['Observability']['CHARA']
-            cond_tilt = survey[star]['Ins']['CHARA']['Guiding']
-
-            dic = add_vs_mode_matisse(survey, dic, star, cond_VLTI, cond_guid)
-            dic = add_vs_mode_gravity(survey, dic, star, cond_VLTI, cond_guid)
-
-            cond_ins = survey[star]['Ins']['PIONIER']['H']
-            if (cond_VLTI and cond_guid and cond_ins):
-                dic['PIONIER'].append(star)
-
-            for band in ['H', 'K']:
-                cond_ins = survey[star]['Ins']['CHARA']['MIRC'][band]
-
-                if (cond_CHARA and cond_ins and cond_tilt):
-                    dic['MIRC'][band].append(star)
-
-            for res in ['LR', 'HR']:
-                cond_ins = survey[star]['Ins']['CHARA']['VEGA'][res]
-                if (cond_CHARA and cond_ins and cond_tilt):
-                    dic['VEGA'][res].append(star)
-
-            for band in ['V', 'H', 'K']:
-                cond_ins = survey[star]['Ins']['CHARA']['CLASSIC'][band]
-                if (cond_CHARA and cond_ins and cond_tilt):
-                    dic['CLASSIC'][band].append(star)
-
-            if (cond_CHARA and survey[star]['Ins']['CHARA']['PAVO']['R'] and cond_tilt):
-                dic['PAVO'].append(star)
-
-            if (cond_CHARA and survey[star]['Ins']['CHARA']['MYSTIC']['K'] and cond_tilt):
-                dic['MYSTIC'].append(star)
-
-            if (cond_CHARA and survey[star]['Ins']['CHARA']['CLIMB']['K'] and cond_tilt):
-                dic['CLIMB'].append(star)
-        else:
-            list_no_simbad.append(star)
-
-    if list_no_simbad:
-        cprint('Warning: some stars are not in Simbad:', 'red')
-        print(list_no_simbad)
-    dic["unavailable"] = list_no_simbad
-    return dic
-
-
 def plot_histo_survey(dic, setlog=False):
     """ Plot histogram of the result from count_survey fonction.
-    Show the number of stars observable which each instruments. 
+    Show the number of stars observable which each instruments.
 
     Parameters:
     -----------
@@ -429,7 +308,7 @@ def plot_histo_survey(dic, setlog=False):
     # plt.ylabel('# stars')
     ax.legend(handles1, labels1, fontsize=8, loc='best')
     plt.xlim(xmin, xmax)
-    if setlog == True:
+    if setlog:
         ax.set_yscale('log')
         plt.ylim(0, ymax*2)
     else:
@@ -441,27 +320,26 @@ def plot_histo_survey(dic, setlog=False):
                         right=0.98,
                         hspace=0.2,
                         wspace=0.2)
-    #plt.show(block=False)
+    # plt.show(block=False)
     return fig
 
 
 def plot_VLTI(data):
-    """ 
+    """
     Display a synthetic plot with observability of the target with each
-    instruments of the VLTI array. The spectral resolutions are included 
+    instruments of the VLTI array. The spectral resolutions are included
     if exists.
     """
 
     star = data['Name']
 
-    if data['Ins'] != None:
+    if data['Ins'] is not None:
         pass
     else:
         cprint('## Error: %s not in Simbad!' % star, 'red')
         return None
 
     ins = data['Ins']
-
     # Observability from VLTI site lattitude and guiding limit
     if (type(data['Guiding_star']) == str):
         aff_guide = 'Science'
@@ -491,13 +369,17 @@ def plot_VLTI(data):
 
     # Limit the star name lenght (display purposes)
     name_star = star.upper()
-    if len(star) > 7:
-        name_star = star.upper()[:7] + '.'
+    L = len(star) 
+    if L <= 8:
+        ft_star = 11
+    elif (L > 8) and (L <= 13):
+        ft_star = 7
     else:
-        name_star = star.upper()
+        ft_star = 7
+        name_star = star.upper()[:12] + '..'
 
     # Positions in the figure
-    x_star, y_star = 0.15, 0.9
+    x_star, y_star = 0.17, 0.9
     x_mag, y_mag, fs_mag = 3, 16, 9
     y_tel_mat, y_tel_grav = 3, 0.8
     off_res = 0.5
@@ -509,33 +391,34 @@ def plot_VLTI(data):
 
     # -------------------
     # Observavility from site and guiding limit
-    plt.text(x_star, y_star, name_star, fontsize=11, weight="bold", ha='center', va='center', transform=ax.transAxes,
-             bbox=dict(boxstyle='circle', edgecolor=color[str(data['Observability']['VLTI'])],
-                       facecolor='w', alpha=0.6), zorder=50)
+    ax.text(x_star, y_star, name_star, fontsize=ft_star, c='k', weight="bold", ha='center', va='center', transform=ax.transAxes,
+            bbox=dict(boxstyle='circle', edgecolor=color[str(data['Observability']['VLTI'])],
+                      facecolor='w', alpha=0.6), zorder=50)
 
-    plt.text(x_star, y_star-0.1, 'Guiding star:\n%s' % aff_guide, fontsize=8,
+    plt.text(x_star, y_star-0.12, 'Guiding star:\n%s' % aff_guide, fontsize=8,
              va='center', ha='center', transform=ax.transAxes,
              bbox=dict(boxstyle='round', facecolor=c_guid, alpha=1), zorder=50)
 
     # -------------------
     # Relevant magnitudes
-    plt.text(x_mag, y_mag, 'G=%2.1f' % data['Mag']['magG'], fontsize=fs_mag,
-             va='center', bbox=dict(boxstyle='round', facecolor='#55d655', alpha=0.6), zorder=50)
+    ax.text(x_mag, y_mag, 'G=%2.1f' % data['Mag']['magG'], fontsize=fs_mag,
+            va='center', bbox=dict(boxstyle='round', facecolor='#8ee38e',
+                                   alpha=0.8), zorder=50)
 
-    plt.text(x_mag+0.8, y_mag, 'H=%2.1f' % data['Mag']['magH'], fontsize=fs_mag,
-             va='center', bbox=dict(boxstyle='round', facecolor='#f38630', alpha=0.8), zorder=50)
+    ax.text(x_mag+0.8, y_mag, 'H=%2.1f' % data['Mag']['magH'], fontsize=fs_mag,
+            va='center', bbox=dict(boxstyle='round', facecolor='#f38630', alpha=0.8), zorder=50)
 
-    plt.text(x_mag+1.6, y_mag, 'K=%2.1f' % data['Mag']['magK'], fontsize=fs_mag,
-             va='center', bbox=dict(boxstyle='round', facecolor='#d91552', alpha=0.8), zorder=50)
+    ax.text(x_mag+1.6, y_mag, 'K=%2.1f' % data['Mag']['magK'], fontsize=fs_mag,
+            va='center', bbox=dict(boxstyle='round', facecolor='#d91552', alpha=0.8), zorder=50)
 
-    plt.text(x_mag, y_mag-1, 'L=%2.1f' % data['Mag']['magL'], fontsize=fs_mag,
-             va='center', bbox=dict(boxstyle='round', facecolor='#5ab2dd', alpha=0.8), zorder=50)
+    ax.text(x_mag, y_mag-1, 'L=%2.1f' % data['Mag']['magL'], fontsize=fs_mag,
+            va='center', bbox=dict(boxstyle='round', facecolor='#5ab2dd', alpha=0.8), zorder=50)
 
-    plt.text(x_mag+0.8, y_mag-1, 'M=%2.1f' % data['Mag']['magM'], fontsize=fs_mag,
-             va='center', bbox=dict(boxstyle='round', facecolor='#187bb0', alpha=0.8), zorder=50)
+    ax.text(x_mag+0.8, y_mag-1, 'M=%2.1f' % data['Mag']['magM'], fontsize=fs_mag,
+            va='center', bbox=dict(boxstyle='round', facecolor='#187bb0', alpha=0.8), zorder=50)
 
-    plt.text(x_mag+1.6, y_mag-1, 'N=%2.1f' % data['Mag']['magN'], fontsize=fs_mag,
-             va='center', bbox=dict(boxstyle='round', facecolor='#124a67', alpha=0.8), zorder=50)
+    ax.text(x_mag+1.6, y_mag-1, 'N=%2.1f' % data['Mag']['magN'], fontsize=fs_mag,
+            va='center', bbox=dict(boxstyle='round', facecolor='#124a67', alpha=0.8), zorder=50)
 
     # -------------------
     # Instruments
@@ -567,18 +450,18 @@ def plot_VLTI(data):
 
     # -------------------
     # Photometric bands
-    plt.text(x_band, y_gravity+y_tel_grav, 'K', ha='center', va='center', color='w',
-             bbox=dict(boxstyle='square', edgecolor='#364f6b',
-                       facecolor='#d91552', alpha=1), zorder=50)
-    plt.text(x_band, y_gravity-y_tel_grav, 'K', ha='center', va='center', color='w',
-             bbox=dict(boxstyle='square', edgecolor='#364f6b',
-                       facecolor='#d91552', alpha=1), zorder=50)
-    plt.text(x_band, y_pionier, 'H', ha='center', va='center', color='w',
-             bbox=dict(boxstyle='square', edgecolor='#364f6b',
-                       facecolor='#f38630', alpha=1), zorder=50)
+    ax.text(x_band, y_gravity+y_tel_grav, 'K', ha='center', va='center', color='w',
+            bbox=dict(boxstyle='square', edgecolor='#364f6b',
+                      facecolor='#d91552', alpha=1), zorder=50)
+    ax.text(x_band, y_gravity-y_tel_grav, 'K', ha='center', va='center', color='w',
+            bbox=dict(boxstyle='square', edgecolor='#364f6b',
+                      facecolor='#d91552', alpha=1), zorder=50)
+    ax.text(x_band, y_pionier, 'H', ha='center', va='center', color='w',
+            bbox=dict(boxstyle='square', edgecolor='#364f6b',
+                      facecolor='#f38630', alpha=1), zorder=50)
 
-    y_band_matisse = [y_matisse-5+0.5, y_matisse -
-                      2+0.5, y_matisse+1+0.5, y_matisse+4+0.5]
+    y_band_matisse = [y_matisse-5+0.5, y_matisse-2+0.5,
+                      y_matisse+1+0.5, y_matisse+4+0.5]
     for y in y_band_matisse:
         plt.text(x_band, y+1, 'L', ha='center', va='center', color='w',
                  bbox=dict(boxstyle='square', edgecolor='#364f6b',
@@ -618,41 +501,41 @@ def plot_VLTI(data):
     plot_mat(data, 'MATISSE', 'UT', 'noft', 'N',
              x_res, y_band_matisse[0]-1, off_res)
 
-    plt.scatter(x_res+0.25, y_gravity+y_tel_grav, 100,
-                color=color[str(ins['GRAVITY']['AT']['K']['MR'] and data['Observability']['VLTI'])], edgecolors='#364f6b')
-    plt.scatter(x_res+0.25, y_gravity-y_tel_grav, 100,
-                color=color[str(ins['GRAVITY']['UT']['K']['MR'] and data['Observability']['VLTI'])], edgecolors='#364f6b')
-    plt.scatter(x_res+0.5, y_gravity+y_tel_grav, 100,
-                color=color[str(ins['GRAVITY']['AT']['K']['HR'] and data['Observability']['VLTI'])], edgecolors='#364f6b')
-    plt.scatter(x_res+0.5, y_gravity-y_tel_grav, 100,
-                color=color[str(ins['GRAVITY']['UT']['K']['HR'] and data['Observability']['VLTI'])], edgecolors='#364f6b')
+    ax.scatter(x_res+0.25, y_gravity+y_tel_grav, 100, color=color[str(
+        ins['GRAVITY']['AT']['K']['MR'] and data['Observability']['VLTI'])], edgecolors='#364f6b')
+    ax.scatter(x_res+0.25, y_gravity-y_tel_grav, 100, color=color[str(
+        ins['GRAVITY']['UT']['K']['MR'] and data['Observability']['VLTI'])], edgecolors='#364f6b')
+    ax.scatter(x_res+0.5, y_gravity+y_tel_grav, 100, color=color[str(
+        ins['GRAVITY']['AT']['K']['HR'] and data['Observability']['VLTI'])], edgecolors='#364f6b')
+    ax.scatter(x_res+0.5, y_gravity-y_tel_grav, 100, color=color[str(
+        ins['GRAVITY']['UT']['K']['HR'] and data['Observability']['VLTI'])], edgecolors='#364f6b')
 
-    plt.scatter(x_res, y_pionier, 100, color=color[str(
+    ax.scatter(x_res, y_pionier, 100, color=color[str(
         ins['PIONIER']['H'] and data['Observability']['VLTI'])], edgecolors='#364f6b')
 
     # -------------------
     # Link lines
-    plot_diag(x_ins, x_tel, y_matisse, y_tel_mat, l=2, lw=lw)
-    plot_diag(x_ins, x_tel, y_gravity, y_tel_grav, l=2, lw=lw)
-    plot_diag(x_tel, x_ft, y_matisse+y_tel_mat, 1.5, l=2, lw=lw)
-    plot_diag(x_tel, x_ft, y_matisse-y_tel_mat, 1.5, l=2, lw=lw)
-    plot_diag(x_tel, x_band, y_gravity+y_tel_grav, lw=lw, l=1)
-    plot_diag(x_tel, x_band, y_gravity-y_tel_grav, lw=lw, l=1)
-    plot_diag(x_ins, x_band, y_pionier, lw=lw, l=1)
+    plot_diag(x_ins, x_tel, y_matisse, y_tel_mat, n_line=2, lw=lw)
+    plot_diag(x_ins, x_tel, y_gravity, y_tel_grav, n_line=2, lw=lw)
+    plot_diag(x_tel, x_ft, y_matisse+y_tel_mat, 1.5, n_line=2, lw=lw)
+    plot_diag(x_tel, x_ft, y_matisse-y_tel_mat, 1.5, n_line=2, lw=lw)
+    plot_diag(x_tel, x_band, y_gravity+y_tel_grav, lw=lw, n_line=1)
+    plot_diag(x_tel, x_band, y_gravity-y_tel_grav, lw=lw, n_line=1)
+    plot_diag(x_ins, x_band, y_pionier, lw=lw, n_line=1)
 
     # -------------------
     # Resolution labels
-    plt.text(x_res, np.max(y_band_matisse) + dec_label, 'LR',
-             va='center', ha='center', fontsize=8, style='italic')
-    plt.text(x_res+0.5*off_res, np.max(y_band_matisse)+dec_label, 'MR',
-             va='center', ha='center', fontsize=8, style='italic')
-    plt.text(x_res+off_res, np.max(y_band_matisse)+dec_label, 'HR',
-             va='center', ha='center', fontsize=8, style='italic')
+    ax.text(x_res, np.max(y_band_matisse) + dec_label, 'LR',
+            va='center', ha='center', fontsize=8, style='italic')
+    ax.text(x_res+0.5*off_res, np.max(y_band_matisse)+dec_label, 'MR',
+            va='center', ha='center', fontsize=8, style='italic')
+    ax.text(x_res+off_res, np.max(y_band_matisse)+dec_label, 'HR',
+            va='center', ha='center', fontsize=8, style='italic')
 
     # -------------------
     # Separating lines
-    plt.hlines(y_gravity+1.8, xmin, xmax, color='w')
-    plt.hlines(y_gravity-1.8, xmin, xmax, color='w')
+    ax.hlines(y_gravity+1.8, xmin, xmax, color='w')
+    ax.hlines(y_gravity-1.8, xmin, xmax, color='w')
 
     # -------------------
     # Figure parameters
@@ -660,9 +543,9 @@ def plot_VLTI(data):
     ax.yaxis.set_ticks_position('none')
     ax.patch.set_facecolor('#dfe4ed')
     ax.patch.set_alpha(1)
-    # ax.set_xticklabels([])
-    # ax.set_yticklabels([])
-    plt.axis([xmin, xmax, y_pionier-1.8, np.max(y_band_matisse)+5])
+    ax.set_xticklabels([])
+    ax.set_yticklabels([])
+    ax.axis([xmin, xmax, y_pionier-1.8, np.max(y_band_matisse)+5])
     plt.subplots_adjust(top=0.994,
                         bottom=0.011,
                         left=0.008,
@@ -670,18 +553,18 @@ def plot_VLTI(data):
                         hspace=0.2,
                         wspace=0.2)
     plt.show(block=False)
-
+    fig.patch.set_facecolor('w')
     return fig
 
 
 def plot_CHARA(data):
-    """ 
+    """
     Display a synthetic plot with observability of the target with each
     instrument of the CHARA array. The spectral resolutions are included if exists.
     """
     star = data['Name']
 
-    if data['Ins'] != None:
+    if data['Ins'] is not None:
         pass
     else:
         cprint('## Error: %s not in Simbad!' % star, 'red')
@@ -705,10 +588,14 @@ def plot_CHARA(data):
 
     # Limit the star name lenght (display purposes)
     name_star = star.upper()
-    if len(star) > 7:
-        name_star = star.upper()[:7] + '.'
+    L = len(star) 
+    if L <= 8:
+        ft_star = 11
+    elif (L > 8) and (L <= 13):
+        ft_star = 7
     else:
-        name_star = star.upper()
+        ft_star = 7
+        name_star = star.upper()[:12] + '..'
 
     # Positions in the figure
     x_star, y_star = 0.22, 0.9
@@ -722,10 +609,10 @@ def plot_CHARA(data):
 
     # -------------------
     # Observavility from site and guiding limit
-    plt.text(x_star, y_star, name_star, fontsize=11, weight="bold", ha='center', va='center', transform=ax.transAxes,
+    plt.text(x_star, y_star, name_star, fontsize=ft_star, color='k', weight="bold", ha='center', va='center', transform=ax.transAxes,
              bbox=dict(boxstyle='circle', edgecolor=color[str(cond_CHARA)],
                        facecolor='w', alpha=0.6), zorder=50)
-    plt.text(x_star, y_star-0.1, 'Guiding/tip-tilt', fontsize=8,
+    plt.text(x_star, y_star-0.11, 'Guiding/tip-tilt', fontsize=8,
              ha='center', va='center', transform=ax.transAxes, bbox=dict(boxstyle='round',
                                                                          facecolor=c_guid, alpha=1), zorder=50)
 
@@ -790,7 +677,7 @@ def plot_CHARA(data):
 
     # -------------------
     # Link lines
-    plot_diag(x_ins, x_band, y_classic, off=0.15, l=2, lw=lw)
+    plot_diag(x_ins, x_band, y_classic, off=0.15, n_line=2, lw=lw)
     plt.plot([x_ins, x_band], [y_vega, y_vega], '-', color='#364f6b', lw=lw)
     plt.plot([x_ins, x_band], [y_climb, y_climb], '-', color='#364f6b', lw=lw)
     plt.plot([x_ins, x_band], [y_mirc, y_mirc], '-', color='#364f6b', lw=lw)
@@ -828,4 +715,5 @@ def plot_CHARA(data):
                         hspace=0.2,
                         wspace=0.2)
     plt.show(block=False)
+    fig.patch.set_facecolor('w')
     return fig
