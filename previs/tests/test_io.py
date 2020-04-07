@@ -46,10 +46,11 @@ def test_overwrite(tmpdir):
 @pytest.mark.parametrize("filepath", ["s0", "s1.json"])
 def test_save_survey(tmpdir, filepath):
     s = load_survey(small_survey_file)
-    savefile = Path(tmpdir.join(filepath))
-    savepath = save_survey(s, savefile)
+    target_path = Path(tmpdir.join(filepath))
+    savepath = save_survey(s, target_path)
 
     assert savepath.is_file()
+
     # json validation
     with open(savepath, mode="rt") as ofile:
-        d = json.load(ofile)
+        json.load(ofile)
