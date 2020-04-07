@@ -3,7 +3,7 @@ import previs
 from matplotlib import pyplot as plt
 
 # Perform previs research on one object:
-data = previs.search('HD100203')
+data = previs.search('Altair')
 
 # Plot the observability from VLTI and CHARA
 fig = previs.plot_VLTI(data)

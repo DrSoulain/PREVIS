@@ -369,7 +369,7 @@ def plot_VLTI(data):
 
     # Limit the star name lenght (display purposes)
     name_star = star.upper()
-    L = len(star) 
+    L = len(star)
     if L <= 8:
         ft_star = 11
     elif (L > 8) and (L <= 13):
@@ -401,9 +401,14 @@ def plot_VLTI(data):
 
     # -------------------
     # Relevant magnitudes
-    ax.text(x_mag, y_mag, 'G=%2.1f' % data['Mag']['magG'], fontsize=fs_mag,
-            va='center', bbox=dict(boxstyle='round', facecolor='#8ee38e',
-                                   alpha=0.8), zorder=50)
+    if np.isnan(data['Mag']['magG']):
+        ax.text(x_mag, y_mag, 'V=%2.1f' % data['Mag']['magV'], fontsize=fs_mag,
+                va='center', bbox=dict(boxstyle='round', facecolor='#8ee38e',
+                                       alpha=0.8), zorder=50)
+    else:
+        ax.text(x_mag, y_mag, 'G=%2.1f' % data['Mag']['magG'], fontsize=fs_mag,
+                va='center', bbox=dict(boxstyle='round', facecolor='#8ee38e',
+                                       alpha=0.8), zorder=50)
 
     ax.text(x_mag+0.8, y_mag, 'H=%2.1f' % data['Mag']['magH'], fontsize=fs_mag,
             va='center', bbox=dict(boxstyle='round', facecolor='#f38630', alpha=0.8), zorder=50)
@@ -588,7 +593,7 @@ def plot_CHARA(data):
 
     # Limit the star name lenght (display purposes)
     name_star = star.upper()
-    L = len(star) 
+    L = len(star)
     if L <= 8:
         ft_star = 11
     elif (L > 8) and (L <= 13):
