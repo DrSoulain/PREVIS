@@ -29,35 +29,8 @@ PREVIS also uses the V or G magnitudes to check the guiding issues or the tip/ti
 For the VLTI: if the star is too faint in G mag, PREVIS will research the list of stars around
 the target (57 arcsec) with the appropriate magnitude and give the list of celestial coordinates
 usable as guiding star. Of course, PREVIS checks also the on-site observability given the latitude of 
-both observatory.
+both observatories.
 
-
-## Install from source (for conda-based systems)
-
-It is recommended (though not mandatory) to create a separate environment with `conda create -n <env_name>`.
-Then, within your Conda env (`conda activate <env_name>`):
-
-```bash
-cd PREVIS/
-
-# Install main dependencies
-conda install --file requirements.txt
-
-# Some dependencies are not in the general Conda channel,
-# so we specify the desired channels 
-conda install -c astropy astroquery
-conda install -c conda-forge uncertainties
-
-# Finally, install PREVIS
-pip install .
-```
-
-### troubleshooting
-
-On UNIX systems (Linux, macOS), additional visualisation libraries could be required. We use the Qt5Agg to display figures. If visualisation problems appear, you can run the following command to install gt5. If you do not want to use qt5, you can remove the line mpl.use('Qt5Agg') (l30) from [example.py](example.py) .
-```bash
-pip install PyQt5
-```
 
 ## What can PREVIS do for you?
 
@@ -82,3 +55,24 @@ Such a graph represents multiple informations:
     - The pink circle indicate if fringe tracker is used (GRA4MAT),
     - The colored squares indicates the observing bands (same color as magnitudes),
     - The right circles are green if the target is observable for each spectral resolution (low (LR), medium (MR) or high (HR)), red if not.
+
+
+## Install from source (for conda-based systems)
+
+It is recommended (though not mandatory) to create a separate environment with `conda create -n <env_name>`.
+Then, within your Conda env (`conda activate <env_name>`):
+
+```bash
+cd PREVIS/
+
+# Install main dependencies
+conda install --file requirements.txt
+
+# Some dependencies are not in the general Conda channel,
+# so we specify the desired channels
+conda install -c astropy astroquery
+conda install -c conda-forge uncertainties
+
+# Finally, install PREVIS
+pip install .
+```
