@@ -2,3 +2,5 @@ previs/__pycache__/*
 previs/.DS_Store
 previs/data/eso_limits_matisse_new.json
 mysurvey.json
+.gitignore
+.DS_Store
