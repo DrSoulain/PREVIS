@@ -69,7 +69,7 @@ def sanitize_survey_file(survey_file):
     return survey_file
 
 def save_survey(survey, survey_file, overwrite=False):
-    """ Save the survey as json file named survey_file.json. """
+    """ Save <survey> data to json <survey_file> """
     survey_file = sanitize_survey_file(survey_file)
     if survey_file.exists() and not overwrite:
         raise FileExistsError(survey_file)
@@ -84,7 +84,7 @@ def save_survey(survey, survey_file, overwrite=False):
     return survey_file
 
 def load_survey(survey_file):
-    """ Load the survey from the json file named survey_file.json. """
+    """ Load survey data from json <survey_file> """
     survey_file = sanitize_survey_file(survey_file)
     with open(survey_file, mode='rt') as ofile:
         survey = json.load(ofile)
