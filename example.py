@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import previs
-from matplotlib import pyplot as plt
 
 # Perform previs research on one object:
 data = previs.search('Altair')
@@ -23,14 +22,12 @@ previs.save_survey(survey, 'mysurvey')
 # If a previous survey is saved, you can load it with:
 my_saved_survey = previs.load_survey('mysurvey')
 
-# Count observable stars with each instruments (mode, telescope):
+# Count observable stars with each instruments (mode, telescope, etc.):
 count_survey = previs.count_survey(survey)
 
-# Print the list of observable stars (resume) of survey.count():
+# Print the list of observable stars (resume):
 count_survey.print_log()
 
 # plot the histogram of the observable stars (survey.count):
 fig = previs.plot_histo_survey(count_survey)
 fig.show()
-
-plt.show()
