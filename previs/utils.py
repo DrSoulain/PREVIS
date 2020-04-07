@@ -60,7 +60,7 @@ def printtime(n, start_time):
     return t0
 
 def sanitize_survey_file(survey_file):
-    assert isinstance(survey_file, os.PathLike)
+    assert isinstance(survey_file, (str, os.PathLike))
     survey_file = Path(survey_file)
 
     if survey_file.suffix == '':
