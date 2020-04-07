@@ -85,7 +85,6 @@ def save_survey(survey, survey_file, overwrite=False):
 
 def load_survey(survey_file):
     """ Load the survey from the json file named survey_file.json. """
-    # if Path(survey_file + 'json').is_file():
     survey_file = sanitize_survey_file(survey_file)
     with open(survey_file, mode='rt') as ofile:
         survey = json.load(ofile)
