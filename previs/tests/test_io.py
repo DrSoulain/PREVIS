@@ -46,12 +46,11 @@ def test_save_survey(filepath):
     s = load_survey(small_survey_file)
     savefile = ARTIFACTS_DIR / filepath
     savefile.unlink(missing_ok=True)
+    savepath = save_survey(s, savefile)
     try:
-        savepath = save_survey(s, savefile)
-        assert savefile.is_file()
-
+        assert savepath.is_file()
         # json validation
-        with open(savefile, mode="rt") as ofile:
+        with open(savepath, mode="rt") as ofile:
             d = json.load(ofile)
     finally:
         savepath.unlink(missing_ok=True)
