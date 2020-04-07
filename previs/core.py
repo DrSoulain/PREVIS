@@ -268,7 +268,7 @@ def search(star, source='ESO', check=False, verbose=True):
     #       Limit interferometers
     # --------------------------------------
     tmp = {}
-    tmp['PIONIER'] = pionier_limit(magH, magV)
+    tmp['PIONIER'] = pionier_limit(magH)
     tmp['CHARA'] = chara_limit(magK, magH, magR, magV)
     tmp['MATISSE'] = matisse_limit(magL, magM, magN, magK,
                                    source=source, check=check)
