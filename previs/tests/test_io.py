@@ -5,8 +5,9 @@ import json
 import pytest
 from previs import survey, save_survey, load_survey
 
-TEST_DATA_DIR = Path(__file__).parent / "data"
-ARTIFACTS_DIR = TEST_DATA_DIR / ".artifacts"
+TEST_DIR = Path(__file__).parent
+TEST_DATA_DIR = TEST_DIR / "data"
+ARTIFACTS_DIR = TEST_DIR / ".artifacts"
 small_survey_file = TEST_DATA_DIR / "small_survey.json"
 small_survey_sans_ext = small_survey_file.with_suffix('')
 
@@ -20,7 +21,7 @@ def test_load_survey(filepath):
 
 
 def test_reproduce_survey():
-    s1 = load_survey(small_survey_file)
+    s = load_survey(small_survey_file)
     stars = list(s.keys())
 
     s2 = survey(stars)
@@ -43,9 +44,14 @@ def test_overwrite():
 @pytest.mark.parametrize("filepath", ["s0", "s1.json"])
 def test_save_survey(filepath):
     s = load_survey(small_survey_file)
-    save_survey(s, ARTIFACTS_DIR / filepath)
-    assert Path(filepath).is_file()
+    savefile = ARTIFACTS_DIR / filepath
+    savefile.unlink(missing_ok=True)
+    try:
+        savepath = save_survey(s, savefile)
+        assert savefile.is_file()
 
-    # json validation
-    with open(filepath, mode="rt") as ofile:
-        d = json.load(ofile)
+        # json validation
+        with open(savefile, mode="rt") as ofile:
+            d = json.load(ofile)
+    finally:
+        savepath.unlink(missing_ok=True)

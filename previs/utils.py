@@ -74,9 +74,14 @@ def save_survey(survey, survey_file):
     if survey_file.exists():
         raise FileExistsError(survey_file)
 
+    if not survey_file.parent.is_dir():
+        # todo: logme
+        os.makedirs(survey_file.parent)
+
     with open(survey_file, mode='wt') as ofile:
         json.dump(survey, ofile)
 
+    return survey_file
 
 def load_survey(survey_file):
     """ Load the survey from the json file named survey_file.json. """
