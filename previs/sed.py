@@ -45,9 +45,9 @@ def getSed(coord):
 
     """
     try:
-        c = coord.replace(' ', '+').replace('+-', '-')
+        coord_ = coord.replace(' ', '+').replace('+-', '-')
         response = urllib.request.urlopen(
-            'http://vizier.u-strasbg.fr/viz-bin/sed?-c=' + c + '&-c.rs=2')
+            f'http://vizier.u-strasbg.fr/viz-bin/sed?-c={coord_}&-c.rs=2')
 
         with tempfile.TemporaryFile() as tmpfile:
             tmpfile.write(response.read())
