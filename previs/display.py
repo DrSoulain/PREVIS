@@ -105,7 +105,7 @@ def autolabel(bars, add, ind, fontsize=11):
     for ii, bar in enumerate(bars):
         plt.text(ind[ii]+add, bar+0.1, '%s' % str(bar),
                  ha='center', va='bottom', fontsize=fontsize,
-                 zorder=30, color='#364f6b')
+                 zorder=60, color='#364f6b')
 
 
 def plot_histo_survey(dic, setlog=False):
@@ -225,7 +225,7 @@ def plot_histo_survey(dic, setlog=False):
            align='center', edgecolor='#364f6b')
     ax.scatter(p_grav, data_grav_hr, s=30, marker='s', zorder=10,
                color='#cee2e6', alpha=1, edgecolors='#364f6b')
-
+    
     plt.text(p_grav[0], 0.5, 'AT', ha='center', va='center', c='w',
              zorder=50, fontsize=8)
     plt.text(p_grav[1], 0.5, 'UT', ha='center', va='center', c='w',
@@ -236,6 +236,7 @@ def plot_histo_survey(dic, setlog=False):
                 color='#00b08b', zorder=10, marker="H")
 
     autolabel(data_grav, 0, p_grav)
+    autolabel(data_grav_hr, 0, p_grav)
 
     # ---------------------------------
     # PIONIER
@@ -261,6 +262,7 @@ def plot_histo_survey(dic, setlog=False):
     ax.scatter(p, len(dic['VEGA']['HR']), s=30, marker='s', zorder=10,
                color='#cee2e6', alpha=1, edgecolors='#364f6b', label='High spectal res.')
     autolabel(y, 0, p)
+    autolabel([len(dic['VEGA']['HR'])], 0, p)
 
     # ---------------------------------
     # CLIMB
@@ -344,7 +346,7 @@ def plot_VLTI(data):
     if (type(data['Guiding_star']) == str):
         aff_guide = 'Science'
     elif (type(data['Guiding_star']) == list):
-        if len(data['Guiding_star'][0] > 0):
+        if len(data['Guiding_star'][0]) > 0:
             aff_guide = 'Off axis'
         else:
             if len(data['Guiding_star'][1]) > 0:

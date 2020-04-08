@@ -219,31 +219,31 @@ def search(star, source='ESO', check=False, verbose=True):
 
     v = Vizier(columns=['*', '+<Gmag>'])
     if np.isnan(data['Mag']['magR']) or (data['Mag']['magG'] >= 12.5) or (data['Mag']['magG'] <= -3):
-        try:
-            res = v.query_region(star, radius='57s', catalog='I/337/gaia')
+        #try:
+        res = v.query_region(star, radius='57s', catalog='I/337/gaia')
 
-            Gmag = np.ma.getdata(res['I/337/gaia']['__Gmag_'])
-            cond1 = (Gmag <= 12.5)
-            cond2 = (Gmag <= 15)
+        Gmag = np.ma.getdata(res['I/337/gaia']['__Gmag_'])
+        cond1 = (Gmag <= 12.5)
+        cond2 = (Gmag <= 15) & (Gmag > 12.5)
 
-            gmag1 = np.ma.getdata(res['I/337/gaia']['__Gmag_'][cond1])
-            ra1 = np.ma.getdata(res['I/337/gaia']['RA_ICRS'][cond1])
-            dec1 = np.ma.getdata(res['I/337/gaia']['DE_ICRS'][cond1])
+        gmag1 = np.ma.getdata(res['I/337/gaia']['__Gmag_'][cond1])
+        ra1 = np.ma.getdata(res['I/337/gaia']['RA_ICRS'][cond1])
+        dec1 = np.ma.getdata(res['I/337/gaia']['DE_ICRS'][cond1])
 
-            gmag2 = np.ma.getdata(res['I/337/gaia']['__Gmag_'][cond2])
-            ra2 = np.ma.getdata(res['I/337/gaia']['RA_ICRS'][cond2])
-            dec2 = np.ma.getdata(res['I/337/gaia']['DE_ICRS'][cond2])
+        gmag2 = np.ma.getdata(res['I/337/gaia']['__Gmag_'][cond2])
+        ra2 = np.ma.getdata(res['I/337/gaia']['RA_ICRS'][cond2])
+        dec2 = np.ma.getdata(res['I/337/gaia']['DE_ICRS'][cond2])
 
-            guid1, guid2 = [], []
+        guid1, guid2 = [], []
 
-            for i in range(len(ra1)):
-                guid1.append([ra1[i], dec1[i], gmag1[i]])
-            for i in range(len(ra2)):
-                guid2.append([ra2[i], dec2[i], gmag2[i]])
+        for i in range(len(ra1)):
+            guid1.append([float(ra1[i]), float(dec1[i]), float(gmag1[i])])
+        for i in range(len(ra2)):
+            guid2.append([float(ra2[i]), float(dec2[i]), float(gmag2[i])])
 
-            data['Guiding_star'] = [np.array(guid1), np.array(guid2)]
-        except Exception:
-            data['Guiding_star'] = 'ERROR'
+        data['Guiding_star'] = [guid1, guid2]
+        #except Exception:
+        #    data['Guiding_star'] = 'ERROR'
     else:
         data['Guiding_star'] = 'Science star'
 
