@@ -12,6 +12,7 @@ import warnings
 import tempfile
 
 import astropy.io.votable as vo
+from scipy.constants import c as c_light
 import numpy as np
 from scipy.interpolate import interp1d
 
@@ -57,8 +58,7 @@ def getSed(coord):
 
         cond = tab['sed_flux'] >= 0
         freq = tab['sed_freq'][cond]
-        c = 299792458.
-        wl = c/(freq*1e9)*1e6
+        wl = c_light/(freq*1e9)*1e6
         flux = tab['sed_flux'][cond].astype(float)
         err = tab['sed_eflux'][cond].astype(float)
 
