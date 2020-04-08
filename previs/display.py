@@ -117,6 +117,7 @@ def wrong_figure(st):
     ax.set_xticklabels([])
     ax.set_yticklabels([])
     ax.axis([-0.1, 0.6, -1, 1])
+    plt.show(block=False)  
     return fig
 
 
@@ -340,7 +341,7 @@ def plot_histo_survey(dic, setlog=False):
                         right=0.98,
                         hspace=0.2,
                         wspace=0.2)
-    # plt.show(block=False)
+    plt.show(block=False)
     return fig
 
 
