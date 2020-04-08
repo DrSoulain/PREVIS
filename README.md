@@ -37,8 +37,9 @@ The example also presents the survey capabilities of the module.
 
 For instance, if you use `previs.search` to fetch data about the star Altair, you can display the resulting observability with the VLTI instruments with `previs.plot_VLTI`:
 
-<img src="doc/figure_1.png" width="50%" style="display: block;margin-left: auto;margin-right: auto; ">
-
+<p align="center">
+<img src="doc/figure_1.png" width="50%">
+</p>
 Such a graph represents multiple informations:
 
 - *Upper left*: the name of the target with a green cirle if the star is observable from the VLTI, red if not,
