@@ -9,6 +9,7 @@ import os
 import urllib.parse
 import urllib.request
 import warnings
+import tempfile
 
 import astropy.io.votable as vo
 import numpy as np
@@ -47,12 +48,9 @@ def getSed(coord):
         response = urllib.request.urlopen(
             'http://vizier.u-strasbg.fr/viz-bin/sed?-c=' + c + '&-c.rs=2')
 
-        name_file = 'sed.vot'
-        output = open(name_file, 'wb')
-        output.write(response.read())
-        output.close()
-
-        tab = np.ma.getdata(vo.parse_single_table(name_file).array)
+        with tempfile.TemporaryFile() as tmpfile:
+            tmpfile.write(response.read())
+            tab = np.ma.getdata(vo.parse_single_table(tmpfile).array)
 
         tab_name = tab['_tabname']
         ins_name = getInstr(tab_name)
@@ -70,7 +68,6 @@ def getSed(coord):
                 'wl': list(wl),
                 'name': list(ins_name)
                 }
-        os.remove(name_file)
     except Exception:
         # todo: change this to only pass relevant exceptions here, instead of all of them
         data = None
