@@ -68,8 +68,8 @@ def getSed(coord):
                 'wl': list(wl),
                 'name': list(ins_name)
                 }
-    except Exception:
-        # todo: change this to only pass relevant exceptions here, instead of all of them
+    except urllib.request.HTTPError:
+        # todo: logme
         data = None
     return data
 
