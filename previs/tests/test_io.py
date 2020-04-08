@@ -1,8 +1,10 @@
 import json
 from pathlib import Path
+from numpy import bool_
 
 import pytest
 from previs import load_survey, save_survey, survey
+from previs.utils import sanitize_booleans
 
 TEST_DIR = Path(__file__).parent
 TEST_DATA_DIR = TEST_DIR / "data"
@@ -11,12 +13,18 @@ small_survey_file = TEST_DATA_DIR / "small_survey.json"
 
 @pytest.mark.parametrize(
     "filepath",
-    [small_survey_file, small_survey_file.with_suffix(
-        ""), str(small_survey_file)],
+    [small_survey_file, small_survey_file.with_suffix(""), str(small_survey_file)],
 )
 def test_load_survey(filepath):
     s = load_survey(filepath)
     assert isinstance(s, dict)
+
+
+@pytest.mark.parametrize("dic", [{"a": bool_(True)}, {"a": {"b":bool_(True)}}])
+def test_json_sanitizing(dic):
+    with pytest.raises(TypeError):
+        json.dumps(dic)
+    json.dumps(sanitize_booleans(dic))
 
 
 @pytest.mark.timeout(120)
