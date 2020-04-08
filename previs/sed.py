@@ -123,8 +123,6 @@ def getInstr(l_tabname):
     `l_ins`: {array}
         Convenient naming convention for list of SED points.
     """
-    l_ins = []
-
     known_entries = {b'I/320/spm4': 'SPM+11',
                      b'II/7A/catalog': 'Morel+78',
                      b'II/336/apass9': 'APASS+16',
@@ -170,9 +168,5 @@ def getInstr(l_tabname):
                      b'I/276/supplem': 'Fabricius+02',
                      }
 
-    for name in l_tabname:
-        try:
-            l_ins.append(known_entries[name])
-        except KeyError:
-            l_ins.append(name.decode("utf-8"))
+    l_ins = [known_entries.get(name, name.decode("utf-8")) for name in l_tabname]
     return l_ins
