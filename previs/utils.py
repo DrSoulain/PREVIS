@@ -33,7 +33,7 @@ def connect(host):
         return False
 
 
-def check_response_server():
+def check_servers_response():
     connect_simbad = connect('http://simbad.u-strasbg.fr/simbad')
     connect_vizier = connect('http://vizier.u-strasbg.fr/vizier/sed/')
     if connect_simbad and connect_vizier:
