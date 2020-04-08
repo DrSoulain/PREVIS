@@ -93,7 +93,6 @@ def sed2mag(sed, bands):
         'Q': {'wl': 20.13, 'F0': 9.7},
     }
 
-
     with np.errstate(divide='ignore'):
         f_sed = interp1d(sed['wl'], np.log10(
             sed['Flux']), bounds_error=False)
