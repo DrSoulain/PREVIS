@@ -70,7 +70,7 @@ def sanitize_survey_file(survey_file):
     return survey_file
 
 def sanitize_booleans(dic):
-    """ Recursively convert values in a nested dictionnaries from np.bool_ to builtin bool type
+    """ Recursively convert values in a nested dictionnary from np.bool_ to builtin bool type
     This is required for json serialization.
     """
     d2 = dic.copy()
