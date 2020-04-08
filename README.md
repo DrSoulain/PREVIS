@@ -40,6 +40,7 @@ For instance, if you use `previs.search` to fetch data about the star Altair, yo
 <p align="center">
 <img src="doc/figure_1.png" width="50%">
 </p>
+
 Such a graph represents multiple informations:
 
 - *Upper left*: the name of the target with a green cirle if the star is observable from the VLTI, red if not,

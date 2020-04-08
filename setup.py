@@ -14,5 +14,5 @@ setup(
         'Topic :: High Angular Resolution Astronomy :: Interferometry',
         'Programming Language :: Python :: 3.7'
     ],
-    package_data={'previs': ['files/eso_limits_matisse.json']},
+    package_data={'previs': ['data/eso_limits_matisse.json']},
 )
