@@ -15,6 +15,7 @@ import time
 import urllib.request
 from pathlib import Path
 
+from numpy import bool_
 from termcolor import colored, cprint
 
 # on windows, colorama should help making termcolor compatible
@@ -68,6 +69,17 @@ def sanitize_survey_file(survey_file):
 
     return survey_file
 
+def sanitize_booleans(dic):
+    """ Recursively convert values in a nested dictionnaries from np.bool_ to builtin bool type
+    This is required for json serialization.
+    """
+    d2 = dic.copy()
+    for k, v in dic.items():
+        if isinstance(v, dict):
+            d2[k] = sanitize_booleans(v)
+        if isinstance(v, bool_):
+            d2[k] = bool(v)
+    return d2
 
 def save_survey(survey, survey_file, overwrite=False):
     """ Save <survey> data to json <survey_file> """
@@ -79,8 +91,9 @@ def save_survey(survey, survey_file, overwrite=False):
         # todo: logme
         os.makedirs(survey_file.parent)
 
+    survey_ = sanitize_booleans(survey)
     with open(survey_file, mode='wt') as ofile:
-        json.dump(survey, ofile)
+        json.dump(survey_, ofile)
 
     return survey_file
 
