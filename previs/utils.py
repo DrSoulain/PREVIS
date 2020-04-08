@@ -118,8 +118,8 @@ def count_survey(survey):
                     if survey[x]['Observability']['CHARA']:
                         n_chara += 1
 
-    colored('\nYour list contain %i stars:' % n_star, 'cyan')
-    colored('-------------------------', 'cyan')
+    cprint('\nYour list contain %i stars:' % n_star, 'cyan')
+    cprint('-------------------------', 'cyan')
     print('Observability: %i (%2.1f %%) from the VLTI, %i (%2.1f %%) from the CHARA.\n' %
           (n_vlti, 100*float(n_vlti)/n_star, n_chara, 100*float(n_chara)/n_star))
 
@@ -198,7 +198,7 @@ def count_survey(survey):
                 list_no_simbad.append(star)
 
     if list_no_simbad:
-        colored('Warning: some stars are not in Simbad:', 'red')
+        cprint('Warning: some stars are not in Simbad:', 'red')
         print(list_no_simbad)
     dic["unavailable"] = list_no_simbad
     return dic
@@ -206,25 +206,23 @@ def count_survey(survey):
 
 class SurveyClass(dict):
     def print_log(self):
-        if type(self) is dict:
-            res = '\n'.join([
-                colored('VLTI:', 'green'),
-                colored('-----', 'green'),
-                'MATISSE (AT): %s' % str(self['MATISSE']['AT']['noft']['L']['LR']),
-                '        (UT): %s' % str(self['MATISSE']['UT']['noft']['L']['LR']),
-                'GRAVITY (AT): %s' % str(self['GRAVITY']['AT']['MR']),
-                '        (UT): %s' % str(self['GRAVITY']['UT']['MR']),
-                'PIONIER (AT/UT): %s' % str(self['PIONIER']),
-                '',
-                colored('CHARA:', 'green'),
-                colored('------', 'green'),
-                'VEGA: %s' % str(self['VEGA']['LR']),
-                'PAVO: %s' % str(self['PAVO']),
-                'MIRC: %s' % str(self['MIRC']['H']),
-                'CLIMB: %s' % str(self['CLIMB']),
-                'CLASSIC: %s' % str(self['CLASSIC']['H'])
-            ])
-            print(res)
-            return res
-        else:
-            pass
+        res = '\n'.join([
+            colored('VLTI:', 'green'),
+            colored('-----', 'green'),
+            'MATISSE (AT): %s' % str(self['MATISSE']['AT']['noft']['L']['LR']),
+            '        (UT): %s' % str(self['MATISSE']['UT']['noft']['L']['LR']),
+            'GRAVITY (AT): %s' % str(self['GRAVITY']['AT']['MR']),
+            '        (UT): %s' % str(self['GRAVITY']['UT']['MR']),
+            'PIONIER (AT/UT): %s' % str(self['PIONIER']),
+            '',
+            colored('CHARA:', 'green'),
+            colored('------', 'green'),
+            'VEGA: %s' % str(self['VEGA']['LR']),
+            'PAVO: %s' % str(self['PAVO']),
+            'MIRC: %s' % str(self['MIRC']['H']),
+            'CLIMB: %s' % str(self['CLIMB']),
+            'CLASSIC: %s' % str(self['CLASSIC']['H'])
+        ])
+        print(res)
+        return res    
+
