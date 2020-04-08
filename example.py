@@ -12,7 +12,7 @@ fig = previs.plot_CHARA(data)
 fig.show()
 
 # Perform previs research on a list of stars:
-stars = ['Betelgeuse', 'Altair']
+stars = ['Betelgeuse', 'Altair', 'WR112', 'WR104', 'HD100203']
 
 survey = previs.survey(stars)
 
