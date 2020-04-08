@@ -68,7 +68,6 @@ In this case, you can see that the stars are not observable with all instruments
 
 The background bars for MATISSE and MIRC indicate respectively, the fringe tracker possibility (GRA4MAT) and the future update MYSTIC operating in K-band. In this case, 3 stars are observable with MATISSE in N-band but 4 if you use the fringe tracker (see ft/noft of previs.search result and [plot_VLTI](doc/figure_1.png) figure).
 
-
 ## Install from source (for conda-based systems)
 
 It is recommended (though not mandatory) to create a separate environment with `conda create -n <env_name>`.
