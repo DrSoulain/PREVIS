@@ -37,7 +37,7 @@ The example also presents the survey capabilities of the module.
 
 For instance, if you use `previs.search` to fetch data about the star Altair, you can display the resulting observability with the VLTI instruments with `previs.plot_VLTI`:
 
-<img src="doc/figure_1.png" width="50%">
+<img src="doc/figure_1.png" width="50%" style="display: block;margin-left: auto;margin-right: auto; ">
 
 Such a graph represents multiple informations:
 
@@ -55,7 +55,7 @@ Such a graph represents multiple informations:
 
 Now, if you use `previs.survey` on a list of 5 stars for instance, you can display the histogram of the result using `previs.plot_histo_survey`:
 
-<img src="doc/figure_2.jpeg" width="100%">
+<img src="doc/figure_2.jpeg" width="95%">
 
 In this case, you can see that the stars are not observable with all instruments and depend of the considered mode. For instance, 3 stars are observables with MATISSE in low spectral resolution with the AT in N band (dark blue bar). The grey squares indicate the number of stars observable in high spectral resolution:
 
