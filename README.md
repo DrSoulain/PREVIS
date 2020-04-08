@@ -2,6 +2,7 @@
 
 (**P**ython **R**equest **E**ngine for **V**irtual **I**nterferometric **S**urvey)
 
+[![version](http://img.shields.io/badge/PREVIS-v0.2dev-orange.svg?style=flat)](https://github.com/DrSoulain/PREVIS/)
 [![astropy](http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat)](http://www.astropy.org/)
 
 PREVIS is a Python module that provides functions to help determine the observability of astronomical sources
