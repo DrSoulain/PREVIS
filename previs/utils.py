@@ -34,20 +34,19 @@ def connect(host):
         return False
 
 
-def check_response_server():
+def check_servers_response():
     connect_simbad = connect('http://simbad.u-strasbg.fr/simbad')
     connect_vizier = connect('http://vizier.u-strasbg.fr/vizier/sed/')
     if connect_simbad and connect_vizier:
-        response = True
-    else:
-        response = False
-    if response:
         out = {}
     else:
-        cprint('\nPREVIS uses url request, but something is going wrong!', 'red')
-        cprint('-> check your internet connection,', 'red')
-        cprint('-> check SIMBAD server,', 'red')
-        cprint('-> check VIZIER server.', 'red')
+        cprint('\nPREVIS uses url requests, but something has gone wrong !', 'red')
+        if not connect_simbad and not connect_vizier:
+            cprint('-> check your internet connection,', 'red')
+        elif not connect_simbad:
+            cprint('-> check SIMBAD server,', 'red')
+        else:
+            cprint('-> check VIZIER server.', 'red')
         out = None
     return out
 
