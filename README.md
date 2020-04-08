@@ -56,7 +56,9 @@ Such a graph represents multiple informations:
 
 Now, if you use `previs.survey` on a list of 5 stars for instance, you can display the histogram of the result using `previs.plot_histo_survey`:
 
+<p align="center">
 <img src="doc/figure_2.jpeg" width="95%">
+</p>
 
 In this case, you can see that the stars are not observable with all instruments and depend of the considered mode. For instance, 3 stars are observables with MATISSE in low spectral resolution with the AT in N band (dark blue bar). The grey squares indicate the number of stars observable in high spectral resolution:
 
