@@ -49,9 +49,25 @@ Such a graph represents multiple informations:
   - 'off axis*', the coudé off-axis guiding can only be performed in visitor mode.
 - The organigram of each instrument:
   - The blue/green octogone indicate the telescope (UT (8m) or AT (1.8m)),
-  - The pink circle indicate if fringe tracker is used (GRA4MAT),
+  - The pink circle indicate if fringe tracker (GRA4MAT) is used (ft) or not (noft),
   - The colored squares indicates the observing bands (same color as magnitudes),
   - The right circles are green if the target is observable for each spectral resolution (low (LR), medium (MR) or high (HR)), red if not.
+
+Now, if you use `previs.survey` on a list of 5 stars for instance, you can display the histogram of the result using `previs.plot_histo_survey`:
+
+<img src="doc/figure_2.jpeg" width="100%">
+
+In this case, you can see that the stars are not observable with all instruments and depend of the considered mode. For instance, 3 stars are observables with MATISSE in low spectral resolution with the AT in N band (dark blue bar). The grey squares indicate the number of stars observable in high spectral resolution:
+
+- with MATISSE:
+  - 3 in N-band and 4 in L-band with the AT,
+  - 4 in N-band and 4 in L-band with the UT.
+- with GRAVITY:
+  - 3 with the AT,
+  - 2 with the UT.
+
+The background bars for MATISSE and MIRC indicate respectively, the fringe tracker possibility (GRA4MAT) and the future update MYSTIC operating in K-band. In this case, 3 stars are observable with MATISSE in N-band but 4 if you use the fringe tracker (see ft/noft of previs.search result and [plot_VLTI](doc/figure_1.png) figure).
+
 
 ## Install from source (for conda-based systems)
 
