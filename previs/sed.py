@@ -72,6 +72,7 @@ def getSed(coord):
                 }
         os.remove(name_file)
     except Exception:
+        # todo: change this to only pass relevant exceptions here, instead of all of them
         data = None
     return data
 
@@ -95,19 +96,21 @@ def sed2mag(sed, bands):
         'Q': {'wl': 20.13, 'F0': 9.7},
     }
 
-    l_m = []
+
     with np.errstate(divide='ignore'):
         f_sed = interp1d(sed['wl'], np.log10(
             sed['Flux']), bounds_error=False)
-    for b in bands:
+
+    l_m = np.full(np.nan, len(bands))
+    for i, band in enumerate(bands):
         try:
-            F = 10**(f_sed(conv_flux[b]['wl']))
-            F0 = conv_flux[b]['F0']
-            m = -2.5*np.log10(F/F0)
-            l_m.append(m)
+            F = 10**(f_sed(conv_flux[band]['wl']))
+            F0 = conv_flux[band]['F0']
+            l_m[i] = -2.5*np.log10(F/F0)
         except Exception:
-            l_m.append(np.nan)
-    return l_m
+            # todo: change this to only pass relevant exceptions here, instead of all of them
+            pass
+    return list(l_m)
 
 
 def getInstr(l_tabname):
