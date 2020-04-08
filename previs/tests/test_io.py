@@ -1,9 +1,8 @@
-from pathlib import Path
-import tempfile
 import json
+from pathlib import Path
 
 import pytest
-from previs import survey, save_survey, load_survey
+from previs import load_survey, save_survey, survey
 
 TEST_DIR = Path(__file__).parent
 TEST_DATA_DIR = TEST_DIR / "data"
@@ -12,14 +11,15 @@ small_survey_file = TEST_DATA_DIR / "small_survey.json"
 
 @pytest.mark.parametrize(
     "filepath",
-    [small_survey_file, small_survey_file.with_suffix(""), str(small_survey_file)],
+    [small_survey_file, small_survey_file.with_suffix(
+        ""), str(small_survey_file)],
 )
 def test_load_survey(filepath):
     s = load_survey(filepath)
     assert isinstance(s, dict)
 
 
-@pytest.mark.timeout(10)
+@pytest.mark.timeout(120)
 def test_reproduce_survey():
     s1 = load_survey(small_survey_file)
     stars = list(s1.keys())

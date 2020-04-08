@@ -59,6 +59,7 @@ def printtime(n, start_time):
     print("==> %s (%d min %2.3f s)" % (n, m, t-m*60))
     return t0
 
+
 def sanitize_survey_file(survey_file):
     assert isinstance(survey_file, (str, os.PathLike))
     survey_file = Path(survey_file)
@@ -67,6 +68,7 @@ def sanitize_survey_file(survey_file):
         survey_file = survey_file.with_suffix(".json")
 
     return survey_file
+
 
 def save_survey(survey, survey_file, overwrite=False):
     """ Save <survey> data to json <survey_file> """
@@ -82,6 +84,7 @@ def save_survey(survey, survey_file, overwrite=False):
         json.dump(survey, ofile)
 
     return survey_file
+
 
 def load_survey(survey_file):
     """ Load survey data from json <survey_file> """
@@ -178,8 +181,10 @@ def count_survey(survey):
                 cond_CHARA = survey[star]['Observability']['CHARA']
                 cond_tilt = survey[star]['Ins']['CHARA']['Guiding']
 
-                dic = add_vs_mode_matisse(survey, dic, star, cond_VLTI, cond_guid)
-                dic = add_vs_mode_gravity(survey, dic, star, cond_VLTI, cond_guid)
+                dic = add_vs_mode_matisse(
+                    survey, dic, star, cond_VLTI, cond_guid)
+                dic = add_vs_mode_gravity(
+                    survey, dic, star, cond_VLTI, cond_guid)
 
                 cond_ins = survey[star]['Ins']['PIONIER']['H']
                 if (cond_VLTI and cond_guid and cond_ins):
@@ -239,5 +244,4 @@ class SurveyClass(dict):
             'CLASSIC: %s' % str(self['CLASSIC']['H'])
         ])
         print(res)
-        return res    
-
+        return res
