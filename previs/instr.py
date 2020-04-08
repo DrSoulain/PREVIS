@@ -19,6 +19,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from previs.utils import connect
 
 store_directory = Path(__file__).parent / "data"
 
@@ -76,6 +77,7 @@ def limit_ESO_matisse_web(check):
     `limits_data`: {dict}
         Limiting magnitudes of MATISSE.
     """
+
     url = 'http://www.eso.org/sci/facilities/paranal/instruments/matisse/inst.html'
     stored_data_filepath = store_directory / 'eso_limits_matisse.json'
     new_data_filepath = store_directory / 'eso_limits_matisse_new.json'
@@ -85,58 +87,70 @@ def limit_ESO_matisse_web(check):
             limits_data = json.load(ofile)
     else:
         print('Check MATISSE limits from ESO web site...')
-        tables = pd.read_html(url)  # Returns list of all tables on page
-        limit_MATISSE_abs = tables[4]  # Select table of interest
-        limit_MATISSE_rel = tables[5]
-        limit_MATISSE_gra4mat = tables[6]
+        response_server = connect(url)
+        if response_server:
+            tables = pd.read_html(url)  # Returns list of all tables on page
+            try:
+                limit_MATISSE_abs = tables[4]  # Select table of interest
+                limit_MATISSE_rel = tables[5]
+                limit_MATISSE_gra4mat = tables[6]
 
-        list_limit_abs = np.array(limit_MATISSE_abs)
-        list_limit_rel = np.array(limit_MATISSE_rel)
-        list_limit_gra4mat = np.array(limit_MATISSE_gra4mat)
+                list_limit_abs = np.array(limit_MATISSE_abs)
+                list_limit_rel = np.array(limit_MATISSE_rel)
+                list_limit_gra4mat = np.array(limit_MATISSE_gra4mat)
 
-        at_lim_good = [x.split('Jy')[0]
-                       for x in list_limit_abs[:, 1]]
-        ut_lim_good = [x.split('Jy')[0]
-                       for x in list_limit_abs[:, 3]]
+                at_lim_good = [x.split('Jy')[0] for x in list_limit_abs[:, 1]]
+                ut_lim_good = [x.split('Jy')[0] for x in list_limit_abs[:, 3]]
 
-        at_lim_good_rel = [x.split('Jy')[0]
-                           for x in list_limit_rel[:, 1]]
-        ut_lim_good_rel = [x.split('Jy')[0]
-                           for x in list_limit_rel[:, 3]]
+                at_lim_good_rel = [x.split('Jy')[0]
+                                   for x in list_limit_rel[:, 1]]
+                ut_lim_good_rel = [x.split('Jy')[0]
+                                   for x in list_limit_rel[:, 3]]
 
-        at_L_gra4mat = [x.split('Jy')[0]
-                        for x in list_limit_gra4mat[1:, 1]]
-        at_M_gra4mat = [x.split('Jy')[0]
-                        for x in list_limit_gra4mat[1:, 3]]
+                at_L_gra4mat = [x.split('Jy')[0]
+                                for x in list_limit_gra4mat[1:, 1]]
+                at_M_gra4mat = [x.split('Jy')[0]
+                                for x in list_limit_gra4mat[1:, 3]]
 
-        at_noft_L = JyToMag([at_lim_good[0], at_lim_good[2],
-                             at_lim_good_rel[3]], 'L')
-        at_noft_M = JyToMag([at_lim_good[1], at_lim_good_rel[2]], 'M')
-        at_noft_N = JyToMag([at_lim_good[4], at_lim_good_rel[4]], 'N')
+                at_noft_L = JyToMag([at_lim_good[0], at_lim_good[2],
+                                     at_lim_good_rel[3]], 'L')
+                at_noft_M = JyToMag([at_lim_good[1], at_lim_good_rel[2]], 'M')
+                at_noft_N = JyToMag([at_lim_good[4], at_lim_good_rel[4]], 'N')
 
-        ut_noft_L = JyToMag([ut_lim_good[0], ut_lim_good_rel[1], ut_lim_good_rel[3]],
-                            'L')
-        ut_noft_M = JyToMag([ut_lim_good[1], ut_lim_good_rel[2]],
-                            'M')
-        ut_noft_N = JyToMag([ut_lim_good[4], ut_lim_good_rel[4]],
-                            'N')
+                ut_noft_L = JyToMag([ut_lim_good[0], ut_lim_good_rel[1], ut_lim_good_rel[3]],
+                                    'L')
+                ut_noft_M = JyToMag([ut_lim_good[1], ut_lim_good_rel[2]],
+                                    'M')
+                ut_noft_N = JyToMag([ut_lim_good[4], ut_lim_good_rel[4]],
+                                    'N')
 
-        at_ft_L = JyToMag([at_L_gra4mat[0], at_L_gra4mat[1],
-                           at_L_gra4mat[2]], 'L')
-        at_ft_M = JyToMag([at_M_gra4mat[0], at_M_gra4mat[1]],
-                          'M')
-        at_ft_N = []  # not commisionned (see estimated performance)
+                at_ft_L = JyToMag(
+                    [at_L_gra4mat[0], at_L_gra4mat[1], at_L_gra4mat[2]], 'L')
+                at_ft_M = JyToMag([at_M_gra4mat[0], at_M_gra4mat[1]], 'M')
+                at_ft_N = []  # not commisionned (see estimated performance)
 
-        limits_data = {'at': {'noft': {'L': at_noft_L, 'M': at_noft_M, 'N': at_noft_N, },
-                              'ft': {'L': at_ft_L, 'M': at_ft_M, 'N': at_ft_N}
-                              },
-                       'ut': {'noft': {'L': ut_noft_L, 'M': ut_noft_M, 'N': ut_noft_N, },
-                              'ft': {'L': [], 'M': [], 'N': []}
-                              }
-                       }
+                limits_data = {'at': {'noft': {'L': at_noft_L, 'M': at_noft_M, 'N': at_noft_N, },
+                                      'ft': {'L': at_ft_L, 'M': at_ft_M, 'N': at_ft_N}
+                                      },
+                               'ut': {'noft': {'L': ut_noft_L, 'M': ut_noft_M, 'N': ut_noft_N, },
+                                      'ft': {'L': [], 'M': [], 'N': []}
+                                      }
+                               }
 
-        with open(new_data_filepath, mode='wt') as ofile:
-            json.dump(limits_data, ofile, indent="  ")
+                with open(new_data_filepath, mode='wt') as ofile:
+                    json.dump(limits_data, ofile, indent="  ")
+            except Exception:
+                print('-> The structure of the ESO website has changed: (%s) is used instead.' %
+                      stored_data_filepath)
+                if Path(stored_data_filepath).is_file():
+                    with open(stored_data_filepath, mode='rt') as ofile:
+                        limits_data = json.load(ofile)
+        else:
+            print('-> ESO website not available: (%s) is used instead.' %
+                  stored_data_filepath)
+            if Path(stored_data_filepath).is_file():
+                with open(stored_data_filepath, mode='rt') as ofile:
+                    limits_data = json.load(ofile)
 
     return limits_data
 

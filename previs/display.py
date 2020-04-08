@@ -108,6 +108,18 @@ def autolabel(bars, add, ind, fontsize=11):
                  zorder=60, color='#364f6b')
 
 
+def wrong_figure(st):
+    fig = plt.figure(figsize=(3, 1))
+    ax = plt.subplot(111)
+    ax.text(0, 0, st, fontsize=20, c='r', va='center')
+    ax.xaxis.set_ticks_position('none')
+    ax.yaxis.set_ticks_position('none')
+    ax.set_xticklabels([])
+    ax.set_yticklabels([])
+    ax.axis([-0.1, 0.6, -1, 1])
+    return fig
+
+
 def plot_histo_survey(dic, setlog=False):
     """ Plot histogram of the result from count_survey fonction.
     Show the number of stars observable which each instruments.
@@ -120,6 +132,12 @@ def plot_histo_survey(dic, setlog=False):
         If True, set the y-scale to log (default=False).
 
     """
+    try:
+        dic['MATISSE']
+    except KeyError:
+        fig = wrong_figure('NO SURVEY')
+        return fig
+
     w = 0.4
     xmin, xmax = 0, 10.
 
@@ -332,6 +350,12 @@ def plot_VLTI(data):
     instruments of the VLTI array. The spectral resolutions are included
     if exists.
     """
+
+    if data is not None:
+        pass
+    else:
+        fig = wrong_figure('  NO VLTI')
+        return fig
 
     star = data['Name']
 
@@ -569,6 +593,12 @@ def plot_CHARA(data):
     Display a synthetic plot with observability of the target with each
     instrument of the CHARA array. The spectral resolutions are included if exists.
     """
+    if data is not None:
+        pass
+    else:
+        fig = wrong_figure('NO CHARA')
+        return fig
+
     star = data['Name']
 
     if data['Ins'] is not None:

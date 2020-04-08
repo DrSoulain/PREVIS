@@ -42,7 +42,7 @@ from astroquery.vizier import Vizier
 from previs.instr import (chara_limit, gravity_limit, matisse_limit,
                           pionier_limit)
 from previs.sed import getSed, sed2mag
-from previs.utils import printtime
+from previs.utils import printtime, check_response_server
 from termcolor import cprint
 from uncertainties import ufloat
 
@@ -80,6 +80,11 @@ def search(star, source='ESO', check=False, verbose=True):
         -'Observability': Observability from sites: VLTI and CHARA,\n
         -'Guiding_star': Guiding star informations at VLTI.\n
     """
+
+    if check_response_server() is not None:
+        pass
+    else:
+        return None
 
     start_time = time.time()
     star = star.upper()
@@ -289,6 +294,11 @@ def survey(list_star):
     `survey`: {dict}
         Dictionnary containing previs search for all stars.
     """
+    if check_response_server() is not None:
+        pass
+    else:
+        return None
+        
     cprint('\nStarting survey on %i stars:' % len(list_star), 'cyan')
     cprint('-------------------------', 'cyan')
     out = {}
