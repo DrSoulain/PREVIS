@@ -101,7 +101,7 @@ def sed2mag(sed, bands):
         f_sed = interp1d(sed['wl'], np.log10(
             sed['Flux']), bounds_error=False)
 
-    l_m = np.full(np.nan, len(bands))
+    l_m = np.full(len(bands), np.nan)
     for i, band in enumerate(bands):
         try:
             F = 10**(f_sed(conv_flux[band]['wl']))
