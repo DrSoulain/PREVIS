@@ -359,11 +359,11 @@ def plot_VLTI(data):
 
     star = data['Name']
 
-    if data['Ins'] is not None:
+    if data["Simbad"]:
         pass
     else:
         cprint('## Error: %s not in Simbad!' % star, 'red')
-        return None
+        return wrong_figure('Not in simbad')
 
     ins = data['Ins']
     # Observability from VLTI site lattitude and guiding limit
@@ -601,11 +601,11 @@ def plot_CHARA(data):
 
     star = data['Name']
 
-    if data['Ins'] is not None:
+    if data["Simbad"]:
         pass
     else:
         cprint('## Error: %s not in Simbad!' % star, 'red')
-        return None
+        return wrong_figure('Not in simbad')
 
     ins = data['Ins']['CHARA']
 

@@ -90,7 +90,7 @@ def search(star, source='ESO', check=False, verbose=True):
     star = star.upper()
 
     if verbose:
-        cprint('\n%s: Research started (could take up to 30 seconds)...' %
+        cprint('\n%s: search started (could take up to 30 seconds)...' %
                star, 'cyan')
     data = {'Simbad': False}
     data['Ins'] = None
@@ -124,6 +124,7 @@ def search(star, source='ESO', check=False, verbose=True):
         pass
 
     if not data['Simbad']:
+        cprint('## Error: %s not in Simbad!' % star, 'red')
         return data
     # --------------------------------------
     #                 SED
@@ -298,7 +299,7 @@ def survey(list_star):
         pass
     else:
         return None
-        
+   
     cprint('\nStarting survey on %i stars:' % len(list_star), 'cyan')
     cprint('-------------------------', 'cyan')
     out = {}
