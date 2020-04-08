@@ -19,7 +19,7 @@ These functions use data from the Virtual Observatory (OV), such as:
 PREVIS compares the magnitudes to the current limiting magnitudes of each instruments to determine whether
 the target is observable with current performances. The actual instruments are installed at:
 
-- The european [Very Large Telescope Interferometer](VLTI, <https://www.eso.org/sci/facilities/paranal/telescopes/vlti.html),>
+- The european Very Large Telescope Interferometer ([VLTI](https://www.eso.org/sci/facilities/paranal/telescopes/vlti.html))
   with **PIONIER** (H band), **GRAVITY** (K band) and **MATISSE** (L, M, N bands),
 - The American Center for Hight Angular Resolution Astronomy ([CHARA](http://www.chara.gsu.edu)), with
   **VEGA** (V band), **PAVO** (R bands), **MIRC** (H band), **CLIMB** (K band) and **CLASSIC** (H, K bands).
