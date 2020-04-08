@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
 from setuptools import setup
-
-setup(
-    name="previs",
-    version="0.1",
+project_name = "previs"                                                                                         
+                                                                                                                  
+setup(                                                                                                            
+    name=project_name,                                                                                            
+    version=__import__(project_name).__version__,
     packages=['previs'],
     author='Anthony Soulain',
     author_email='anthony.soulain@sydney.edu.au.com',
