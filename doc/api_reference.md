@@ -22,4 +22,4 @@ These functions are used to present a synthetic resume of the `previs.search` or
 
 `previs.plot_CHARA`: Same as `previs.plot_VLTI` for the american interferometer CHARA.
 
-`previs.plot_histo_survey`: Fonction to present the results from `previs.survey` as an histogram. All implimented instruments are included (from VLTI and CHARA).
+`previs.plot_histo_survey`: Fonction to present the results from `previs.survey` as an histogram. All implimented instruments are included (from VLTI and CHARA). An example is presented in the [README.md](README.md) and in the [Fig. 2](doc/figure_2.jpeg).

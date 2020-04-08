@@ -219,7 +219,6 @@ def search(star, source='ESO', check=False, verbose=True):
 
     v = Vizier(columns=['*', '+<Gmag>'])
     if np.isnan(data['Mag']['magR']) or (data['Mag']['magG'] >= 12.5) or (data['Mag']['magG'] <= -3):
-        #try:
         res = v.query_region(star, radius='57s', catalog='I/337/gaia')
 
         Gmag = np.ma.getdata(res['I/337/gaia']['__Gmag_'])
@@ -242,8 +241,6 @@ def search(star, source='ESO', check=False, verbose=True):
             guid2.append([float(ra2[i]), float(dec2[i]), float(gmag2[i])])
 
         data['Guiding_star'] = [guid1, guid2]
-        #except Exception:
-        #    data['Guiding_star'] = 'ERROR'
     else:
         data['Guiding_star'] = 'Science star'
 
