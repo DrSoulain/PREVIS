@@ -29,6 +29,26 @@ For the VLTI: if the star is too faint in G mag, PREVIS will look for the list o
 the target (57 arcsec) with the appropriate magnitude and give the list of celestial coordinates
 usable as guiding star. Of course, PREVIS checks also the on-site observability given the latitude of both observatories.
 
+## Install from source (for conda-based systems)
+
+It is recommended (though not mandatory) to create a separate environment with `conda create -n <env_name>`.
+Then, within your Conda env (`conda activate <env_name>`):
+
+```bash
+cd PREVIS/
+
+# Install main dependencies
+conda install --file requirements.txt
+
+# Some dependencies are not in the general Conda channel,
+# so we specify the desired channels
+conda install -c astropy astroquery
+conda install -c conda-forge uncertainties
+
+# Finally, install PREVIS
+pip install .
+```
+
 ## What can PREVIS do for you?
 
 An example script [example.py](example.py) is included to test the possibilities offered by PREVIS. The example includes a single target
@@ -71,23 +91,3 @@ In this case, you can see that the stars are not observable with all instruments
   - 2 with the UT.
 
 The background bars for MATISSE and MIRC indicate respectively, the fringe tracker possibility (GRA4MAT) and the future update MYSTIC operating in K-band. In this case, 3 stars are observable with MATISSE in N-band but 4 if you use the fringe tracker (see ft/noft of `previs.search` result and [plot_VLTI](doc/figure_1.png) figure).
-
-## Install from source (for conda-based systems)
-
-It is recommended (though not mandatory) to create a separate environment with `conda create -n <env_name>`.
-Then, within your Conda env (`conda activate <env_name>`):
-
-```bash
-cd PREVIS/
-
-# Install main dependencies
-conda install --file requirements.txt
-
-# Some dependencies are not in the general Conda channel,
-# so we specify the desired channels
-conda install -c astropy astroquery
-conda install -c conda-forge uncertainties
-
-# Finally, install PREVIS
-pip install .
-```
