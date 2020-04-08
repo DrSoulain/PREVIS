@@ -19,6 +19,7 @@ def test_load_survey(filepath):
     assert isinstance(s, dict)
 
 
+@pytest.mark.timeout(10)
 def test_reproduce_survey():
     s1 = load_survey(small_survey_file)
     stars = list(s1.keys())
