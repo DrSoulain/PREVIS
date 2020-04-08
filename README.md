@@ -20,9 +20,9 @@ PREVIS compares the magnitudes to the current limiting magnitudes of each instru
 the target is observable with current performances. The actual instruments are installed at:
 
 - The european Very Large Telescope Interferometer ([VLTI](https://www.eso.org/sci/facilities/paranal/telescopes/vlti.html))
-  with **PIONIER** (H band), **GRAVITY** (K band) and **MATISSE** (L, M, N bands),
-- The American Center for Hight Angular Resolution Astronomy ([CHARA](http://www.chara.gsu.edu)), with
-  **VEGA** (V band), **PAVO** (R bands), **MIRC** (H band), **CLIMB** (K band) and **CLASSIC** (H, K bands).
+  with [PIONIER](https://www.eso.org/sci/facilities/paranal/instruments/pionier.html) (H band), [GRAVITY](https://www.eso.org/sci/facilities/paranal/instruments/gravity.html) (K band) and [MATISSE](https://www.eso.org/sci/facilities/paranal/instruments/matisse.html) (L, M, N bands),
+- The american Center for Hight Angular Resolution Astronomy ([CHARA](http://www.chara.gsu.edu)), with
+  [VEGA](http://www.chara.gsu.edu/instrumentation/vega) (V band), [PAVO](http://www.chara.gsu.edu/instrumentation/pavo) (R bands), [MIRC](http://www.chara.gsu.edu/instrumentation/mirc) (H band), [CLIMB](http://www.chara.gsu.edu/instrumentation/classic-and-climb) (K band) and [CLASSIC](http://www.chara.gsu.edu/instrumentation/classic-and-climb) (H, K bands).
 
 PREVIS also uses the V or G magnitudes to check the guiding issues or the tip/tilt correction limit.
 For the VLTI: if the star is too faint in G mag, PREVIS will look for the list of stars around
