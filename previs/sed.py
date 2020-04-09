@@ -9,8 +9,10 @@ import os
 import urllib.parse
 import urllib.request
 import warnings
+import tempfile
 
 import astropy.io.votable as vo
+from scipy.constants import c as c_light
 import numpy as np
 from scipy.interpolate import interp1d
 
@@ -43,24 +45,20 @@ def getSed(coord):
 
     """
     try:
-        c = coord.replace(' ', '+').replace('+-', '-')
+        coord_ = coord.replace(' ', '+').replace('+-', '-')
         response = urllib.request.urlopen(
-            'http://vizier.u-strasbg.fr/viz-bin/sed?-c=' + c + '&-c.rs=2')
+            f'http://vizier.u-strasbg.fr/viz-bin/sed?-c={coord_}&-c.rs=2')
 
-        name_file = 'sed.vot'
-        output = open(name_file, 'wb')
-        output.write(response.read())
-        output.close()
-
-        tab = np.ma.getdata(vo.parse_single_table(name_file).array)
+        with tempfile.TemporaryFile() as tmpfile:
+            tmpfile.write(response.read())
+            tab = np.ma.getdata(vo.parse_single_table(tmpfile).array)
 
         tab_name = tab['_tabname']
         ins_name = getInstr(tab_name)
 
         cond = tab['sed_flux'] >= 0
         freq = tab['sed_freq'][cond]
-        c = 299792458.
-        wl = c/(freq*1e9)*1e6
+        wl = c_light/(freq*1e9)*1e6
         flux = tab['sed_flux'][cond].astype(float)
         err = tab['sed_eflux'][cond].astype(float)
 
@@ -70,8 +68,8 @@ def getSed(coord):
                 'wl': list(wl),
                 'name': list(ins_name)
                 }
-        os.remove(name_file)
-    except Exception:
+    except urllib.request.HTTPError:
+        # todo: logme
         data = None
     return data
 
@@ -95,19 +93,20 @@ def sed2mag(sed, bands):
         'Q': {'wl': 20.13, 'F0': 9.7},
     }
 
-    l_m = []
     with np.errstate(divide='ignore'):
         f_sed = interp1d(sed['wl'], np.log10(
             sed['Flux']), bounds_error=False)
-    for b in bands:
+
+    l_m = np.full(len(bands), np.nan)
+    for i, band in enumerate(bands):
         try:
-            F = 10**(f_sed(conv_flux[b]['wl']))
-            F0 = conv_flux[b]['F0']
-            m = -2.5*np.log10(F/F0)
-            l_m.append(m)
+            F = 10**(f_sed(conv_flux[band]['wl']))
+            F0 = conv_flux[band]['F0']
+            l_m[i] = -2.5*np.log10(F/F0)
         except Exception:
-            l_m.append(np.nan)
-    return l_m
+            # todo: change this to only pass relevant exceptions here, instead of all of them
+            pass
+    return list(l_m)
 
 
 def getInstr(l_tabname):
@@ -123,8 +122,6 @@ def getInstr(l_tabname):
     `l_ins`: {array}
         Convenient naming convention for list of SED points.
     """
-    l_ins = []
-
     known_entries = {b'I/320/spm4': 'SPM+11',
                      b'II/7A/catalog': 'Morel+78',
                      b'II/336/apass9': 'APASS+16',
@@ -170,9 +167,5 @@ def getInstr(l_tabname):
                      b'I/276/supplem': 'Fabricius+02',
                      }
 
-    for name in l_tabname:
-        try:
-            l_ins.append(known_entries[name])
-        except KeyError:
-            l_ins.append(name.decode("utf-8"))
+    l_ins = [known_entries.get(name, name.decode("utf-8")) for name in l_tabname]
     return l_ins
