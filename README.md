@@ -36,6 +36,9 @@ It is recommended (though not mandatory) to create a separate environment with `
 Then, within your Conda env (`conda activate <env_name>`):
 
 ```bash
+# First clone PREVIS repository on your computer
+git clone https://github.com/DrSoulain/PREVIS.git
+
 cd PREVIS/
 
 # Install main dependencies
@@ -52,9 +55,17 @@ pip install .
 
 ## What can PREVIS do for you?
 
+PREVIS is developed and thought to be used in interactive session, so we recommend to use it into an ipython session.
+
 An example script [example.py](example.py) is included to test the possibilities offered by PREVIS. The example includes a single target
 research using `previs.search`, a visualisation solution for the VLTI (`previs.plot_VLTI`) and CHARA (`previs.plot_CHARA`).
 The example also presents the survey capabilities of the module.
+
+If you want to simply use the [example.py](example.py), you can run it in interactive session:
+
+```bash
+ipython --matplotlib -i example.py
+```
 
 For instance, if you use `previs.search` to fetch data about the star Altair, you can display the resulting observability with the VLTI instruments with `previs.plot_VLTI`:
 
