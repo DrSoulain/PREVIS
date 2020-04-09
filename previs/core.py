@@ -30,7 +30,6 @@ on one target, and previs.survey to use it on a list of targets.
 -------------------------------------------------------------------- 
 """
 
-import sys
 import time
 import warnings
 
@@ -129,6 +128,8 @@ def search(star, source='ESO', check=False, verbose=True):
     # --------------------------------------
     #                 SED
     # --------------------------------------
+    if verbose:
+        print('Get SED from Vizier database...')
     sed = getSed(coordo)
     data['SED'] = sed
 
@@ -279,7 +280,7 @@ def search(star, source='ESO', check=False, verbose=True):
     data['Name'] = star
     if verbose:
         printtime('Check Instruments: done', t3)
-    cprint('Done (%2.2f s).' % (time.time()-start_time), 'cyan')
+        cprint('Done (%2.2f s).' % (time.time()-start_time), 'cyan')
     return data
 
 

@@ -42,7 +42,6 @@ def getSed(coord):
         'References' (references/publications)):
     """
     try:
-        print('Get SED from Vizier database...')
         coord_ = coord.replace(' ', '+').replace('+-', '-')
         response = urllib.request.urlopen(
             f'http://vizier.u-strasbg.fr/viz-bin/sed?-c={coord_}&-c.rs=2')
