@@ -36,7 +36,7 @@ It is recommended (though not mandatory) to create a separate environment with `
 Then, within your Conda env (`conda activate <env_name>`):
 
 ```bash
-# First clone PREVIS repository on your computer
+# Firstly, clone PREVIS repository on your computer
 git clone https://github.com/DrSoulain/PREVIS.git
 
 cd PREVIS/

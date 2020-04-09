@@ -69,6 +69,7 @@ def sanitize_survey_file(survey_file):
 
     return survey_file
 
+
 def sanitize_booleans(dic):
     """ Recursively convert values in a nested dictionnary from np.bool_ to builtin bool type
     This is required for json serialization.
@@ -80,6 +81,7 @@ def sanitize_booleans(dic):
         if isinstance(v, bool_):
             d2[k] = bool(v)
     return d2
+
 
 def save_survey(survey, survey_file, overwrite=False):
     """ Save <survey> data to json <survey_file> """
@@ -148,7 +150,7 @@ def count_survey(survey):
                     if survey[x]['Observability']['CHARA']:
                         n_chara += 1
 
-    cprint('\nYour list contain %i stars:' % n_star, 'cyan')
+    cprint('\nYour list contains %i stars:' % n_star, 'cyan')
     cprint('-------------------------', 'cyan')
     print('Observability: %i (%2.1f %%) from the VLTI, %i (%2.1f %%) from the CHARA.\n' %
           (n_vlti, 100*float(n_vlti)/n_star, n_chara, 100*float(n_chara)/n_star))

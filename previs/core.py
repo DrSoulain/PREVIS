@@ -43,21 +43,20 @@ from previs.instr import (chara_limit, gravity_limit, matisse_limit,
 from previs.sed import getSed, sed2mag
 from previs.utils import check_servers_response, printtime
 from termcolor import cprint
-from uncertainties import ufloat
 from tqdm import tqdm
-
+from uncertainties import ufloat
 
 warnings.filterwarnings('ignore')
 warnings.filterwarnings('ignore', module='scipy.interpolate.interp1d')
 
 
 def search(star, source='ESO', check=False, verbose=True):
-    """Perform a large search to get informations about target (observability, magnitude, distance, sed, etc.)
+    """ Perform a large search to get informations about a star or a list of stars (observability, magnitude, distance, sed, etc.)
 
     Parameters
     ----------
-    `star` : {str}
-        Name of the star,\n
+    `star` : {str} or {list}
+        Name of the star or a list of star if you want to perform a survey,\n
     `source`: {str}
         Limiting magnitudes used to constrain MATISSE observability. If 'ESO', the informations are extracted from
         the ESO website, else estimated performance are used,\n
@@ -67,221 +66,234 @@ def search(star, source='ESO', check=False, verbose=True):
 
     Returns
     -------
-    `data`: {dict}
-        Dictionnary contains keys:\n
-        -'Name': Name of the star,\n
-        -'Simbad': If True, star is in Simbad,\n
-        -'Coord': Celestial coordinates,\n
-        -'sp_type': Spectral type,\n
-        -'Distance': Astrometric distance,\n
-        -'SED': Spectral Energy Distribution,\n
-        -'Mag': Magnitudes (V, J, H, etc.),\n
-        -'Gaia_dr2': Gaia DR2 informations,\n
-        -'Ins': Observability with VLTI and CHARA instruments,\n
-        -'Observability': Observability from sites: VLTI and CHARA,\n
-        -'Guiding_star': Guiding star informations at VLTI.\n
+    `result`: {dict}
+        The result is a dictionnary of dictionnary, result['star'] contains the data
+        with different keys:\n
+            -'Name': Name of the star,\n
+            -'Simbad': If True, star is in Simbad,\n
+            -'Coord': Celestial coordinates,\n
+            -'sp_type': Spectral type,\n
+            -'Distance': Astrometric distance,\n
+            -'SED': Spectral Energy Distribution,\n
+            -'Mag': Magnitudes (V, J, H, etc.),\n
+            -'Gaia_dr2': Gaia DR2 informations,\n
+            -'Ins': Observability with VLTI and CHARA instruments,\n
+            -'Observability': Observability from sites: VLTI and CHARA,\n
+            -'Guiding_star': Guiding star informations at VLTI.\n
     """
-
     if check_servers_response() is None:
         return None
 
     start_time = time.time()
-    star_user = star
-    star = star.upper()
-    if verbose:
-        cprint('\n%s: search started (could take up to 30 seconds)...' %
-               star, 'cyan')
-    data = {'Simbad': False}
-    data['Ins'] = None
-    data['Name'] = star
-    # --------------------------------------
-    #       Coordinates of the target
-    # --------------------------------------
-    coord = {}
-    customSimbad = Simbad()
-    customSimbad.add_votable_fields('parallax', 'sptype', 'id',
-                                    'flux(V)', 'flux(B)')
+    if type(star) == str:
+        l_star = [star]
+    elif type(star) == list:
+        l_star = star
+    else:
+        cprint("Error: input need to be a target name or a list of target.", 'red')
+        return None
 
-    try:
-        objet = customSimbad.query_object(star)
-        coord[star] = np.array([objet['RA'][0], objet['DEC'][0]])
-        coordo = str(coord[star][0]) + ' ' + str(coord[star][1])
-        c = ac.SkyCoord(coordo, unit=(u.hourangle, u.deg))
-        data['Coord'] = coordo
+    result = {}
+    cprint('\nStart previs search on %i stars' % len(l_star), 'cyan')
+    for star in tqdm(l_star, ncols=60, desc="Progress"):
+        star_user = star
+        star = star.upper()
+        if verbose:
+            cprint('\n%s: search started (could take up to 30 seconds)...' %
+                   star, 'cyan')
+        data = {'Simbad': False}
+        data['Ins'] = None
+        data['Name'] = star
+        # --------------------------------------
+        #       Coordinates of the target
+        # --------------------------------------
+        coord = {}
+        customSimbad = Simbad()
+        customSimbad.add_votable_fields('parallax', 'sptype', 'id',
+                                        'flux(V)', 'flux(B)')
 
-        plx = ufloat(objet['PLX_VALUE'].data[0], objet['PLX_ERROR'].data[0])
-        d = 1/plx
-        data['Distance'] = {'d': d.nominal_value, 'e_d': d.std_dev}
-        data['Simbad'] = True
-        # if data['sp_type'] == None:
-        aa = str(objet['SP_TYPE'].data[0])
-        sptype = aa.split('b')[1].split("'")[1]
-        data['sp_type'] = sptype
-        # else:
-        #    pass
-    except Exception:
-        pass
-
-    if not data['Simbad']:
-        cprint('## Problem: %s not in Simbad!' % star_user, 'red')
-        return data
-    # --------------------------------------
-    #                 SED
-    # --------------------------------------
-    if verbose:
-        print('Get SED from Vizier database...')
-    sed = getSed(coordo)
-    data['SED'] = sed
-
-    # --------------------------------------
-    #       Magnitude of the target
-    # --------------------------------------
-    l_bands = ['B', 'V', 'R', 'J', 'H', 'K', 'L', 'M', 'N']
-
-    with np.errstate(divide='ignore'):
-        magB, magV, magR, magJ, magH, magK, magL, magM, magN = sed2mag(
-            sed, l_bands)
-
-    if np.isnan(magV):
         try:
-            magV = objet['FLUX_V'][0]
-            if magV is np.ma.masked:
-                magV = np.nan
+            objet = customSimbad.query_object(star)
+            coord[star] = np.array([objet['RA'][0], objet['DEC'][0]])
+            coordo = str(coord[star][0]) + ' ' + str(coord[star][1])
+            c = ac.SkyCoord(coordo, unit=(u.hourangle, u.deg))
+            data['Coord'] = coordo
+
+            plx = ufloat(objet['PLX_VALUE'].data[0],
+                         objet['PLX_ERROR'].data[0])
+            d = 1/plx
+            data['Distance'] = {'d': d.nominal_value, 'e_d': d.std_dev}
+            data['Simbad'] = True
+            # if data['sp_type'] == None:
+            aa = str(objet['SP_TYPE'].data[0])
+            sptype = aa.split('b')[1].split("'")[1]
+            data['sp_type'] = sptype
+            # else:
+            #    pass
         except Exception:
             pass
-    try:
-        magB = objet['FLUX_B'][0]
-        if magB is np.ma.masked:
+
+        if not data['Simbad']:
+            cprint('## Problem: %s not in Simbad!' % star_user, 'red')
+            return data
+        # --------------------------------------
+        #                 SED
+        # --------------------------------------
+        if verbose:
+            print('Get SED from Vizier database...')
+        sed = getSed(coordo)
+        data['SED'] = sed
+
+        # --------------------------------------
+        #       Magnitude of the target
+        # --------------------------------------
+        l_bands = ['B', 'V', 'R', 'J', 'H', 'K', 'L', 'M', 'N']
+
+        with np.errstate(divide='ignore'):
+            magB, magV, magR, magJ, magH, magK, magL, magM, magN = sed2mag(
+                sed, l_bands)
+
+        if np.isnan(magV):
+            try:
+                magV = objet['FLUX_V'][0]
+                if magV is np.ma.masked:
+                    magV = np.nan
+            except Exception:
+                pass
+        try:
+            magB = objet['FLUX_B'][0]
+            if magB is np.ma.masked:
+                magB = np.nan
+        except Exception:
             magB = np.nan
-    except Exception:
-        magB = np.nan
 
-    data['Mag'] = {'magB': float(magB),
-                   'magV': float(magV),
-                   'magR': float(magR),
-                   'magH': float(magH),
-                   'magK': float(magK),
-                   'magL': float(magL),
-                   'magM': float(magM),
-                   'magN': float(magN),
-                   'magJ': float(magJ)
-                   }
+        data['Mag'] = {'magB': float(magB),
+                       'magV': float(magV),
+                       'magR': float(magR),
+                       'magH': float(magH),
+                       'magK': float(magK),
+                       'magL': float(magL),
+                       'magM': float(magM),
+                       'magN': float(magN),
+                       'magJ': float(magJ)
+                       }
 
-    if verbose:
-        t1 = printtime('Check SED: done', start_time)
-    # --------------------------------------
-    #                GAIA DR2
-    # --------------------------------------
-    columns = ['_r', 'RA_ICRS', 'DE_ICRS', 'e_RA_ICRS', 'e_DE_ICRS',
-               'Gmag', 'Plx', 'e_Plx', 'pmRA', 'e_pmRA', 'pmDE', 'e_pmDE', 'Teff']
-    v = Vizier(columns=columns)
-    data['Gaia_dr2'] = {}
-    try:
-        res = v.query_region(star, radius="1s", catalog='I/345/gaia2')
-        data['Mag']['magG'] = float(
-            np.ma.getdata(res['I/345/gaia2']['Gmag'])[0])
-        data['Gaia_dr2']['RA'] = float(
-            np.ma.getdata(res['I/345/gaia2']['RA_ICRS'])[0])
-        data['Gaia_dr2']['e_RA'] = float(
-            np.ma.getdata(res['I/345/gaia2']['e_RA_ICRS'])[0])
-        data['Gaia_dr2']['DEC'] = float(
-            np.ma.getdata(res['I/345/gaia2']['DE_ICRS'])[0])
-        data['Gaia_dr2']['e_DEC'] = float(
-            np.ma.getdata(res['I/345/gaia2']['e_DE_ICRS'])[0])
-        data['Gaia_dr2']['Plx'] = float(
-            np.ma.getdata(res['I/345/gaia2']['Plx'])[0])
-        data['Gaia_dr2']['e_Plx'] = float(
-            np.ma.getdata(res['I/345/gaia2']['e_Plx'])[0])
-        data['Gaia_dr2']['pmRA'] = float(
-            np.ma.getdata(res['I/345/gaia2']['pmRA'])[0])
-        data['Gaia_dr2']['e_pmRA'] = float(
-            np.ma.getdata(res['I/345/gaia2']['e_pmRA'])[0])
-        data['Gaia_dr2']['pmDE'] = float(
-            np.ma.getdata(res['I/345/gaia2']['pmDE'])[0])
-        data['Gaia_dr2']['e_pmDE'] = float(
-            np.ma.getdata(res['I/345/gaia2']['e_pmDE'])[0])
-        data['Gaia_dr2']['Teff'] = float(
-            np.ma.getdata(res['I/345/gaia2']['Teff'])[0])
+        if verbose:
+            t1 = printtime('Check SED: done', start_time)
+        # --------------------------------------
+        #                GAIA DR2
+        # --------------------------------------
+        columns = ['_r', 'RA_ICRS', 'DE_ICRS', 'e_RA_ICRS', 'e_DE_ICRS',
+                   'Gmag', 'Plx', 'e_Plx', 'pmRA', 'e_pmRA', 'pmDE', 'e_pmDE', 'Teff']
+        v = Vizier(columns=columns)
+        data['Gaia_dr2'] = {}
+        try:
+            res = v.query_region(star, radius="1s", catalog='I/345/gaia2')
+            data['Mag']['magG'] = float(
+                np.ma.getdata(res['I/345/gaia2']['Gmag'])[0])
+            data['Gaia_dr2']['RA'] = float(
+                np.ma.getdata(res['I/345/gaia2']['RA_ICRS'])[0])
+            data['Gaia_dr2']['e_RA'] = float(
+                np.ma.getdata(res['I/345/gaia2']['e_RA_ICRS'])[0])
+            data['Gaia_dr2']['DEC'] = float(
+                np.ma.getdata(res['I/345/gaia2']['DE_ICRS'])[0])
+            data['Gaia_dr2']['e_DEC'] = float(
+                np.ma.getdata(res['I/345/gaia2']['e_DE_ICRS'])[0])
+            data['Gaia_dr2']['Plx'] = float(
+                np.ma.getdata(res['I/345/gaia2']['Plx'])[0])
+            data['Gaia_dr2']['e_Plx'] = float(
+                np.ma.getdata(res['I/345/gaia2']['e_Plx'])[0])
+            data['Gaia_dr2']['pmRA'] = float(
+                np.ma.getdata(res['I/345/gaia2']['pmRA'])[0])
+            data['Gaia_dr2']['e_pmRA'] = float(
+                np.ma.getdata(res['I/345/gaia2']['e_pmRA'])[0])
+            data['Gaia_dr2']['pmDE'] = float(
+                np.ma.getdata(res['I/345/gaia2']['pmDE'])[0])
+            data['Gaia_dr2']['e_pmDE'] = float(
+                np.ma.getdata(res['I/345/gaia2']['e_pmDE'])[0])
+            data['Gaia_dr2']['Teff'] = float(
+                np.ma.getdata(res['I/345/gaia2']['Teff'])[0])
 
-        plx = ufloat(data['Gaia_dr2']['Plx'], data['Gaia_dr2']['e_Plx'])
+            plx = ufloat(data['Gaia_dr2']['Plx'], data['Gaia_dr2']['e_Plx'])
 
-        Dkpc = 1./plx
-        data['Gaia_dr2']['check'] = True
-        data['Gaia_dr2']['Dkpc'] = Dkpc.nominal_value
-        data['Gaia_dr2']['e_Dkpc'] = Dkpc.std_dev
-    except Exception:
-        data['Gaia_dr2']['check'] = False
-        data['Gaia_dr2']['Dkpc'] = np.nan
-        data['Gaia_dr2']['e_Dkpc'] = np.nan
-        data['Gaia_dr2']['Plx'] = np.nan
-        data['Gaia_dr2']['e_Plx'] = np.nan
-        data['Gaia_dr2']['pmRA'] = np.nan
-        data['Gaia_dr2']['pmDE'] = np.nan
-        data['Mag']['magG'] = np.nan
-    if verbose:
-        t2 = printtime('Check Gaia: done', t1)
-    # --------------------------------------
-    #             Guiding star
-    # --------------------------------------
+            Dkpc = 1./plx
+            data['Gaia_dr2']['check'] = True
+            data['Gaia_dr2']['Dkpc'] = Dkpc.nominal_value
+            data['Gaia_dr2']['e_Dkpc'] = Dkpc.std_dev
+        except Exception:
+            data['Gaia_dr2']['check'] = False
+            data['Gaia_dr2']['Dkpc'] = np.nan
+            data['Gaia_dr2']['e_Dkpc'] = np.nan
+            data['Gaia_dr2']['Plx'] = np.nan
+            data['Gaia_dr2']['e_Plx'] = np.nan
+            data['Gaia_dr2']['pmRA'] = np.nan
+            data['Gaia_dr2']['pmDE'] = np.nan
+            data['Mag']['magG'] = np.nan
+        if verbose:
+            t2 = printtime('Check Gaia: done', t1)
+        # --------------------------------------
+        #             Guiding star
+        # --------------------------------------
 
-    v = Vizier(columns=['*', '+<Gmag>'])
-    if np.isnan(data['Mag']['magR']) or (data['Mag']['magG'] >= 12.5) or (data['Mag']['magG'] <= -3):
-        res = v.query_region(star, radius='57s', catalog='I/337/gaia')
+        v = Vizier(columns=['*', '+<Gmag>'])
+        if np.isnan(data['Mag']['magR']) or (data['Mag']['magG'] >= 12.5) or (data['Mag']['magG'] <= -3):
+            res = v.query_region(star, radius='57s', catalog='I/337/gaia')
 
-        Gmag = np.ma.getdata(res['I/337/gaia']['__Gmag_'])
-        cond1 = (Gmag <= 12.5)
-        cond2 = (Gmag <= 15) & (Gmag > 12.5)
+            Gmag = np.ma.getdata(res['I/337/gaia']['__Gmag_'])
+            cond1 = (Gmag <= 12.5)
+            cond2 = (Gmag <= 15) & (Gmag > 12.5)
 
-        gmag1 = np.ma.getdata(res['I/337/gaia']['__Gmag_'][cond1])
-        ra1 = np.ma.getdata(res['I/337/gaia']['RA_ICRS'][cond1])
-        dec1 = np.ma.getdata(res['I/337/gaia']['DE_ICRS'][cond1])
+            gmag1 = np.ma.getdata(res['I/337/gaia']['__Gmag_'][cond1])
+            ra1 = np.ma.getdata(res['I/337/gaia']['RA_ICRS'][cond1])
+            dec1 = np.ma.getdata(res['I/337/gaia']['DE_ICRS'][cond1])
 
-        gmag2 = np.ma.getdata(res['I/337/gaia']['__Gmag_'][cond2])
-        ra2 = np.ma.getdata(res['I/337/gaia']['RA_ICRS'][cond2])
-        dec2 = np.ma.getdata(res['I/337/gaia']['DE_ICRS'][cond2])
+            gmag2 = np.ma.getdata(res['I/337/gaia']['__Gmag_'][cond2])
+            ra2 = np.ma.getdata(res['I/337/gaia']['RA_ICRS'][cond2])
+            dec2 = np.ma.getdata(res['I/337/gaia']['DE_ICRS'][cond2])
 
-        guid1, guid2 = [], []
+            guid1, guid2 = [], []
 
-        for i in range(len(ra1)):
-            guid1.append([float(ra1[i]), float(dec1[i]), float(gmag1[i])])
-        for i in range(len(ra2)):
-            guid2.append([float(ra2[i]), float(dec2[i]), float(gmag2[i])])
+            for i in range(len(ra1)):
+                guid1.append([float(ra1[i]), float(dec1[i]), float(gmag1[i])])
+            for i in range(len(ra2)):
+                guid2.append([float(ra2[i]), float(dec2[i]), float(gmag2[i])])
 
-        data['Guiding_star'] = [guid1, guid2]
-    else:
-        data['Guiding_star'] = 'Science star'
+            data['Guiding_star'] = [guid1, guid2]
+        else:
+            data['Guiding_star'] = 'Science star'
 
-    if verbose:
-        t3 = printtime('Check guiding star: done,', t2)
-    # --------------------------------------
-    #             Observability
-    # --------------------------------------
-    L_paranal = -24.63  # Lattitude deg
-    L_chara = 34.2236
-    Obs = {'VLTI': False, 'CHARA': False}
+        if verbose:
+            t3 = printtime('Check guiding star: done,', t2)
+        # --------------------------------------
+        #             Observability
+        # --------------------------------------
+        L_paranal = -24.63  # Lattitude deg
+        L_chara = 34.2236
+        Obs = {'VLTI': False, 'CHARA': False}
 
-    min_elev = 40
-    if c.dec.deg <= ((90 - min_elev) - abs(L_paranal)):
-        Obs['VLTI'] = True
-    if c.dec.deg >= (L_chara - (90 - min_elev)):
-        Obs['CHARA'] = True
+        min_elev = 40
+        if c.dec.deg <= ((90 - min_elev) - abs(L_paranal)):
+            Obs['VLTI'] = True
+        if c.dec.deg >= (L_chara - (90 - min_elev)):
+            Obs['CHARA'] = True
 
-    data['Observability'] = Obs
-    # --------------------------------------
-    #       Limit interferometers
-    # --------------------------------------
-    tmp = {}
-    tmp['PIONIER'] = pionier_limit(magH)
-    tmp['CHARA'] = chara_limit(magK, magH, magR, magV)
-    tmp['MATISSE'] = matisse_limit(magL, magM, magN, magK,
-                                   source=source, check=check)
-    tmp['GRAVITY'] = gravity_limit(magV, magK)
-    data['Ins'] = tmp
-    data['Name'] = star
-    if verbose:
-        printtime('Check Instruments: done', t3)
-        cprint('Done (%2.2f s).' % (time.time()-start_time), 'cyan')
-    return data
+        data['Observability'] = Obs
+        # --------------------------------------
+        #       Limit interferometers
+        # --------------------------------------
+        tmp = {}
+        tmp['PIONIER'] = pionier_limit(magH)
+        tmp['CHARA'] = chara_limit(magK, magH, magR, magV)
+        tmp['MATISSE'] = matisse_limit(magL, magM, magN, magK,
+                                       source=source, check=check)
+        tmp['GRAVITY'] = gravity_limit(magV, magK)
+        data['Ins'] = tmp
+        data['Name'] = star
+        if verbose:
+            printtime('Check Instruments: done', t3)
+            cprint('Done (%2.2f s).' % (time.time()-start_time), 'cyan')
+        result[star] = data
+    return result
 
 
 def survey(list_star):

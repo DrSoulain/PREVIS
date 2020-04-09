@@ -2,7 +2,7 @@
 import previs
 
 # Perform previs research on one object:
-data = previs.search('Altair')
+data = previs.search('Altair', verbose=False)
 
 # Plot the observability from VLTI and CHARA
 fig = previs.plot_VLTI(data)
@@ -14,7 +14,7 @@ fig.show()
 # Perform previs research on a list of stars:
 stars = ['Betelgeuse', 'Altair', 'WR112', 'WR104', 'HD100203']
 
-survey = previs.survey(stars)
+survey = previs.search(stars, verbose=False)
 
 # The survey can be saved as json file (named 'mysurvey') to be reused:
 previs.save_survey(survey, 'mysurvey', overwrite=True)

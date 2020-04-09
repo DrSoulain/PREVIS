@@ -345,16 +345,24 @@ def plot_histo_survey(dic, setlog=False):
     return fig
 
 
-def plot_VLTI(data):
+def plot_VLTI(result):
     """
     Display a synthetic plot with observability of the target with each
     instruments of the VLTI array. The spectral resolutions are included
     if exists.
     """
 
-    if data is not None:
+    if result is not None:
         pass
     else:
+        fig = wrong_figure('  NO VLTI')
+        return fig
+
+    list_stars = list(result.keys())
+    if len(list_stars) == 1:
+        data = result[list_stars[0]]
+    else:
+        cprint("\nPlot one star at a time, please give one dictionnary result (data['star']", 'red')
         fig = wrong_figure('  NO VLTI')
         return fig
 
@@ -589,16 +597,23 @@ def plot_VLTI(data):
     return fig
 
 
-def plot_CHARA(data):
+def plot_CHARA(result):
     """
     Display a synthetic plot with observability of the target with each
     instrument of the CHARA array. The spectral resolutions are included if exists.
     """
-    if data is not None:
+    if result is not None:
         pass
     else:
         fig = wrong_figure('NO CHARA')
         return fig
+
+    list_stars = list(result.keys())
+    if len(list_stars) == 1:
+        data = result[list_stars[0]]
+    else:
+        cprint("\nPlot one star at a time, please give one dictionnary result (data['star']", 'red')
+        fig = wrong_figure('NO CHARA')
 
     star = data['Name']
 
