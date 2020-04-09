@@ -439,41 +439,39 @@ def pionier_limit(magH):
         dic['H'] = False
     return dic
 
-
 def chara_limit(magK, magH, magR, magV):
     """ Return observability of the different instruments of CHARA."""
-    dic = {}
-    dic['PAVO'] = {'R': False}
-    dic['CLASSIC'] = {'K': False, 'H': False, 'V': False}
-    dic['CLIMB'] = {'K': False}
-    dic['MIRC'] = {'H': False, 'K': False}
-    dic['MYSTIC'] = {'K': False}
-    dic['VEGA'] = {'LR': False, 'MR': False, 'HR': False}
+    dic = {
+        'PAVO': {'R': False},
+        'CLASSIC': {'K': False, 'H': False, 'V': False},
+        'CLIMB': {'K': False},
+        'MIRC': {'H': False, 'K': False},
+        'MYSTIC': {'K': False},
+        'VEGA': {'LR': False, 'MR': False, 'HR': False}
+    }
 
-    if np.min([magV, magR]) <= 10:
-        dic['Guiding'] = True
-    else:
-        dic['Guiding'] = False
+    dic['Guiding'] = (np.min([magV, magR]) <= 10)
+    dic['CLASSIC'].update({
+        'K': magK <= 6.5,
+        'H': magH <= 7,
+        'V': magV <= 10
+    })
 
-    # CLASSIC
-    dic['CLASSIC']['K'] = bool(magK <= 6.5)
-    dic['CLASSIC']['H'] = bool(magH <= 7)
-    dic['CLASSIC']['V'] = bool(magV <= 10)
+    dic['CLIMB'].update({'K': magK <= 6.})
 
-    # CLIMB
-    dic['CLIMB']['K'] = bool(magK <= 6.)
+    dic['PAVO'].update({'R': magR <= 7.})
 
-    # PAVO
-    dic['PAVO']['R'] = bool(magR <= 7.)
+    dic['MIRC'].update({
+        'H': magH <= 6.5,
+        'K': magK <= 3
+    })
 
-    # MIRC
-    dic['MIRC']['H'] = bool(magH <= 6.5)
-    dic['MIRC']['K'] = bool(magK <= 3)
+    dic['MYSTIC'].update({'K': magK <= 6})
 
-    dic['MYSTIC']['K'] = bool(magK <= 6)
+    dic['VEGA'].update({
+        'HR': magV <= 4.2,
+        'MR': magV <= 5.8,
+        'LR': magV <= 7.2
+    })
 
-    # VEGA
-    dic['VEGA']['HR'] = bool(magV <= 4.2)
-    dic['VEGA']['MR'] = bool(magV <= 5.8)
-    dic['VEGA']['LR'] = bool(magV <= 7.2)
     return dic
