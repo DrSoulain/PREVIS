@@ -45,6 +45,8 @@ from previs.sed import getSed, sed2mag
 from previs.utils import check_servers_response, printtime
 from termcolor import cprint
 from uncertainties import ufloat
+from tqdm import tqdm
+
 
 warnings.filterwarnings('ignore')
 warnings.filterwarnings('ignore', module='scipy.interpolate.interp1d')
@@ -299,13 +301,7 @@ def survey(list_star):
     cprint('\nStarting survey on %i stars:' % len(list_star), 'cyan')
     cprint('-------------------------', 'cyan')
     out = {}
-    n = float(len(list_star))
-    i = 0
-    for star in list_star:
-        size_str = 'Progress: %2.1f %% (%s)        ' % (100.*(i+1)/n, star)
-        sys.stdout.flush()
-        sys.stdout.write('%s\r' % size_str)
+    for star in tqdm(list_star, ncols=60, desc="Progress"):
         out[star] = search(star, verbose=False)
-        i += 1
-    print('\nDone.\n')
+
     return out
