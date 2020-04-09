@@ -244,7 +244,7 @@ def plot_histo_survey(dic, setlog=False):
            align='center', edgecolor='#364f6b')
     ax.scatter(p_grav, data_grav_hr, s=30, marker='s', zorder=10,
                color='#cee2e6', alpha=1, edgecolors='#364f6b')
-    
+  
     plt.text(p_grav[0], 0.5, 'AT', ha='center', va='center', c='w',
              zorder=50, fontsize=8)
     plt.text(p_grav[1], 0.5, 'UT', ha='center', va='center', c='w',

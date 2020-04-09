@@ -5,73 +5,68 @@ Created on Thur Mar 26 14:49:19 2020
 @author: asoulain
 """
 
-import os
+import json
+import tempfile
 import urllib.parse
 import urllib.request
 import warnings
+from pathlib import Path
 
 import astropy.io.votable as vo
 import numpy as np
+from astroquery.vizier import Vizier
+from scipy.constants import c as c_light
 from scipy.interpolate import interp1d
 
 warnings.filterwarnings("ignore", module='astropy.io.votable.tree')
 warnings.filterwarnings("ignore", module='astropy.io.votable.xmlutil')
 warnings.filterwarnings('ignore', module='scipy.interpolate.interp1d')
 
+store_directory = Path(__file__).parent / "data"
+
 
 def getSed(coord):
     r"""
-    Short Summary
-    -------------
-
     Extract SED from Vizier database.
 
     Parameters.
     -----------
-
     `coord` : {str}
         Coordinates of the target (format: RA DEC).
 
     Returns:
     --------
-
     `sed` : {dict}
-        Dictionnary containing the SED information (keys: 'Flux', 'wl', 'Freq', 'Err')
-
-        - Flux [Jy]
-        - wl [:math:`\mu m`]
-
+        Dictionnary containing the SED informations (keys: 'Flux' ([Jy]), 'wl' 
+        (wavelength [µm]), 'Err' (uncertainties [Jy]), 'Catalogs' (Vizier catalogs name), 
+        'References' (references/publications)):
     """
     try:
-        c = coord.replace(' ', '+').replace('+-', '-')
+        print('Get SED from Vizier database...')
+        coord_ = coord.replace(' ', '+').replace('+-', '-')
         response = urllib.request.urlopen(
-            'http://vizier.u-strasbg.fr/viz-bin/sed?-c=' + c + '&-c.rs=2')
+            f'http://vizier.u-strasbg.fr/viz-bin/sed?-c={coord_}&-c.rs=2')
+        with tempfile.TemporaryFile() as tmpfile:
+            tmpfile.write(response.read())
+            tab = np.ma.getdata(vo.parse_single_table(tmpfile).array)
 
-        name_file = 'sed.vot'
-        output = open(name_file, 'wb')
-        output.write(response.read())
-        output.close()
-
-        tab = np.ma.getdata(vo.parse_single_table(name_file).array)
-
-        tab_name = tab['_tabname']
-        ins_name = getInstr(tab_name)
+        catalogs = [x.decode('UTF-8') for x in tab['_tabname']]
+        references = getVizierRef(catalogs)
 
         cond = tab['sed_flux'] >= 0
         freq = tab['sed_freq'][cond]
-        c = 299792458.
-        wl = c/(freq*1e9)*1e6
+        wl = c_light/(freq*1e9)*1e6
         flux = tab['sed_flux'][cond].astype(float)
         err = tab['sed_eflux'][cond].astype(float)
 
         data = {'Flux': list(flux),
                 'Err': list(err),
-                'Freq': list(freq),
                 'wl': list(wl),
-                'name': list(ins_name)
+                'References': list(references),
+                'Catalogs': list(catalogs)
                 }
-        os.remove(name_file)
-    except Exception:
+    except urllib.request.HTTPError:
+        # todo: logme
         data = None
     return data
 
@@ -95,84 +90,84 @@ def sed2mag(sed, bands):
         'Q': {'wl': 20.13, 'F0': 9.7},
     }
 
-    l_m = []
     with np.errstate(divide='ignore'):
         f_sed = interp1d(sed['wl'], np.log10(
             sed['Flux']), bounds_error=False)
-    for b in bands:
+
+    l_m = np.full(len(bands), np.nan)
+    for i, band in enumerate(bands):
         try:
-            F = 10**(f_sed(conv_flux[b]['wl']))
-            F0 = conv_flux[b]['F0']
-            m = -2.5*np.log10(F/F0)
-            l_m.append(m)
+            F = 10**(f_sed(conv_flux[band]['wl']))
+            F0 = conv_flux[band]['F0']
+            l_m[i] = -2.5*np.log10(F/F0)
         except Exception:
-            l_m.append(np.nan)
-    return l_m
+            # todo: change this to only pass relevant exceptions here, instead of all of them
+            pass
+    return list(l_m)
 
 
-def getInstr(l_tabname):
-    """Get the appropriate name of the Vizier database.
+def find_author_vizier(cat):
+    """ Search Vizier catalog with astroquery and find the reference
+    in the description.
 
-    Parameters
-    ----------
-    `l_tabname` : {array}
-        List of label used in SED vizier database.
+    Parameters:
+    -----------
+    `cat`: {str}
+        Name of the catalog (e.g.: "I/337/gaia").
 
-    Returns
-    -------
-    `l_ins`: {array}
-        Convenient naming convention for list of SED points.
+    Returns:
+    --------
+    `cat_ref`: {str}
+        Name of the original publication of the catalog (e.g.: "Gaia Collaboration, 2016").
+
     """
-    l_ins = []
+    vizier_catalog = cat.split('/')[:-1]
+    vizier_name = vizier_catalog[0]
+    for j in range(len(vizier_catalog)-1):
+        vizier_name += '/%s' % vizier_catalog[j + 1]
+    catalog_list = Vizier.find_catalogs(vizier_name)
+    cat_desc = catalog_list[vizier_name].description
+    i2 = -1
+    while True:
+        i = i2
+        i2 = cat_desc.find("(", i2 + 1)
+        if i2 == -1:
+            break
+    cat_ref = cat_desc[cat_desc.find("(", i)+1: cat_desc.find(")", i)]
+    return cat_ref
 
-    known_entries = {b'I/320/spm4': 'SPM+11',
-                     b'II/7A/catalog': 'Morel+78',
-                     b'II/336/apass9': 'APASS+16',
-                     b'I/327/cmc15': 'CMC+15',
-                     b'J/A+A/514/A2/table4': 'AKARI+10',
-                     b'I/345/gaia2': 'GAIA+18',
-                     b'J/MNRAS/463/4210/ucac4rpm': 'UCAC4+16',
-                     b'I/305/out': 'GSC+06',
-                     b'II/125/main': 'IRAS+96',
-                     b'II/225/psc': 'IRAS+99',
-                     b'II/297/irc': 'ISAS+10',
-                     b'I/289/out': 'UCAC2+04',
-                     b'I/340/ucac5': 'UCAC5+17',
-                     b'V/114/msx6_gp': 'MSX+03',
-                     b'I/339/hsoy': 'HSOY+17',
-                     b'I/322A/out': 'UCAC4+12',
-                     b'IV/34/epic': 'EPIC+17',
-                     b'J/A+A/446/949/pm': 'DIAS+06',  # 2MASS
-                     b'J/ApJS/112/557/table1': 'IRAS+97',
-                     b'II/348/vvv2': 'VISTA+17',
-                     b'II/328/allwise': 'ALLWISE+13',  # 2MASS
-                     b'I/337/gaia': 'GAIA+16',
-                     b'I/297/out': 'NOMAD+05',
-                     b'II/246/out': '2MASS+03',  # 2MASS
-                     b'I/317/sample': 'PPMXL+10',
-                     b'II/349/ps1': 'PANSTAR+16',
-                     b'I/343/gps1': 'TIAN+17',
-                     b'II/338/catalog': 'IRAS+15',
-                     b'J/ApJS/154/673/DIRBE': 'COBE+04',
-                     b'J/MNRAS/398/221/table2': 'BAUME+09',
-                     b'I/280B/ascc': 'ASCC+09',
-                     b'II/346/jsdc_v2': 'JSDC+17',
-                     b'I/239/hip_main': 'HIPP+97',
-                     b'I/312/sample': 'ROESER+08',
-                     b'I/342/f3': 'ANDRUK+16',
-                     b'V/137D/XHIP': 'ANDERSON+12',
-                     b'J/PASP/120/1128/catalog': 'OFEK+08',
-                     b'J/ApJ/768/25/table2': 'Herschel+13',
-                     b'II/311/wise': 'WISE+12',
-                     b'J/AJ/155/30/table1': 'NPOI+18',
-                     b'J/A+A/413/1037/table1': 'Kimeswenger+04',
-                     b'J/ApJS/190/203/table3': 'Price+10',
-                     b'I/276/supplem': 'Fabricius+02',
-                     }
 
-    for name in l_tabname:
-        try:
-            l_ins.append(known_entries[name])
-        except KeyError:
-            l_ins.append(name.decode("utf-8"))
-    return l_ins
+def buildVizierRef(sed_name_cat):
+    """ Build the Vizier references list. For each search of new SED, check if new catalogs
+    are detected and add the reference to the saved json file (default: 'vizier_catalog_naming.json'). 
+    """
+    stored_catalog_filepath = store_directory / 'vizier_catalog_references.json'
+    if Path(stored_catalog_filepath).is_file():
+        with open(stored_catalog_filepath, mode='rt') as ofile:
+            known_entries = json.load(ofile)
+    else:
+        known_entries = {}
+
+    sed_name_cat_set = list(set(sed_name_cat))
+
+    not_in_json = [x for x in sed_name_cat_set if x not in known_entries.keys()]
+    if len(not_in_json) > 0:
+        print('Fetching new Vizier catalog references (%i) from the Vizier database.' % (
+            len(not_in_json)))
+
+        for cat in not_in_json:
+            cat_ref = find_author_vizier(cat)
+            known_entries[cat] = cat_ref
+
+        with open(stored_catalog_filepath, mode='wt') as ofile:
+            json.dump(known_entries, ofile)
+    return known_entries
+
+
+def getVizierRef(sed_name_cat):
+    """ Function to identify the references corresponding to each Vizier
+    catalog included in the fetched SED.
+    """
+    known_entries = buildVizierRef(sed_name_cat)
+    sed_name_ref = [known_entries.get(name, name) for name in sed_name_cat]
+    return sed_name_ref

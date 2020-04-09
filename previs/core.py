@@ -42,7 +42,7 @@ from astroquery.vizier import Vizier
 from previs.instr import (chara_limit, gravity_limit, matisse_limit,
                           pionier_limit)
 from previs.sed import getSed, sed2mag
-from previs.utils import printtime, check_response_server
+from previs.utils import check_servers_response, printtime
 from termcolor import cprint
 from uncertainties import ufloat
 from tqdm import tqdm
@@ -83,14 +83,12 @@ def search(star, source='ESO', check=False, verbose=True):
         -'Guiding_star': Guiding star informations at VLTI.\n
     """
 
-    if check_response_server() is not None:
-        pass
-    else:
+    if check_servers_response() is None:
         return None
 
     start_time = time.time()
+    star_user = star
     star = star.upper()
-
     if verbose:
         cprint('\n%s: search started (could take up to 30 seconds)...' %
                star, 'cyan')
@@ -126,7 +124,7 @@ def search(star, source='ESO', check=False, verbose=True):
         pass
 
     if not data['Simbad']:
-        cprint('## Error: %s not in Simbad!' % star, 'red')
+        cprint('## Problem: %s not in Simbad!' % star_user, 'red')
         return data
     # --------------------------------------
     #                 SED
@@ -262,7 +260,6 @@ def search(star, source='ESO', check=False, verbose=True):
     Obs = {'VLTI': False, 'CHARA': False}
 
     min_elev = 40
-
     if c.dec.deg <= ((90 - min_elev) - abs(L_paranal)):
         Obs['VLTI'] = True
     if c.dec.deg >= (L_chara - (90 - min_elev)):
@@ -282,6 +279,7 @@ def search(star, source='ESO', check=False, verbose=True):
     data['Name'] = star
     if verbose:
         printtime('Check Instruments: done', t3)
+    cprint('Done (%2.2f s).' % (time.time()-start_time), 'cyan')
     return data
 
 
@@ -297,11 +295,9 @@ def survey(list_star):
     `survey`: {dict}
         Dictionnary containing previs search for all stars.
     """
-    if check_response_server() is not None:
-        pass
-    else:
+    if check_servers_response() is None:
         return None
-   
+
     cprint('\nStarting survey on %i stars:' % len(list_star), 'cyan')
     cprint('-------------------------', 'cyan')
     out = {}

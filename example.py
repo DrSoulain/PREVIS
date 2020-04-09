@@ -17,7 +17,7 @@ stars = ['Betelgeuse', 'Altair', 'WR112', 'WR104', 'HD100203']
 survey = previs.survey(stars)
 
 # The survey can be saved as json file (named 'mysurvey') to be reused:
-previs.save_survey(survey, 'mysurvey')
+previs.save_survey(survey, 'mysurvey', overwrite=True)
 
 # If a previous survey is saved, you can load it with:
 my_saved_survey = previs.load_survey('mysurvey')
