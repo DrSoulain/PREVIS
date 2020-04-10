@@ -75,7 +75,7 @@ def search(star, source='ESO', check=False, verbose=False):
             -'Name': Name of the star,\n
             -'Simbad': If True, star is in Simbad,\n
             -'Coord': Celestial coordinates,\n
-            -'sp_type': Spectral type,\n
+            -'Sp_type': Spectral type,\n
             -'Distance': Astrometric distance,\n
             -'SED': Spectral Energy Distribution,\n
             -'Mag': Magnitudes (V, J, H, etc.),\n
@@ -120,12 +120,9 @@ def search(star, source='ESO', check=False, verbose=False):
         d = 1/plx
         data['Distance'] = {'d': d.nominal_value, 'e_d': d.std_dev}
         data['Simbad'] = True
-        # if data['sp_type'] == None:
         aa = str(objet['SP_TYPE'].data[0])
         sptype = aa.split('b')[1].split("'")[1]
-        data['sp_type'] = sptype
-        # else:
-        #    pass
+        data['Sp_type'] = sptype
     except Exception:
         pass
 
@@ -231,7 +228,7 @@ def search(star, source='ESO', check=False, verbose=False):
     # --------------------------------------
     #             Guiding star
     # --------------------------------------
-
+    data['Guiding_star'] = {}
     v = Vizier(columns=['*', '+<Gmag>'])
     if np.isnan(data['Mag']['magR']) or (data['Mag']['magG'] >= 12.5) or (data['Mag']['magG'] <= -3):
         res = v.query_region(star, radius='57s', catalog='I/337/gaia')
@@ -255,9 +252,11 @@ def search(star, source='ESO', check=False, verbose=False):
         for i in range(len(ra2)):
             guid2.append([float(ra2[i]), float(dec2[i]), float(gmag2[i])])
 
-        data['Guiding_star'] = [guid1, guid2]
+        data['Guiding_star']['VLTI'] = [guid1, guid2]
     else:
-        data['Guiding_star'] = 'Science star'
+        data['Guiding_star']['VLTI'] = 'Science star'
+
+    data['Guiding_star']['CHARA'] = bool((np.min([magV, magR]) <= 10))
 
     if verbose:
         t3 = printtime('Check guiding star: done,', t2)
