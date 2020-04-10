@@ -55,7 +55,7 @@ pip install .
 
 ## What can PREVIS do for you?
 
-PREVIS is developed and thought to be used in interactive session, so we recommend to use it into an ipython session.
+PREVIS is developed and thought to be used in interactive session, so we recommend to use it into an ipython session. A detailed descriptions of previs functions and outputs can be found in the [api_reference.md](doc/api_reference.md) document.
 
 An example script [example.py](example.py) is included to test the possibilities offered by PREVIS. The example includes a single target
 research using `previs.search`, a visualisation solution for the VLTI (`previs.plot_VLTI`) and CHARA (`previs.plot_CHARA`).
@@ -103,3 +103,8 @@ In this case, you can see that the stars are not observable with all instruments
   - 2 with the UT.
 
 The background bars for MATISSE and MIRC indicate respectively, the fringe tracker possibility (GRA4MAT) and the future update MYSTIC operating in K-band. In this case, 3 stars are observable with MATISSE in N-band but 4 if you use the fringe tracker (see ft/noft of `previs.search` result and [plot_VLTI](doc/figure_1.png) figure).
+
+## Acknowledgement
+
+PREVIS was developed to help the interferometry user community. I decided to share this simple but useful (hopefully) tool to optimise your time and prepare your futur observing proposals with the VLTI and CHARA. Do not hesitate to raise some undetected problems so far despite our efforts (thanks co-devs).
+ENJOY!
