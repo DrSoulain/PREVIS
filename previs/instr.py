@@ -215,7 +215,7 @@ def gravity_limit(magV, magK):
     return dic
 
 
-def matisse_limit(magL, magM, magN, magK, source='ESO', check=True):
+def matisse_limit(magL, magM, magN, magK, source='ESO', check=False):
     """
     Return observability with MATISSE instrument with different configurations (Spectral
     resolution, UTs or ATs, Fringe tracking, etc...).
@@ -228,7 +228,7 @@ def matisse_limit(magL, magM, magN, magK, source='ESO', check=True):
         Source of the limiting magnitudes. If source = 'ESO' (default), the ESO website 
         is checked to extract these limits. Otherwise, the estimated limits are used,\n
     `check`: {bool}
-        If True, check the actual MATISSE performances on the ESO website (default=True).
+        If True, check the actual MATISSE performances on the ESO website (default=False).
         Otherwise, the data/eso_limits_matisse.json are used (perfomance in P105/2020).
     """
     dic = {}
@@ -438,6 +438,7 @@ def pionier_limit(magH):
     else:
         dic['H'] = False
     return dic
+
 
 def chara_limit(magK, magH, magR, magV):
     """ Return observability of the different instruments of CHARA."""

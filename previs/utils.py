@@ -83,26 +83,26 @@ def sanitize_booleans(dic):
     return d2
 
 
-def save_survey(survey, survey_file, overwrite=False):
-    """ Save <survey> data to json <survey_file> """
-    survey_file = sanitize_survey_file(survey_file)
-    if survey_file.exists() and not overwrite:
-        raise FileExistsError(survey_file)
+def save(result, result_file, overwrite=False):
+    """ Save <result> data to json <result_file> """
+    data_file = sanitize_survey_file(result_file)
+    if data_file.exists() and not overwrite:
+        raise FileExistsError(data_file)
 
-    if not survey_file.parent.is_dir():
+    if not data_file.parent.is_dir():
         # todo: logme
-        os.makedirs(survey_file.parent)
+        os.makedirs(data_file.parent)
 
-    survey_ = sanitize_booleans(survey)
-    with open(survey_file, mode='wt') as ofile:
+    survey_ = sanitize_booleans(result)
+    with open(data_file, mode='wt') as ofile:
         json.dump(survey_, ofile)
 
-    return survey_file
+    return data_file
 
 
-def load_survey(survey_file):
-    """ Load survey data from json <survey_file> """
-    survey_file = sanitize_survey_file(survey_file)
+def load(result_file):
+    """ Load result data from json <result_file> """
+    survey_file = sanitize_survey_file(result_file)
     with open(survey_file, mode='rt') as ofile:
         survey = json.load(ofile)
     return survey
@@ -131,7 +131,22 @@ def add_vs_mode_gravity(out, dic, star, cond_VLTI, cond_guid):
 
 
 def count_survey(survey):
-    """ Count the number of star observable with each HRA instrument."""
+    """ Count the number of star observable with each HRA instrument.
+
+    Parameters:
+    -----------
+    `survey`: {dict}
+        survey is the result from previs.search. It's generally used if
+        the input of previs.search is a list of stars.
+    Result:
+    -------
+    `dic`: {dict}
+        The result contains lists of stars observable with each mode
+        and instrument considered by previs.search (See data['Ins]).
+    
+    """
+
+    
     if survey is not None:
         pass
     else:

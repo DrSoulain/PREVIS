@@ -6,8 +6,8 @@
 PREVIS: Python Request Engine for Virtual Interferometric Survey
 --------------------------------------------------------------------
 
-This file contains function use to plot, print and count the results
-from previs.core function.
+This file contains function use to plot and count the results
+from previs.search and previs.survey functions.
 """
 
 import matplotlib.pyplot as plt
@@ -22,7 +22,7 @@ plt.close('all')
 def plot_mat(data, inst, tel, ft, band, x0, y0, off):
     """ Plot observability with MATISSE given spectral resolution:
         low (LR: 34/L and 30/N), medium (MR: 506/L and no N) and high
-        (HR: 959/L and 218/N) resolution."""
+        (HR: 959/L and 218/N) resolution. (Use by previs.plot_histo_survey)."""
     ins = data['Ins']
     if inst == 'MATISSE':
         try:
@@ -111,18 +111,18 @@ def autolabel(bars, add, ind, fontsize=11):
 def wrong_figure(st):
     fig = plt.figure(figsize=(3, 1))
     ax = plt.subplot(111)
-    ax.text(0, 0, st, fontsize=20, c='r', va='center')
+    ax.text(0, 0, st, fontsize=20, c='r', va='center', ha='center')
     ax.xaxis.set_ticks_position('none')
     ax.yaxis.set_ticks_position('none')
     ax.set_xticklabels([])
     ax.set_yticklabels([])
-    ax.axis([-0.1, 0.6, -1, 1])
-    plt.show(block=False)  
+    ax.axis([-1, 1, -1, 1])
+    plt.show(block=False)
     return fig
 
 
 def plot_histo_survey(dic, setlog=False):
-    """ Plot histogram of the result from count_survey fonction.
+    """ Plot histogram of the result from utils.count_survey fonction.
     Show the number of stars observable which each instruments.
 
     Parameters:
@@ -244,7 +244,7 @@ def plot_histo_survey(dic, setlog=False):
            align='center', edgecolor='#364f6b')
     ax.scatter(p_grav, data_grav_hr, s=30, marker='s', zorder=10,
                color='#cee2e6', alpha=1, edgecolors='#364f6b')
-  
+
     plt.text(p_grav[0], 0.5, 'AT', ha='center', va='center', c='w',
              zorder=50, fontsize=8)
     plt.text(p_grav[1], 0.5, 'UT', ha='center', va='center', c='w',
@@ -345,35 +345,46 @@ def plot_histo_survey(dic, setlog=False):
     return fig
 
 
-def plot_VLTI(result):
+def check_format_plot(data):
+    """ Check if data have the appropriate format and display
+    figure displaying the problem.
+
+    """
+    check = True
+    fig_check = None
+
+    if data is None:
+        fig = wrong_figure('Data is None!')
+        return False, fig
+    try:
+        check_format = data['Simbad']
+        star = data['Name']
+    except KeyError:
+        fig = wrong_figure('Wrong format!')
+        return False, fig
+
+    if not check_format:
+        fig = wrong_figure('Not in simbad')
+        return False, fig
+    return check, fig_check
+
+
+def plot_VLTI(data):
     """
     Display a synthetic plot with observability of the target with each
-    instruments of the VLTI array. The spectral resolutions are included
-    if exists.
+    instruments of the VLTI array.
+
+    Parameters:
+    -----------
+    `data`: {dict}
+        data is a dictionnary from previs.search.
     """
 
-    if result is not None:
-        pass
-    else:
-        fig = wrong_figure('  NO VLTI')
-        return fig
-
-    list_stars = list(result.keys())
-    if len(list_stars) == 1:
-        data = result[list_stars[0]]
-    else:
-        cprint("\nPlot one star at a time, please give one dictionnary result (data['star']", 'red')
-        fig = wrong_figure('  NO VLTI')
+    check, fig = check_format_plot(data)
+    if not check:
         return fig
 
     star = data['Name']
-
-    if data["Simbad"]:
-        pass
-    else:
-        cprint('## Error: %s not in Simbad!' % star, 'red')
-        return wrong_figure('Not in simbad')
-
     ins = data['Ins']
     # Observability from VLTI site lattitude and guiding limit
     if (type(data['Guiding_star']) == str):
@@ -597,34 +608,23 @@ def plot_VLTI(result):
     return fig
 
 
-def plot_CHARA(result):
+def plot_CHARA(data):
     """
     Display a synthetic plot with observability of the target with each
     instrument of the CHARA array. The spectral resolutions are included if exists.
+
+    Parameters:
+    -----------
+    `data`: {dict}
+        data is a dictionnary from previs.search of one star. Usage: data = previs.search('<your star>'),
+        previs.plot_CHARA(data['<your star>']) or previs.plot_CHARA(data) if result contains only one star.
     """
-    if result is not None:
-        pass
-    else:
-        fig = wrong_figure('NO CHARA')
+    check, fig = check_format_plot(data)
+    if not check:
         return fig
 
-    list_stars = list(result.keys())
-    if len(list_stars) == 1:
-        data = result[list_stars[0]]
-    else:
-        cprint("\nPlot one star at a time, please give one dictionnary result (data['star']", 'red')
-        fig = wrong_figure('NO CHARA')
-
     star = data['Name']
-
-    if data["Simbad"]:
-        pass
-    else:
-        cprint('## Error: %s not in Simbad!' % star, 'red')
-        return wrong_figure('Not in simbad')
-
     ins = data['Ins']['CHARA']
-
     # Observability from CHARA site lattitude and guiding/tip/tilt limit
     cond_CHARA = data['Observability']['CHARA']
     cond_tilt = ins['Guiding']  # Limit by the V mag.

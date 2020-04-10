@@ -95,13 +95,9 @@ def sed2mag(sed, bands):
 
     l_m = np.full(len(bands), np.nan)
     for i, band in enumerate(bands):
-        try:
-            F = 10**(f_sed(conv_flux[band]['wl']))
-            F0 = conv_flux[band]['F0']
-            l_m[i] = -2.5*np.log10(F/F0)
-        except Exception:
-            # todo: change this to only pass relevant exceptions here, instead of all of them
-            pass
+        F = 10**(f_sed(conv_flux[band]['wl']))
+        F0 = conv_flux[band]['F0']
+        l_m[i] = -2.5*np.log10(F/F0)
     return list(l_m)
 
 
@@ -136,7 +132,7 @@ def find_author_vizier(cat):
     return cat_ref
 
 
-def buildVizierRef(sed_name_cat):
+def buildVizierRef(sed_name_cat, verbose=False):
     """ Build the Vizier references list. For each search of new SED, check if new catalogs
     are detected and add the reference to the saved json file (default: 'vizier_catalog_naming.json'). 
     """
@@ -151,8 +147,9 @@ def buildVizierRef(sed_name_cat):
 
     not_in_json = [x for x in sed_name_cat_set if x not in known_entries.keys()]
     if len(not_in_json) > 0:
-        print('Fetching new Vizier catalog references (%i) from the Vizier database.' % (
-            len(not_in_json)))
+        if verbose:
+            print('\nFetching new Vizier catalog references (%i) from the Vizier database.' % (
+                len(not_in_json)))
 
         for cat in not_in_json:
             cat_ref = find_author_vizier(cat)
@@ -163,10 +160,10 @@ def buildVizierRef(sed_name_cat):
     return known_entries
 
 
-def getVizierRef(sed_name_cat):
+def getVizierRef(sed_name_cat, verbose=False):
     """ Function to identify the references corresponding to each Vizier
     catalog included in the fetched SED.
     """
-    known_entries = buildVizierRef(sed_name_cat)
+    known_entries = buildVizierRef(sed_name_cat, verbose=verbose)
     sed_name_ref = [known_entries.get(name, name) for name in sed_name_cat]
     return sed_name_ref

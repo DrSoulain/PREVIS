@@ -3,7 +3,7 @@ from pathlib import Path
 from numpy import bool_
 
 import pytest
-from previs import load_survey, save_survey, survey
+from previs import load, save, survey
 from previs.utils import sanitize_booleans
 
 TEST_DIR = Path(__file__).parent
@@ -16,11 +16,11 @@ small_survey_file = TEST_DATA_DIR / "small_survey.json"
     [small_survey_file, small_survey_file.with_suffix(""), str(small_survey_file)],
 )
 def test_load_survey(filepath):
-    s = load_survey(filepath)
+    s = load(filepath)
     assert isinstance(s, dict)
 
 
-@pytest.mark.parametrize("dic", [{"a": bool_(True)}, {"a": {"b":bool_(True)}}])
+@pytest.mark.parametrize("dic", [{"a": bool_(True)}, {"a": {"b": bool_(True)}}])
 def test_json_sanitizing(dic):
     with pytest.raises(TypeError):
         json.dumps(dic)
@@ -29,7 +29,7 @@ def test_json_sanitizing(dic):
 
 @pytest.mark.timeout(120)
 def test_reproduce_survey():
-    s1 = load_survey(small_survey_file)
+    s1 = load(small_survey_file)
     stars = list(s1.keys())
 
     s2 = survey(stars)
@@ -41,22 +41,22 @@ def test_reproduce_survey():
 
 
 def test_overwrite(tmpdir):
-    s = load_survey(small_survey_file)
+    s = load(small_survey_file)
 
     target_file = Path(tmpdir.join("already_there.json"))
     target_file.touch()
 
     with pytest.raises(FileExistsError):
-        save_survey(s, target_file)
+        save(s, target_file)
 
-    save_survey(s, target_file, overwrite=True)
+    save(s, target_file, overwrite=True)
 
 
 @pytest.mark.parametrize("filepath", ["s0", "s1.json"])
 def test_save_survey(tmpdir, filepath):
-    s = load_survey(small_survey_file)
+    s = load(small_survey_file)
     target_path = Path(tmpdir.join(filepath))
-    savepath = save_survey(s, target_path)
+    savepath = save(s, target_path)
 
     assert savepath.is_file()
 

@@ -2,7 +2,11 @@
 import previs
 
 # Perform previs research on one object:
-data = previs.search('Altair', verbose=False)
+data = previs.search('Altair')
+
+# data contains informations stored as dictionnary. For 
+# instance, you can retrieve the magnitudes typing:
+mag = data['Mag']
 
 # Plot the observability from VLTI and CHARA
 fig = previs.plot_VLTI(data)
@@ -14,15 +18,19 @@ fig.show()
 # Perform previs research on a list of stars:
 stars = ['Betelgeuse', 'Altair', 'WR112', 'WR104', 'HD100203']
 
-survey = previs.search(stars, verbose=False)
+survey = previs.survey(stars)
 
-# The survey can be saved as json file (named 'mysurvey') to be reused:
-previs.save_survey(survey, 'mysurvey', overwrite=True)
+# The previs.search on one star can take up 30 sec, you may want to
+# save the result of previs.search to be used later. It can be saved 
+# as json file (named 'mysurvey') with:
+previs.save(survey, 'mysurvey', overwrite=True)
 
 # If a previous survey is saved, you can load it with:
-my_saved_survey = previs.load_survey('mysurvey')
+my_saved_survey = previs.load('mysurvey')
 
-# Count observable stars with each instruments (mode, telescope, etc.):
+# Survey contains data for each stars, we want to know the exact number
+# of stars observable with each instruments. So, use previs.count_survey
+# to generate the list of observable stars by instruments, mode and telescope.
 count_survey = previs.count_survey(survey)
 
 # Print the list of observable stars (resume):
