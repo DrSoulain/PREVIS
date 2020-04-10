@@ -12,7 +12,6 @@ from previs.search and previs.survey functions.
 
 import matplotlib.pyplot as plt
 import numpy as np
-from termcolor import cprint
 
 color = {'True': 'g', 'False': '#e23449'}
 
@@ -358,7 +357,6 @@ def check_format_plot(data):
         return False, fig
     try:
         check_format = data['Simbad']
-        star = data['Name']
     except KeyError:
         fig = wrong_figure('Wrong format!')
         return False, fig
