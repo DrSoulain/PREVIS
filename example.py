@@ -2,30 +2,44 @@
 import previs
 
 # Perform previs research on one object:
-data = previs.search('Altair')
+data = previs.search('Altair', verbose=True)
 
-# data contains informations stored as dictionnary. For 
-# instance, you can retrieve the magnitudes typing:
-mag = data['Mag']
+# data contains informations stored as dictionnary. You can 
+# read the api_reference.md to get all detailled informations
+# or the docstring of previs.search. For instance:
+magL = data['Mag']['magL']  # If you want to get the L magnitudes.
+wl, Flux = data['SED']['wl'], data['SED']['Flux']  # The Spectral Energy Distribution from Vizier (Flux [Jy] and wl [µm])
+distance = data['Gaia_dr2']['Dkpc']  # The Gaia DR2 distance [kpc]
 
-# Plot the observability from VLTI and CHARA
+# You can save the data as json file (named mydata_Altair) with:
+previs.save(data, 'mydata_Altair', overwrite=True)
+
+# And load it later with:
+data_altair = previs.load('mydata_Altair')
+
+# If you want to know if you can observe the star Altair with 
+# the different instrument of the VLTI, you can plot the synthetic
+# result with:
 fig = previs.plot_VLTI(data)
 fig.show()
 
+# Or with CHARA:
 fig = previs.plot_CHARA(data)
 fig.show()
 
-# Perform previs research on a list of stars:
-stars = ['Betelgeuse', 'Altair', 'WR112', 'WR104', 'HD100203']
+# If you want to know indidually the observability or your target, for instance,
+# MATISSE with the AT, without fringe tracking, in L-band and in
+# low spectral resolution, you can type:
+observability_mat = data['Ins']['MATISSE']['AT']['noft']['L']['LR']
 
-survey = previs.survey(stars)
+# You can also perform previs.search on a list of stars using previs.survey
+list_stars = ['Betelgeuse', 'Altair', 'WR112', 'WR104', 'HD100203']
+survey = previs.survey(list_stars)
 
-# The previs.search on one star can take up 30 sec, you may want to
-# save the result of previs.search to be used later. It can be saved 
-# as json file (named 'mysurvey') with:
+# The previs.search on one star can take up to 30 sec, you may want to
+# save the result of previs.survey to be used later. It can be saved 
+# and retrieved as before with:
 previs.save(survey, 'mysurvey', overwrite=True)
-
-# If a previous survey is saved, you can load it with:
 my_saved_survey = previs.load('mysurvey')
 
 # Survey contains data for each stars, we want to know the exact number
@@ -36,6 +50,6 @@ count_survey = previs.count_survey(survey)
 # Print the list of observable stars (resume):
 count_survey.print_log()
 
-# plot the histogram of the observable stars (survey.count):
+# plot the histogram of the observable stars:
 fig = previs.plot_histo_survey(count_survey)
 fig.show()
