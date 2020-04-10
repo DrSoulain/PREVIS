@@ -387,13 +387,13 @@ def plot_VLTI(data):
     star = data['Name']
     ins = data['Ins']
     # Observability from VLTI site lattitude and guiding limit
-    if (type(data['Guiding_star']) == str):
+    if (type(data['Guiding_star']['VLTI']) == str):
         aff_guide = 'Science'
-    elif (type(data['Guiding_star']) == list):
-        if len(data['Guiding_star'][0]) > 0:
+    elif (type(data['Guiding_star']['VLTI']) == list):
+        if len(data['Guiding_star']['VLTI'][0]) > 0:
             aff_guide = 'Off axis'
         else:
-            if len(data['Guiding_star'][1]) > 0:
+            if len(data['Guiding_star']['VLTI'][1]) > 0:
                 aff_guide = 'Off axis*'
             else:
                 aff_guide = 'X'
@@ -625,9 +625,9 @@ def plot_CHARA(data):
 
     star = data['Name']
     ins = data['Ins']['CHARA']
-    # Observability from CHARA site lattitude and guiding/tip/tilt limit
+    # Observability from CHARA site latitude and guiding/tip/tilt limit
     cond_CHARA = data['Observability']['CHARA']
-    cond_tilt = ins['Guiding']  # Limit by the V mag.
+    cond_tilt = data['Guiding_star']['CHARA']  # Limit by the V mag.
     if cond_tilt:
         c_guid = '#8ee38e'
     else:
