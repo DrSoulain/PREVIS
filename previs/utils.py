@@ -145,7 +145,6 @@ def count_survey(survey):
         and instrument considered by previs.search (See data['Ins]).
     
     """
-
     
     if survey is not None:
         pass

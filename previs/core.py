@@ -127,8 +127,7 @@ def search(star, source='ESO', check=False, verbose=False):
         pass
 
     if not data['Simbad']:
-        if verbose:
-            cprint('## Problem: %s not in Simbad!' % star_user, 'red')
+        cprint('## Error: %s not in Simbad!' % star_user, 'red')
         return data
     # --------------------------------------
     #                 SED
@@ -231,9 +230,12 @@ def search(star, source='ESO', check=False, verbose=False):
     data['Guiding_star'] = {}
     v = Vizier(columns=['*', '+<Gmag>'])
 
-    cond_guid_1 = (np.isnan(data['Mag']['magG']) and (np.isnan(data['Mag']['magR'])))
-    cond_guid_2 = ((data['Mag']['magG'] >= 12.5) or (data['Mag']['magG'] <= -3))
-    cond_guid_3 = (np.isnan(data['Mag']['magG']) and ((data['Mag']['magR'] >= 12.5) or (data['Mag']['magR'] <= -3)))
+    cond_guid_1 = (np.isnan(data['Mag']['magG'])
+                   and (np.isnan(data['Mag']['magR'])))
+    cond_guid_2 = ((data['Mag']['magG'] >= 12.5)
+                   or (data['Mag']['magG'] <= -3))
+    cond_guid_3 = (np.isnan(data['Mag']['magG']) and (
+        (data['Mag']['magR'] >= 12.5) or (data['Mag']['magR'] <= -3)))
 
     if cond_guid_1 or cond_guid_2 or cond_guid_3:
         res = v.query_region(star, radius='57s', catalog='I/337/gaia')
