@@ -87,24 +87,19 @@ Such a graph represents multiple informations:
   - The colored squares indicates the observing bands (same color as magnitudes),
   - The right circles are green if the target is observable for each spectral resolution (low (LR), medium (MR) or high (HR)), red if not.
 
-Now, if you use `previs.survey` on a list of 5 stars for instance, you can display the histogram of the result using `previs.plot_histo_survey`:
+Now, if you use `previs.survey` on a large list of stars, e.g: the 666 Wolf-Rayet stars of the galaxy. `previs.count` indicates that 284 stars are observable from the VLTI (42.6%) and 64 from CHARA (9.6%). You can display the histogram of the result using `previs.plot_histo_survey`:
 
 <p align="center">
-<img src="doc/figure_2.jpeg" width="95%">
+<img src="doc/desc_survey_large.jpeg" width="100%">
 </p>
 
-In this case, you can see that the stars are not observable with all instruments and depend of the considered mode. For instance, 3 stars are observables with MATISSE in low spectral resolution with the AT in N band (dark blue bar). The grey squares indicate the number of stars observable in high spectral resolution:
+In this case, you can see that those stars are not observable with all instruments and depend of the considered mode. For instance, 20 stars are observables with MATISSE in low spectral resolution with the AT in N band (dark blue bar).
 
-- with MATISSE:
-  - 3 in N-band and 4 in L-band with the AT,
-  - 4 in N-band and 4 in L-band with the UT.
-- with GRAVITY:
-  - 3 with the AT,
-  - 2 with the UT.
+The background bars for MATISSE and MIRC indicate respectively, the fringe tracker possibility (GRA4MAT) and the future update MYSTIC operating in K-band. In this case, 152 stars are observable with MATISSE in L-band with the UT but 223 if you use the fringe tracker (see ft/noft of `previs.search` result and [desc_survey_large.jpeg](doc/desc_survey_large.jpeg)).
 
-The background bars for MATISSE and MIRC indicate respectively, the fringe tracker possibility (GRA4MAT) and the future update MYSTIC operating in K-band. In this case, 3 stars are observable with MATISSE in N-band but 4 if you use the fringe tracker (see ft/noft of `previs.search` result and [plot_VLTI](doc/figure_1.png) figure).
+A smaller survey is presented in [example.py](example.py), where you can plot the high spectral resolution results (see. [desc_survey_example.jpeg](doc/desc_survey_example.jpeg)).
 
 ## Acknowledgements
 
-PREVIS was developed to help the interferometry user community. I decided to share this simple but useful (hopefully) tool to optimise your time and prepare your futur observing proposals with the VLTI and CHARA. Do not hesitate to raise some undetected problems so far despite our efforts (thanks co-devs).
+PREVIS was developed to help the interferometry user community. I decided to share this simple but useful (hopefully) tool to optimise your time and prepare your futur observing proposals with the VLTI and CHARA. Do not hesitate to raise some undetected problems so far despite our efforts (thanks C. Robert and others).
 ENJOY!
