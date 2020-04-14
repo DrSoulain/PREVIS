@@ -195,28 +195,26 @@ def count_survey(survey):
     for star in list_star:
         if survey[x] is not None:
             if survey[star]['Simbad']:
-                if type(survey[star]['Guiding_star']) == list:
-                    if (len(survey[star]['Guiding_star'][0]) > 0) or (len(survey[star]['Guiding_star'][1]) > 0):
-                        guid = True
+                if type(survey[star]['Guiding_star']['VLTI']) == list:
+                    if (len(survey[star]['Guiding_star']['VLTI'][0]) > 0) or (len(survey[star]['Guiding_star']['VLTI'][1]) > 0):
+                        cond_guid_vlti = True
                     else:
-                        guid = False
-                elif survey[star]['Guiding_star'] == 'Science star':
-                    guid = True
+                        cond_guid_vlti = False
+                elif survey[star]['Guiding_star']['VLTI'] == 'Science star':
+                    cond_guid_vlti = True
                 else:
-                    guid = False
+                    cond_guid_vlti = False
 
                 cond_VLTI = survey[star]['Observability']['VLTI']
-                cond_guid = guid
                 cond_CHARA = survey[star]['Observability']['CHARA']
                 cond_tilt = survey[star]['Ins']['CHARA']['Guiding']
-
                 dic = add_vs_mode_matisse(
-                    survey, dic, star, cond_VLTI, cond_guid)
+                    survey, dic, star, cond_VLTI, cond_guid_vlti)
                 dic = add_vs_mode_gravity(
-                    survey, dic, star, cond_VLTI, cond_guid)
+                    survey, dic, star, cond_VLTI, cond_guid_vlti)
 
                 cond_ins = survey[star]['Ins']['PIONIER']['H']
-                if (cond_VLTI and cond_guid and cond_ins):
+                if (cond_VLTI and cond_guid_vlti and cond_ins):
                     dic['PIONIER'].append(star)
 
                 for band in ['H', 'K']:
