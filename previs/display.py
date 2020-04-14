@@ -18,14 +18,14 @@ color = {'True': 'g', 'False': '#e23449'}
 plt.close('all')
 
 
-def plot_mat(data, inst, tel, ft, band, x0, y0, off):
+def plot_mat(data, cond_guid, inst, tel, ft, band, x0, y0, off):
     """ Plot observability with MATISSE given spectral resolution:
         low (LR: 34/L and 30/N), medium (MR: 506/L and no N) and high
         (HR: 959/L and 218/N) resolution. (Use by previs.plot_histo_survey)."""
     ins = data['Ins']
     if inst == 'MATISSE':
         try:
-            if (ins['MATISSE'][tel][ft][band]['LR'] & data['Observability']['VLTI']):
+            if (ins['MATISSE'][tel][ft][band]['LR'] & data['Observability']['VLTI'] & cond_guid):
                 c_L = True
             else:
                 c_L = False
@@ -34,7 +34,7 @@ def plot_mat(data, inst, tel, ft, band, x0, y0, off):
         except Exception:
             pass
         try:
-            if (ins['MATISSE'][tel][ft][band]['MR'] & data['Observability']['VLTI']):
+            if (ins['MATISSE'][tel][ft][band]['MR'] & data['Observability']['VLTI'] & cond_guid):
                 c_M = True
             else:
                 c_M = False
@@ -43,7 +43,7 @@ def plot_mat(data, inst, tel, ft, band, x0, y0, off):
         except Exception:
             pass
         try:
-            if (ins['MATISSE'][tel][ft][band]['HR'] & data['Observability']['VLTI']):
+            if (ins['MATISSE'][tel][ft][band]['HR'] & data['Observability']['VLTI'] & cond_guid):
                 c_N = True
             else:
                 c_N = False
@@ -120,7 +120,7 @@ def wrong_figure(st):
     return fig
 
 
-def plot_histo_survey(dic, setlog=False):
+def plot_histo_survey(dic, plot_HR=False, setlog=False):
     """ Plot histogram of the result from utils.count_survey fonction.
     Show the number of stars observable which each instruments.
 
@@ -128,6 +128,9 @@ def plot_histo_survey(dic, setlog=False):
     -----------
     `dic`: {dict}
         Dictionnary from count_survey fonction,\n
+    `plot_HR`: {boolean},
+        If True, number of stars observable with High Resolution 
+        are plotted as grey square,\n
     `setlog`: {boolean},
         If True, set the y-scale to log (default=False).
 
@@ -213,48 +216,57 @@ def plot_histo_survey(dic, setlog=False):
     ax.bar(ind+w, dataN_noft, width=w, color='#124a67', label='N band (10 µm)',
            align='center', edgecolor='#364f6b')
 
-    ax.scatter(ind, dataL_ft_hr, s=30, marker='s', zorder=10,
-               color='#cee2e6', alpha=.5, edgecolors='#364f6b')
-    ax.scatter(ind, dataL_noft_hr, s=30, marker='s', zorder=10,
-               color='#cee2e6', alpha=1, edgecolors='#364f6b')
-    ax.scatter(ind+w, dataN_ft_hr, s=30, marker='s', zorder=10,
-               color='#cee2e6', alpha=.5, edgecolors='#364f6b')
-    ax.scatter(ind+w, dataN_noft_hr, s=30, marker='s', zorder=10,
-               color='#cee2e6', alpha=1, edgecolors='#364f6b')
+    if plot_HR:
+        ax.scatter(ind, dataL_ft_hr, s=30, marker='s', zorder=10,
+                   color='#cee2e6', alpha=.5, edgecolors='#364f6b')
+        ax.scatter(ind, dataL_noft_hr, s=30, marker='s', zorder=10,
+                   color='#cee2e6', alpha=1, edgecolors='#364f6b')
+        ax.scatter(ind+w, dataN_ft_hr, s=30, marker='s', zorder=10,
+                   color='#cee2e6', alpha=.5, edgecolors='#364f6b')
+        ax.scatter(ind+w, dataN_noft_hr, s=30, marker='s', zorder=10,
+                   color='#cee2e6', alpha=1, edgecolors='#364f6b')
 
-    plt.text(ind[0]+w/2, 0.5, 'AT', ha='center', va='center', c='w',
-             zorder=50, fontsize=8)
-    plt.text(ind[1]+w/2, 0.5, 'UT', ha='center', va='center', c='w',
-             zorder=50, fontsize=8)
-    plt.scatter(ind[0]+w/2, 0.5, 300, edgecolors='#364f6b',
-                color='#00b08b', zorder=10, marker="H")
-    plt.scatter(ind[1]+w/2, 0.5, 300, edgecolors='#364f6b',
-                color='#00b08b', zorder=10, marker="H")
+    plt.text(0.055, 0.05, 'AT', ha='center', va='center', c='w',
+             zorder=50, fontsize=8, transform=ax.transAxes)
+    plt.text(0.145, 0.05, 'UT', ha='center', va='center', c='w',
+             zorder=50, fontsize=8, transform=ax.transAxes)
+    plt.scatter(0.055, 0.05, 300, edgecolors='#364f6b',
+                color='#00b08b', zorder=10, marker="H", transform=ax.transAxes)
+    plt.scatter(0.145, 0.05, 300, edgecolors='#364f6b',
+                color='#00b08b', zorder=10, marker="H", transform=ax.transAxes)
 
     autolabel(dataL_ft, 0, ind)
     autolabel(dataN_ft, 0, ind+w)
     autolabel(dataL_noft, 0, ind)
     autolabel(dataN_noft, 0, ind+w)
 
+    if plot_HR:
+        autolabel(dataL_ft_hr, 0, ind)
+        autolabel(dataN_ft_hr, 0, ind+w)
+        autolabel(dataL_noft_hr, 0, ind)
+        autolabel(dataN_noft_hr, 0, ind+w)
+
     # ---------------------------------
     # GRAVITY
     p_grav = [x_gra-(w/2. + 0.05), x_gra + (w/2. + 0.05)]
     ax.bar(p_grav, data_grav, width=w, color='#d91552', label='K band (2.2 µm)',
            align='center', edgecolor='#364f6b')
-    ax.scatter(p_grav, data_grav_hr, s=30, marker='s', zorder=10,
-               color='#cee2e6', alpha=1, edgecolors='#364f6b')
+    if plot_HR:
+        ax.scatter(p_grav, data_grav_hr, s=30, marker='s', zorder=10,
+                   color='#cee2e6', alpha=1, edgecolors='#364f6b')
 
-    plt.text(p_grav[0], 0.5, 'AT', ha='center', va='center', c='w',
-             zorder=50, fontsize=8)
-    plt.text(p_grav[1], 0.5, 'UT', ha='center', va='center', c='w',
-             zorder=50, fontsize=8)
-    plt.scatter(p_grav[0], 0.5, 300, edgecolors='#364f6b',
-                color='#00b08b', zorder=10, marker="H")
-    plt.scatter(p_grav[1], 0.5, 300, edgecolors='#364f6b',
-                color='#00b08b', zorder=10, marker="H")
+    plt.text(0.235, 0.05, 'AT', ha='center', va='center', c='w',
+             zorder=50, fontsize=8, transform=ax.transAxes)
+    plt.text(0.285, 0.05, 'UT', ha='center', va='center', c='w',
+             zorder=50, fontsize=8, transform=ax.transAxes)
+    plt.scatter(0.235, 0.05, 300, edgecolors='#364f6b',
+                color='#00b08b', zorder=10, marker="H", transform=ax.transAxes)
+    plt.scatter(0.285, 0.05, 300, edgecolors='#364f6b',
+                color='#00b08b', zorder=10, marker="H", transform=ax.transAxes)
 
     autolabel(data_grav, 0, p_grav)
-    autolabel(data_grav_hr, 0, p_grav)
+    if plot_HR:
+        autolabel(data_grav_hr, 0, p_grav)
 
     # ---------------------------------
     # PIONIER
@@ -277,10 +289,12 @@ def plot_histo_survey(dic, setlog=False):
     y = [len(dic['VEGA']['LR'])]
     ax.bar(p, y, width=w, color='#55d655', label='V band (0.6 µm)',
            align='center', edgecolor='#364f6b')
-    ax.scatter(p, len(dic['VEGA']['HR']), s=30, marker='s', zorder=10,
-               color='#cee2e6', alpha=1, edgecolors='#364f6b', label='High spectal res.')
+    if plot_HR:
+        ax.scatter(p, len(dic['VEGA']['HR']), s=30, marker='s', zorder=10,
+                   color='#cee2e6', alpha=1, edgecolors='#364f6b', label='High spectal res.')
     autolabel(y, 0, p)
-    autolabel([len(dic['VEGA']['HR'])], 0, p)
+    if plot_HR:
+        autolabel([len(dic['VEGA']['HR'])], 0, p)
 
     # ---------------------------------
     # CLIMB
@@ -297,7 +311,7 @@ def plot_histo_survey(dic, setlog=False):
            align='center', edgecolor='#364f6b')
     ax.bar(p+w + 0.1, len(dic['MIRC']['K']), width=w, color='#d91552',
            align='center', edgecolor='#364f6b')
-    ax.bar(p+w + 0.1, len(dic['MYSTIC']), width=w, color='#d91552',
+    ax.bar(p+w + 0.1, len(dic['MYSTIC']), width=w, color='#d91552', 
            align='center', edgecolor='#364f6b', alpha=.4)
     autolabel([len(dic['MIRC']['H'])], 0, p)
     autolabel([len(dic['MIRC']['K'])], 0, p+w+0.1)
@@ -320,19 +334,24 @@ def plot_histo_survey(dic, setlog=False):
     ax.set_yticklabels([])
 
     handles, labels = ax.get_legend_handles_labels()
-    handles1 = [handles[6], handles[5], handles[4],
-                handles[3], handles[1], handles[2], handles[0]]
-    labels1 = [labels[6], labels[5], labels[4],
-               labels[3], labels[1], labels[2], labels[0]]
+    if plot_HR:
+        handles1 = [handles[6], handles[5], handles[4],
+                    handles[3], handles[1], handles[2], handles[0]]
+        labels1 = [labels[6], labels[5], labels[4],
+                   labels[3], labels[1], labels[2], labels[0]]
+    else:
+        handles1 = [handles[5], handles[4], handles[3],
+                    handles[2], handles[0], handles[1]]
+        labels1 = [labels[5], labels[4], labels[3],
+                   labels[2], labels[0], labels[1]]
 
-    # plt.ylabel('# stars')
     ax.legend(handles1, labels1, fontsize=8, loc='best')
     plt.xlim(xmin, xmax)
     if setlog:
         ax.set_yscale('log')
-        plt.ylim(0, ymax*2)
+        plt.ylim(0, ymax*10)
     else:
-        plt.ylim(0, ymax+3)
+        plt.ylim(0, ymax+1.2)
     ax.patch.set_facecolor('#dfe4ed')
     plt.subplots_adjust(top=0.920,
                         bottom=0.090,
@@ -404,6 +423,11 @@ def plot_VLTI(data):
         c_guid = '#8ee38e'
     else:
         c_guid = '#fbe570'
+
+    if aff_guide == 'X':
+        cond_guid = False
+    else:
+        cond_guid = True
 
     # Do not change the display.
     x_ins, x_tel, x_ft, x_band, x_res = 2, 3.2, 4, 5, 5.5
@@ -525,42 +549,42 @@ def plot_VLTI(data):
 
     # -------------------
     # Observabilities
-    plot_mat(data, 'MATISSE', 'AT', 'ft', 'L',
+    plot_mat(data, cond_guid, 'MATISSE', 'AT', 'ft', 'L',
              x_res, y_band_matisse[3]+1, off_res)
-    plot_mat(data, 'MATISSE', 'AT', 'ft', 'M',
+    plot_mat(data, cond_guid, 'MATISSE', 'AT', 'ft', 'M',
              x_res, y_band_matisse[3], off_res)
-    plot_mat(data, 'MATISSE', 'AT', 'ft', 'N',
+    plot_mat(data, cond_guid, 'MATISSE', 'AT', 'ft', 'N',
              x_res, y_band_matisse[3]-1, off_res)
-    plot_mat(data, 'MATISSE', 'AT', 'noft', 'L',
+    plot_mat(data, cond_guid, 'MATISSE', 'AT', 'noft', 'L',
              x_res, y_band_matisse[2]+1, off_res)
-    plot_mat(data, 'MATISSE', 'AT', 'noft', 'M',
+    plot_mat(data, cond_guid, 'MATISSE', 'AT', 'noft', 'M',
              x_res, y_band_matisse[2], off_res)
-    plot_mat(data, 'MATISSE', 'AT', 'noft', 'N',
+    plot_mat(data, cond_guid, 'MATISSE', 'AT', 'noft', 'N',
              x_res, y_band_matisse[2]-1, off_res)
-    plot_mat(data, 'MATISSE', 'UT', 'ft', 'L',
+    plot_mat(data, cond_guid, 'MATISSE', 'UT', 'ft', 'L',
              x_res, y_band_matisse[1]+1, off_res)
-    plot_mat(data, 'MATISSE', 'UT', 'ft', 'M',
+    plot_mat(data, cond_guid, 'MATISSE', 'UT', 'ft', 'M',
              x_res, y_band_matisse[1], off_res)
-    plot_mat(data, 'MATISSE', 'UT', 'ft', 'N',
+    plot_mat(data, cond_guid, 'MATISSE', 'UT', 'ft', 'N',
              x_res, y_band_matisse[1]-1, off_res)
-    plot_mat(data, 'MATISSE', 'UT', 'noft', 'L',
+    plot_mat(data, cond_guid, 'MATISSE', 'UT', 'noft', 'L',
              x_res, y_band_matisse[0]+1, off_res)
-    plot_mat(data, 'MATISSE', 'UT', 'noft', 'M',
+    plot_mat(data, cond_guid, 'MATISSE', 'UT', 'noft', 'M',
              x_res, y_band_matisse[0], off_res)
-    plot_mat(data, 'MATISSE', 'UT', 'noft', 'N',
+    plot_mat(data, cond_guid, 'MATISSE', 'UT', 'noft', 'N',
              x_res, y_band_matisse[0]-1, off_res)
 
     ax.scatter(x_res+0.25, y_gravity+y_tel_grav, 100, color=color[str(
-        ins['GRAVITY']['AT']['K']['MR'] and data['Observability']['VLTI'])], edgecolors='#364f6b')
+        ins['GRAVITY']['AT']['K']['MR'] and data['Observability']['VLTI'] and cond_guid)], edgecolors='#364f6b')
     ax.scatter(x_res+0.25, y_gravity-y_tel_grav, 100, color=color[str(
-        ins['GRAVITY']['UT']['K']['MR'] and data['Observability']['VLTI'])], edgecolors='#364f6b')
+        ins['GRAVITY']['UT']['K']['MR'] and data['Observability']['VLTI'] and cond_guid)], edgecolors='#364f6b')
     ax.scatter(x_res+0.5, y_gravity+y_tel_grav, 100, color=color[str(
-        ins['GRAVITY']['AT']['K']['HR'] and data['Observability']['VLTI'])], edgecolors='#364f6b')
+        ins['GRAVITY']['AT']['K']['HR'] and data['Observability']['VLTI'] and cond_guid)], edgecolors='#364f6b')
     ax.scatter(x_res+0.5, y_gravity-y_tel_grav, 100, color=color[str(
-        ins['GRAVITY']['UT']['K']['HR'] and data['Observability']['VLTI'])], edgecolors='#364f6b')
+        ins['GRAVITY']['UT']['K']['HR'] and data['Observability']['VLTI'] and cond_guid)], edgecolors='#364f6b')
 
     ax.scatter(x_res, y_pionier, 100, color=color[str(
-        ins['PIONIER']['H'] and data['Observability']['VLTI'])], edgecolors='#364f6b')
+        ins['PIONIER']['H'] and data['Observability']['VLTI'] and cond_guid)], edgecolors='#364f6b')
 
     # -------------------
     # Link lines

@@ -230,7 +230,12 @@ def search(star, source='ESO', check=False, verbose=False):
     # --------------------------------------
     data['Guiding_star'] = {}
     v = Vizier(columns=['*', '+<Gmag>'])
-    if np.isnan(data['Mag']['magR']) or (data['Mag']['magG'] >= 12.5) or (data['Mag']['magG'] <= -3):
+
+    cond_guid_1 = (np.isnan(data['Mag']['magG']) and (np.isnan(data['Mag']['magR'])))
+    cond_guid_2 = ((data['Mag']['magG'] >= 12.5) or (data['Mag']['magG'] <= -3))
+    cond_guid_3 = (np.isnan(data['Mag']['magG']) and ((data['Mag']['magR'] >= 12.5) or (data['Mag']['magR'] <= -3)))
+
+    if cond_guid_1 or cond_guid_2 or cond_guid_3:
         res = v.query_region(star, radius='57s', catalog='I/337/gaia')
 
         Gmag = np.ma.getdata(res['I/337/gaia']['__Gmag_'])
