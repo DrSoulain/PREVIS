@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import previs
-from matplotlib import pyplot as plt
 
 # Perform previs research on one object:
 data = previs.search('Altair', verbose=True)
