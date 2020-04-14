@@ -28,4 +28,4 @@ These functions are used to present a synthetic resume of the `previs.search` or
 
 `previs.plot_CHARA`: Same as `previs.plot_VLTI` for the american interferometer CHARA.
 
-`previs.plot_histo_survey`: Fonction to present the results from `previs.survey` as an histogram. All implimented instruments are included (from VLTI and CHARA). An example is presented in the [README.md](../README.md) and in the [Fig. 2](figure_2.jpeg).
+`previs.plot_histo_survey`: Fonction to present the results from `previs.survey` as an histogram. All implimented instruments are included (from VLTI and CHARA). An example is presented in the [README.md](../README.md). In this function, you can add the argument plot_HR = True to add the high spectral resolution results on the plot as grey square (see. [desc_survey_example.jpeg](desc_survey_example.jpeg)). You also can set_log = True, to plot the y-axis scale in log (appropriate for large survey).
