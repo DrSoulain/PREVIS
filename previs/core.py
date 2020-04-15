@@ -50,7 +50,7 @@ warnings.filterwarnings('ignore')
 warnings.filterwarnings('ignore', module='scipy.interpolate.interp1d')
 
 
-def search(star, source='ESO', check=False, verbose=False):
+def search(star, source='ESO', check=False, verbose=True):
     """ Perform a large search to get informations about a star or a list of stars (observability, magnitude, distance, sed, etc.)
 
     Parameters
