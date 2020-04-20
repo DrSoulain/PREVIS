@@ -181,7 +181,7 @@ def search(star, source='ESO', check=False, verbose=True):
     v = Vizier(columns=columns)
     data['Gaia_dr2'] = {}
     try:
-        res = v.query_region(star, radius="1s", catalog='I/345/gaia2')
+        res = v.query_region(star, radius="2s", catalog='I/345/gaia2')
         data['Mag']['magG'] = float(
             np.ma.getdata(res['I/345/gaia2']['Gmag'])[0])
         data['Gaia_dr2']['RA'] = float(
