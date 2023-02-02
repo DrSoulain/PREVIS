@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 @author: Anthony Soulain (University of Sydney)
 
@@ -9,7 +8,6 @@ PREVIS: Python Request Engine for Virtual Interferometric Survey
 This file contains function use to plot and count the results
 from previs.search and previs.survey functions.
 """
-
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -19,9 +17,9 @@ plt.close("all")
 
 
 def plot_mat(data, cond_guid, inst, tel, ft, band, x0, y0, off):
-    """ Plot observability with MATISSE given spectral resolution:
-        low (LR: 34/L and 30/N), medium (MR: 506/L and no N) and high
-        (HR: 959/L and 218/N) resolution. (Use by previs.plot_histo_survey)."""
+    """Plot observability with MATISSE given spectral resolution:
+    low (LR: 34/L and 30/N), medium (MR: 506/L and no N) and high
+    (HR: 959/L and 218/N) resolution. (Use by previs.plot_histo_survey)."""
     ins = data["Ins"]
     if inst == "MATISSE":
         try:
@@ -107,7 +105,7 @@ def fancy_button(x, y, t, off=0.04, fs=12):
 
 
 def fancy_button_rel(x, y, t, ax, fs=8):
-    """ Function to plot nice button."""
+    """Function to plot nice button."""
     plt.text(
         x,
         y,
@@ -139,7 +137,7 @@ def fancy_button_rel(x, y, t, ax, fs=8):
 
 
 def plot_diag(x0, x1, y, off=0, n_line=3, lw=1):
-    """ Small function to plot lines in the organigram. """
+    """Small function to plot lines in the organigram."""
     if n_line == 3:
         plt.plot([x0, x1], [y, y + off], ls="-", c="#364f6b", lw=lw)
         plt.plot([x0, x1], [y, y], ls="-", c="#364f6b", lw=lw)
@@ -153,7 +151,7 @@ def plot_diag(x0, x1, y, off=0, n_line=3, lw=1):
 
 
 def autolabel(bars, add, ind, fontsize=11):
-    """ Plot the number associated to each histogram column."""
+    """Plot the number associated to each histogram column."""
     for ii, bar in enumerate(bars):
         plt.text(
             ind[ii] + add,
@@ -181,7 +179,7 @@ def wrong_figure(st):
 
 
 def plot_histo_survey(dic, plot_HR=False, setlog=False):
-    """ Plot histogram of the result from utils.count_survey fonction.
+    """Plot histogram of the result from utils.count_survey fonction.
     Show the number of stars observable which each instruments.
 
     Parameters:
@@ -189,7 +187,7 @@ def plot_histo_survey(dic, plot_HR=False, setlog=False):
     `dic`: {dict}
         Dictionnary from count_survey fonction,\n
     `plot_HR`: {boolean},
-        If True, number of stars observable with High Resolution 
+        If True, number of stars observable with High Resolution
         are plotted as grey square,\n
     `setlog`: {boolean},
         If True, set the y-scale to log (default=False).
@@ -689,7 +687,7 @@ def plot_histo_survey(dic, plot_HR=False, setlog=False):
 
 
 def check_format_plot(data):
-    """ Check if data have the appropriate format and display
+    """Check if data have the appropriate format and display
     figure displaying the problem.
 
     """
@@ -1807,7 +1805,7 @@ def plot_vision(data):
         cond_guid = False
     else:
         cond_guid = True
-    
+
     # Limit the star name lenght (display purposes)
     name_star = star.upper()
     L = len(star)
@@ -1972,7 +1970,12 @@ def plot_vision(data):
     )
 
     plt.plot(
-        [0.2, 0.45], [0.22, 0.22], "-", color="#364f6b", lw=lw, transform=ax.transAxes,
+        [0.2, 0.45],
+        [0.22, 0.22],
+        "-",
+        color="#364f6b",
+        lw=lw,
+        transform=ax.transAxes,
     )
 
     # -------------------

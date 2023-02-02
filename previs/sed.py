@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*-
 """
 Created on Thur Mar 26 14:49:19 2020
 
 @author: asoulain
 """
-
 import json
 import tempfile
 import urllib.parse
@@ -37,8 +35,8 @@ def getSed(coord):
     Returns:
     --------
     `sed` : {dict}
-        Dictionnary containing the SED informations (keys: 'Flux' ([Jy]), 'wl' 
-        (wavelength [µm]), 'Err' (uncertainties [Jy]), 'Catalogs' (Vizier catalogs name), 
+        Dictionnary containing the SED informations (keys: 'Flux' ([Jy]), 'wl'
+        (wavelength [µm]), 'Err' (uncertainties [Jy]), 'Catalogs' (Vizier catalogs name),
         'References' (references/publications)):
     """
     try:
@@ -103,7 +101,7 @@ def sed2mag(sed, bands):
 
 
 def find_author_vizier(cat):
-    """ Search Vizier catalog with astroquery and find the reference
+    """Search Vizier catalog with astroquery and find the reference
     in the description.
 
     Parameters:
@@ -134,12 +132,12 @@ def find_author_vizier(cat):
 
 
 def buildVizierRef(sed_name_cat, verbose=False):
-    """ Build the Vizier references list. For each search of new SED, check if new catalogs
-    are detected and add the reference to the saved json file (default: 'vizier_catalog_naming.json'). 
+    """Build the Vizier references list. For each search of new SED, check if new catalogs
+    are detected and add the reference to the saved json file (default: 'vizier_catalog_naming.json').
     """
     stored_catalog_filepath = store_directory / "vizier_catalog_references.json"
     if Path(stored_catalog_filepath).is_file():
-        with open(stored_catalog_filepath, mode="rt") as ofile:
+        with open(stored_catalog_filepath) as ofile:
             known_entries = json.load(ofile)
     else:
         known_entries = {}
@@ -158,13 +156,13 @@ def buildVizierRef(sed_name_cat, verbose=False):
             cat_ref = find_author_vizier(cat)
             known_entries[cat] = cat_ref
 
-        with open(stored_catalog_filepath, mode="wt") as ofile:
+        with open(stored_catalog_filepath, mode="w") as ofile:
             json.dump(known_entries, ofile)
     return known_entries
 
 
 def getVizierRef(sed_name_cat, verbose=False):
-    """ Function to identify the references corresponding to each Vizier
+    """Function to identify the references corresponding to each Vizier
     catalog included in the fetched SED.
     """
     known_entries = buildVizierRef(sed_name_cat, verbose=verbose)

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 @author: Anthony Soulain (University of Sydney)
 
@@ -10,26 +9,25 @@ previs is a module to easely get the observability of a target or a
 list of targets with the different beam combiners from the VLTI and
 CHARA interferometers. Previs perform a research in the Virtual
 Observatory (OV) to get useful informations as:
-- Spectral Energy Distribution (SED), used to extract magnitudes 
-(especially L, M, and N mag which are not often included in the 
+- Spectral Energy Distribution (SED), used to extract magnitudes
+(especially L, M, and N mag which are not often included in the
 standard catalogs),
 - Gaia DR2 distances.
 
 Previs compare these magnitudes to the current limiting magnitudes
 of each instruments. It also use the V or G magnitudes to check the
-guiding issues or the tip/tilt correction limit. For the VLTI: If 
+guiding issues or the tip/tilt correction limit. For the VLTI: If
 the star is too faint in G mag, Previs research the list of stars around
 the target (57 arcsec) with the appropriate magnitude and give the
 list of celestial coordinates usable as guiding star. Of course,
-previs check also the on-site observability given the latitude of 
+previs check also the on-site observability given the latitude of
 both observatory.
 
 This file contains the core of previs: previs.search to use previs
 on one or a list of targets.
 
--------------------------------------------------------------------- 
+--------------------------------------------------------------------
 """
-
 import time
 import warnings
 
@@ -38,28 +36,29 @@ import numpy as np
 from astropy import units as u
 from astroquery.simbad import Simbad
 from astroquery.vizier import Vizier
-from previs.instr import (
-    chara_limit,
-    gravity_limit,
-    ivis_limit,
-    matisse_limit,
-    pionier_limit,
-)
-from previs.sed import getSed, sed2mag
-from previs.utils import check_servers_response, printtime
 from termcolor import cprint
 from uncertainties import ufloat
+
+from previs.instr import chara_limit
+from previs.instr import gravity_limit
+from previs.instr import ivis_limit
+from previs.instr import matisse_limit
+from previs.instr import pionier_limit
+from previs.sed import getSed
+from previs.sed import sed2mag
+from previs.utils import check_servers_response
+from previs.utils import printtime
 
 warnings.filterwarnings("ignore")
 warnings.filterwarnings("ignore", module="scipy.interpolate.interp1d")
 
 
 def search(star, source="ESO", check=False, verbose=False):
-    """ Perform a large search to get informations about a star or a list of stars (observability, magnitude, distance, sed, etc.)
+    """Perform a large search to get informations about a star or a list of stars (observability, magnitude, distance, sed, etc.)
 
     Parameters
     ----------
-    `star` : {str} 
+    `star` : {str}
         Name of the star,\n
     `source`: {str}
         Limiting magnitudes used to constrain MATISSE observability. If 'ESO', the informations are extracted from
@@ -279,7 +278,7 @@ def search(star, source="ESO", check=False, verbose=False):
     else:
         data["Guiding_star"]["VLTI"] = "Science star"
 
-    data["Guiding_star"]["CHARA"] = bool((np.min([magV, magR]) <= 10))
+    data["Guiding_star"]["CHARA"] = bool(np.min([magV, magR]) <= 10)
 
     if verbose:
         t3 = printtime("Check guiding star: done,", t2)
@@ -324,7 +323,7 @@ def f(out, star):
 
 
 def survey(list_star):
-    """ Perform previs search on a list of stars.
+    """Perform previs search on a list of stars.
     Parameters
     ----------
     `list_star` : {list}

@@ -80,7 +80,7 @@ Such a graph represents multiple informations:
 - *Upper left*: the name of the target with a green cirle if the star is observable from the VLTI, red if not,
 - *Upper right*: appropriate magnitudes for the VLTI instruments,
 - The round square at the bottom of the target indicate the information of the guiding star:
-  - 'Science': the target is bright enought to be used as guiding star, 
+  - 'Science': the target is bright enought to be used as guiding star,
   - 'off axis': the coudé off-axis guiding need to be used,
   - 'off axis*', the coudé off-axis guiding can only be performed in visitor mode.
 - The organigram of each instrument:

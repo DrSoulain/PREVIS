@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 @author: Anthony Soulain (University of Sydney)
 
@@ -8,7 +7,6 @@ PREVIS: Python Request Engine for Virtual Interferometric Survey
 
 This file contains general function.
 """
-
 import json
 import os
 import time
@@ -16,7 +14,8 @@ import urllib.request
 from pathlib import Path
 
 from numpy import bool_
-from termcolor import colored, cprint
+from termcolor import colored
+from termcolor import cprint
 
 # on windows, colorama should help making termcolor compatible
 try:
@@ -74,7 +73,7 @@ def sanitize_survey_file(survey_file):
 
 
 def sanitize_booleans(dic):
-    """ Recursively convert values in a nested dictionnary from np.bool_ to builtin bool type
+    """Recursively convert values in a nested dictionnary from np.bool_ to builtin bool type
     This is required for json serialization.
     """
     d2 = dic.copy()
@@ -87,7 +86,7 @@ def sanitize_booleans(dic):
 
 
 def save(result, result_file, overwrite=False):
-    """ Save <result> data to json <result_file> """
+    """Save <result> data to json <result_file>"""
     data_file = sanitize_survey_file(result_file)
     if data_file.exists() and not overwrite:
         raise FileExistsError(data_file)
@@ -97,22 +96,22 @@ def save(result, result_file, overwrite=False):
         os.makedirs(data_file.parent)
 
     survey_ = sanitize_booleans(result)
-    with open(data_file, mode="wt") as ofile:
+    with open(data_file, mode="w") as ofile:
         json.dump(survey_, ofile)
 
     return data_file
 
 
 def load(result_file):
-    """ Load result data from json <result_file> """
+    """Load result data from json <result_file>"""
     survey_file = sanitize_survey_file(result_file)
-    with open(survey_file, mode="rt") as ofile:
+    with open(survey_file) as ofile:
         survey = json.load(ofile)
     return survey
 
 
 def add_vs_mode_matisse(out, dic, star, cond_VLTI, cond_guid):
-    """ Small function for count_survey. Counts MATISSE observability for each mode."""
+    """Small function for count_survey. Counts MATISSE observability for each mode."""
     for tel in ["AT", "UT"]:
         for ft in ["noft", "ft"]:
             for band in ["L", "N"]:
@@ -124,7 +123,7 @@ def add_vs_mode_matisse(out, dic, star, cond_VLTI, cond_guid):
 
 
 def add_vs_mode_gravity(out, dic, star, cond_VLTI, cond_guid):
-    """ Small function for count_survey. Counts GTAVITY observability for each mode."""
+    """Small function for count_survey. Counts GTAVITY observability for each mode."""
     for tel in ["AT", "UT"]:
         for res in ["MR", "HR"]:
             cond_ins = out[star]["Ins"]["GRAVITY"][tel]["K"][res]
@@ -134,7 +133,7 @@ def add_vs_mode_gravity(out, dic, star, cond_VLTI, cond_guid):
 
 
 def count_survey(survey, limit="imaging"):
-    """ Count the number of star observable with each HRA instrument.
+    """Count the number of star observable with each HRA instrument.
 
     Parameters:
     -----------
@@ -146,7 +145,7 @@ def count_survey(survey, limit="imaging"):
     `dic`: {dict}
         The result contains lists of stars observable with each mode
         and instrument considered by previs.search (See data['Ins]).
-    
+
     """
 
     if survey is not None:

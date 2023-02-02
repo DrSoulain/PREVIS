@@ -1,5 +1,11 @@
-from .core import search, survey
-from .display import plot_CHARA, plot_VLTI, plot_histo_survey, plot_vision
-from .utils import count_survey, save, load
+from .core import search
+from .core import survey
+from .display import plot_CHARA
+from .display import plot_histo_survey
+from .display import plot_vision
+from .display import plot_VLTI
+from .utils import count_survey
+from .utils import load
+from .utils import save
 
 __version__ = "1.0"
