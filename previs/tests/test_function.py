@@ -1,9 +1,13 @@
 import json
 from pathlib import Path
-from numpy import bool_
 
 import pytest
-from previs import load, save, survey, search
+from numpy import bool_
+
+from previs import load
+from previs import save
+from previs import search
+from previs import survey
 from previs.utils import sanitize_booleans
 
 TEST_DIR = Path(__file__).parent
@@ -48,7 +52,7 @@ def test_save_survey(tmpdir, filepath):
     assert savepath.is_file()
 
     # json validation
-    with open(savepath, mode="rt") as ofile:
+    with open(savepath) as ofile:
         json.load(ofile)
 
 
@@ -72,4 +76,3 @@ def test_survey():
     true_magL = -2.13
     assert len(d) == len(test_list_target)
     assert magL == pytest.approx(true_magL, 0.01)
-

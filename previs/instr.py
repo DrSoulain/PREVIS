@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 @author: Anthony Soulain (University of Sydney)
 
@@ -13,12 +12,12 @@ the limiting magnitude can be extracted automaticaly from the actual
 performances (P106, 2020) or estimated performances (2017). Some mode
 of MATISSE are not yet commissioned (UT with GRA4MAT), so only estimated performances are used.
 """
-
 import json
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
+
 from previs.utils import connect
 
 store_directory = Path(__file__).parent / "data"
@@ -65,7 +64,7 @@ def JyToMag(f, band):
 
 
 def limit_ESO_matisse_web(check):
-    """ Extract limiting flux (Jy) from ESO MATISSE instrument descriptions and
+    """Extract limiting flux (Jy) from ESO MATISSE instrument descriptions and
     return magnitude (optimal 10% seeing conditions).
 
     Parameters
@@ -84,7 +83,7 @@ def limit_ESO_matisse_web(check):
     new_data_filepath = store_directory / "eso_limits_matisse_new.json"
 
     if Path(stored_data_filepath).is_file() and not check:
-        with open(stored_data_filepath, mode="rt") as ofile:
+        with open(stored_data_filepath) as ofile:
             limits_data = json.load(ofile)
     else:
         print("Check MATISSE limits from ESO web site...")
@@ -138,7 +137,7 @@ def limit_ESO_matisse_web(check):
                     },
                 }
 
-                with open(new_data_filepath, mode="wt") as ofile:
+                with open(new_data_filepath, mode="w") as ofile:
                     json.dump(limits_data, ofile, indent="  ")
             except Exception:
                 print(
@@ -146,7 +145,7 @@ def limit_ESO_matisse_web(check):
                     % stored_data_filepath
                 )
                 if Path(stored_data_filepath).is_file():
-                    with open(stored_data_filepath, mode="rt") as ofile:
+                    with open(stored_data_filepath) as ofile:
                         limits_data = json.load(ofile)
         else:
             print(
@@ -154,14 +153,14 @@ def limit_ESO_matisse_web(check):
                 % stored_data_filepath
             )
             if Path(stored_data_filepath).is_file():
-                with open(stored_data_filepath, mode="rt") as ofile:
+                with open(stored_data_filepath) as ofile:
                     limits_data = json.load(ofile)
 
     return limits_data
 
 
 def limit_commissioning_matisse():
-    """ Estimated performance of MATISSE during testing and commissioning. """
+    """Estimated performance of MATISSE during testing and commissioning."""
     at_noft_L = [4.2, 0.9, -1.5]
     at_noft_M = [3.24, 1]
     at_noft_N = [-0.35, -2.2]
@@ -235,7 +234,7 @@ def matisse_limit(magL, magM, magN, magK, source="ESO", check=False):
     `magL`, `magM`, `magN`, `magK`: {float}
         Magnitudes in near- and mid-infrared (K=2.2, L=3.5, M=4.5, N=10 µm),\n
     `source`: {str}
-        Source of the limiting magnitudes. If source = 'ESO' (default), the ESO website 
+        Source of the limiting magnitudes. If source = 'ESO' (default), the ESO website
         is checked to extract these limits. Otherwise, the estimated limits are used,\n
     `check`: {bool}
         If True, check the actual MATISSE performances on the ESO website (default=False).
@@ -453,7 +452,7 @@ def matisse_limit(magL, magM, magN, magK, source="ESO", check=False):
 
 
 def pionier_limit(magH):
-    """ Return observability with PIONIER instrument."""
+    """Return observability with PIONIER instrument."""
     dic = {}
     if (magH >= -1.0) & (magH <= 9.0):
         dic["H"] = True
@@ -463,7 +462,7 @@ def pionier_limit(magH):
 
 
 def chara_limit(magK, magH, magR, magV):
-    """ Return observability of the different instruments of CHARA."""
+    """Return observability of the different instruments of CHARA."""
     dic = {
         "PAVO": {"R": False},
         "CLASSIC": {"K": False, "H": False, "V": False},
