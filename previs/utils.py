@@ -21,10 +21,13 @@ from termcolor import colored, cprint
 # on windows, colorama should help making termcolor compatible
 try:
     import colorama
+
     colorama.init()
 except ImportError:
-    if os.name == 'nt':  # Windows plateform detected
-        print("Warning: in Windows, some prints might not work properly. Install colorama to fix this.")
+    if os.name == "nt":  # Windows plateform detected
+        print(
+            "Warning: in Windows, some prints might not work properly. Install colorama to fix this."
+        )
 
 
 def connect(host):
@@ -36,18 +39,18 @@ def connect(host):
 
 
 def check_servers_response():
-    connect_simbad = connect('http://simbad.u-strasbg.fr/simbad')
-    connect_vizier = connect('http://vizier.u-strasbg.fr/vizier/sed/')
+    connect_simbad = connect("http://simbad.u-strasbg.fr/simbad")
+    connect_vizier = connect("http://vizier.u-strasbg.fr/vizier/sed/")
     if connect_simbad and connect_vizier:
         out = {}
     else:
-        cprint('\nPREVIS uses url requests, but something has gone wrong !', 'red')
+        cprint("\nPREVIS uses url requests, but something has gone wrong !", "red")
         if not connect_simbad and not connect_vizier:
-            cprint('-> check your internet connection,', 'red')
+            cprint("-> check your internet connection,", "red")
         elif not connect_simbad:
-            cprint('-> check SIMBAD server,', 'red')
+            cprint("-> check SIMBAD server,", "red")
         else:
-            cprint('-> check VIZIER server.', 'red')
+            cprint("-> check VIZIER server.", "red")
         out = None
     return out
 
@@ -55,8 +58,8 @@ def check_servers_response():
 def printtime(n, start_time):
     t = time.time() - start_time
     t0 = time.time()
-    m = t//60
-    print("==> %s (%d min %2.3f s)" % (n, m, t-m*60))
+    m = t // 60
+    print("==> %s (%d min %2.3f s)" % (n, m, t - m * 60))
     return t0
 
 
@@ -64,7 +67,7 @@ def sanitize_survey_file(survey_file):
     assert isinstance(survey_file, (str, os.PathLike))
     survey_file = Path(survey_file)
 
-    if survey_file.suffix == '':
+    if survey_file.suffix == "":
         survey_file = survey_file.with_suffix(".json")
 
     return survey_file
@@ -94,7 +97,7 @@ def save(result, result_file, overwrite=False):
         os.makedirs(data_file.parent)
 
     survey_ = sanitize_booleans(result)
-    with open(data_file, mode='wt') as ofile:
+    with open(data_file, mode="wt") as ofile:
         json.dump(survey_, ofile)
 
     return data_file
@@ -103,34 +106,34 @@ def save(result, result_file, overwrite=False):
 def load(result_file):
     """ Load result data from json <result_file> """
     survey_file = sanitize_survey_file(result_file)
-    with open(survey_file, mode='rt') as ofile:
+    with open(survey_file, mode="rt") as ofile:
         survey = json.load(ofile)
     return survey
 
 
 def add_vs_mode_matisse(out, dic, star, cond_VLTI, cond_guid):
     """ Small function for count_survey. Counts MATISSE observability for each mode."""
-    for tel in ['AT', 'UT']:
-        for ft in ['noft', 'ft']:
-            for band in ['L', 'N']:
-                for res in ['LR', 'HR']:
-                    cond_ins = out[star]['Ins']['MATISSE'][tel][ft][band][res]
+    for tel in ["AT", "UT"]:
+        for ft in ["noft", "ft"]:
+            for band in ["L", "N"]:
+                for res in ["LR", "HR"]:
+                    cond_ins = out[star]["Ins"]["MATISSE"][tel][ft][band][res]
                     if cond_VLTI and cond_guid and cond_ins:
-                        dic['MATISSE'][tel][ft][band][res].append(star)
+                        dic["MATISSE"][tel][ft][band][res].append(star)
     return dic
 
 
 def add_vs_mode_gravity(out, dic, star, cond_VLTI, cond_guid):
     """ Small function for count_survey. Counts GTAVITY observability for each mode."""
-    for tel in ['AT', 'UT']:
-        for res in ['MR', 'HR']:
-            cond_ins = out[star]['Ins']['GRAVITY'][tel]['K'][res]
+    for tel in ["AT", "UT"]:
+        for res in ["MR", "HR"]:
+            cond_ins = out[star]["Ins"]["GRAVITY"][tel]["K"][res]
             if cond_VLTI and cond_guid and cond_ins:
-                dic['GRAVITY'][tel][res].append(star)
+                dic["GRAVITY"][tel][res].append(star)
     return dic
 
 
-def count_survey(survey):
+def count_survey(survey, limit="imaging"):
     """ Count the number of star observable with each HRA instrument.
 
     Parameters:
@@ -145,7 +148,7 @@ def count_survey(survey):
         and instrument considered by previs.search (See data['Ins]).
     
     """
-    
+
     if survey is not None:
         pass
     else:
@@ -157,117 +160,140 @@ def count_survey(survey):
     n_chara, n_vlti = 0, 0
     for x in list_star:
         if survey[x] is not None:
-            if survey[x]['Simbad']:
-                if not survey[x]['SED'] is None:
-                    if survey[x]['Observability']['VLTI']:
+            if survey[x]["Simbad"]:
+                if not survey[x]["SED"] is None:
+                    if survey[x]["Observability"]["VLTI"]:
                         n_vlti += 1
-                    if survey[x]['Observability']['CHARA']:
+                    if survey[x]["Observability"]["CHARA"]:
                         n_chara += 1
 
-    cprint('\nYour list contains %i stars:' % n_star, 'cyan')
-    cprint('-------------------------', 'cyan')
-    print('Observability: %i (%2.1f %%) from the VLTI, %i (%2.1f %%) from the CHARA.\n' %
-          (n_vlti, 100*float(n_vlti)/n_star, n_chara, 100*float(n_chara)/n_star))
+    cprint("\nYour list contains %i stars:" % n_star, "cyan")
+    cprint("-------------------------", "cyan")
+    print(
+        "Observability: %i (%2.1f %%) from the VLTI, %i (%2.1f %%) from the CHARA.\n"
+        % (n_vlti, 100 * float(n_vlti) / n_star, n_chara, 100 * float(n_chara) / n_star)
+    )
 
-    dic = SurveyClass({'MATISSE': {'UT': {'noft': {'L': {'LR': [], 'HR': []}, 'N': {'LR': [], 'HR': []}},
-                                          'ft': {'L': {'LR': [], 'HR': []}, 'N': {'LR': [], 'HR': []}}
-                                          },
-                                   'AT': {'noft': {'L': {'LR': [], 'HR': []}, 'N': {'LR': [], 'HR': []}},
-                                          'ft': {'L': {'LR': [], 'HR': []}, 'N': {'LR': [], 'HR': []}}
-                                          },
-                                   },
-                       'GRAVITY': {'UT': {'MR': [],
-                                          'HR': []},
-                                   'AT': {'MR': [],
-                                          'HR': []}
-                                   },
-                       'PIONIER': [],
-                       'PAVO': [],
-                       'CLASSIC': {'V': [], 'H': [], 'K': []},
-                       'CLIMB': [],
-                       'MYSTIC': [],
-                       'MIRC': {'H': [], 'K': []},
-                       'VEGA': {'LR': [], 'MR': [], 'HR': []},
-                       })
+    dic = SurveyClass(
+        {
+            "MATISSE": {
+                "UT": {
+                    "noft": {"L": {"LR": [], "HR": []}, "N": {"LR": [], "HR": []}},
+                    "ft": {"L": {"LR": [], "HR": []}, "N": {"LR": [], "HR": []}},
+                },
+                "AT": {
+                    "noft": {"L": {"LR": [], "HR": []}, "N": {"LR": [], "HR": []}},
+                    "ft": {"L": {"LR": [], "HR": []}, "N": {"LR": [], "HR": []}},
+                },
+            },
+            "GRAVITY": {"UT": {"MR": [], "HR": []}, "AT": {"MR": [], "HR": []}},
+            "PIONIER": [],
+            "VISION": [],
+            "PAVO": [],
+            "CLASSIC": {"V": [], "H": [], "K": []},
+            "CLIMB": [],
+            "MYSTIC": [],
+            "MIRC": {"H": [], "K": []},
+            "VEGA": {"LR": [], "MR": [], "HR": []},
+        }
+    )
 
     list_no_simbad = []
     for star in list_star:
         if survey[x] is not None:
-            if survey[star]['Simbad']:
-                if type(survey[star]['Guiding_star']['VLTI']) == list:
-                    if (len(survey[star]['Guiding_star']['VLTI'][0]) > 0) or (len(survey[star]['Guiding_star']['VLTI'][1]) > 0):
+            if survey[star]["Simbad"]:
+                if type(survey[star]["Guiding_star"]["VLTI"]) == list:
+                    if (len(survey[star]["Guiding_star"]["VLTI"][0]) > 0) or (
+                        len(survey[star]["Guiding_star"]["VLTI"][1]) > 0
+                    ):
                         cond_guid_vlti = True
                     else:
                         cond_guid_vlti = False
-                elif survey[star]['Guiding_star']['VLTI'] == 'Science star':
+                elif survey[star]["Guiding_star"]["VLTI"] == "Science star":
                     cond_guid_vlti = True
                 else:
                     cond_guid_vlti = False
 
-                cond_VLTI = survey[star]['Observability']['VLTI']
-                cond_CHARA = survey[star]['Observability']['CHARA']
-                cond_tilt = survey[star]['Ins']['CHARA']['Guiding']
-                dic = add_vs_mode_matisse(
-                    survey, dic, star, cond_VLTI, cond_guid_vlti)
-                dic = add_vs_mode_gravity(
-                    survey, dic, star, cond_VLTI, cond_guid_vlti)
+                cond_VLTI = survey[star]["Observability"]["VLTI"]
+                cond_CHARA = survey[star]["Observability"]["CHARA"]
+                cond_tilt = survey[star]["Ins"]["CHARA"]["Guiding"]
+                dic = add_vs_mode_matisse(survey, dic, star, cond_VLTI, cond_guid_vlti)
+                dic = add_vs_mode_gravity(survey, dic, star, cond_VLTI, cond_guid_vlti)
 
-                cond_ins = survey[star]['Ins']['PIONIER']['H']
-                if (cond_VLTI and cond_guid_vlti and cond_ins):
-                    dic['PIONIER'].append(star)
+                cond_ins = survey[star]["Ins"]["PIONIER"]["H"]
+                if cond_VLTI and cond_guid_vlti and cond_ins:
+                    dic["PIONIER"].append(star)
 
-                for band in ['H', 'K']:
-                    cond_ins = survey[star]['Ins']['CHARA']['MIRC'][band]
+                cond_ins = survey[star]["Ins"]["VISION"][limit]
+                if cond_VLTI and cond_guid_vlti and cond_ins:
+                    dic["VISION"].append(star)
 
-                    if (cond_CHARA and cond_ins and cond_tilt):
-                        dic['MIRC'][band].append(star)
+                for band in ["H", "K"]:
+                    cond_ins = survey[star]["Ins"]["CHARA"]["MIRC"][band]
 
-                for res in ['LR', 'HR']:
-                    cond_ins = survey[star]['Ins']['CHARA']['VEGA'][res]
-                    if (cond_CHARA and cond_ins and cond_tilt):
-                        dic['VEGA'][res].append(star)
+                    if cond_CHARA and cond_ins and cond_tilt:
+                        dic["MIRC"][band].append(star)
 
-                for band in ['V', 'H', 'K']:
-                    cond_ins = survey[star]['Ins']['CHARA']['CLASSIC'][band]
-                    if (cond_CHARA and cond_ins and cond_tilt):
-                        dic['CLASSIC'][band].append(star)
+                for res in ["LR", "HR"]:
+                    cond_ins = survey[star]["Ins"]["CHARA"]["VEGA"][res]
+                    if cond_CHARA and cond_ins and cond_tilt:
+                        dic["VEGA"][res].append(star)
 
-                if (cond_CHARA and survey[star]['Ins']['CHARA']['PAVO']['R'] and cond_tilt):
-                    dic['PAVO'].append(star)
+                for band in ["V", "H", "K"]:
+                    cond_ins = survey[star]["Ins"]["CHARA"]["CLASSIC"][band]
+                    if cond_CHARA and cond_ins and cond_tilt:
+                        dic["CLASSIC"][band].append(star)
 
-                if (cond_CHARA and survey[star]['Ins']['CHARA']['MYSTIC']['K'] and cond_tilt):
-                    dic['MYSTIC'].append(star)
+                if (
+                    cond_CHARA
+                    and survey[star]["Ins"]["CHARA"]["PAVO"]["R"]
+                    and cond_tilt
+                ):
+                    dic["PAVO"].append(star)
 
-                if (cond_CHARA and survey[star]['Ins']['CHARA']['CLIMB']['K'] and cond_tilt):
-                    dic['CLIMB'].append(star)
+                if (
+                    cond_CHARA
+                    and survey[star]["Ins"]["CHARA"]["MYSTIC"]["K"]
+                    and cond_tilt
+                ):
+                    dic["MYSTIC"].append(star)
+
+                if (
+                    cond_CHARA
+                    and survey[star]["Ins"]["CHARA"]["CLIMB"]["K"]
+                    and cond_tilt
+                ):
+                    dic["CLIMB"].append(star)
             else:
                 list_no_simbad.append(star)
 
-    if list_no_simbad:
-        cprint('Warning: some stars are not in Simbad:', 'red')
-        print(list_no_simbad)
+    # if list_no_simbad:
+    #     cprint('Warning: some stars are not in Simbad:', 'red')
+    #     print(list_no_simbad)
     dic["unavailable"] = list_no_simbad
     return dic
 
 
 class SurveyClass(dict):
     def print_log(self):
-        res = '\n'.join([
-            colored('VLTI:', 'green'),
-            colored('-----', 'green'),
-            'MATISSE (AT): %s' % str(self['MATISSE']['AT']['noft']['L']['LR']),
-            '        (UT): %s' % str(self['MATISSE']['UT']['noft']['L']['LR']),
-            'GRAVITY (AT): %s' % str(self['GRAVITY']['AT']['MR']),
-            '        (UT): %s' % str(self['GRAVITY']['UT']['MR']),
-            'PIONIER (AT/UT): %s' % str(self['PIONIER']),
-            '',
-            colored('CHARA:', 'green'),
-            colored('------', 'green'),
-            'VEGA: %s' % str(self['VEGA']['LR']),
-            'PAVO: %s' % str(self['PAVO']),
-            'MIRC: %s' % str(self['MIRC']['H']),
-            'CLIMB: %s' % str(self['CLIMB']),
-            'CLASSIC: %s' % str(self['CLASSIC']['H'])
-        ])
+        res = "\n".join(
+            [
+                colored("VLTI:", "green"),
+                colored("-----", "green"),
+                "MATISSE (AT): %s" % str(self["MATISSE"]["AT"]["noft"]["L"]["LR"]),
+                "        (UT): %s" % str(self["MATISSE"]["UT"]["noft"]["L"]["LR"]),
+                "GRAVITY (AT): %s" % str(self["GRAVITY"]["AT"]["MR"]),
+                "        (UT): %s" % str(self["GRAVITY"]["UT"]["MR"]),
+                "PIONIER (AT/UT): %s" % str(self["PIONIER"]),
+                "",
+                colored("CHARA:", "green"),
+                colored("------", "green"),
+                "VEGA: %s" % str(self["VEGA"]["LR"]),
+                "PAVO: %s" % str(self["PAVO"]),
+                "MIRC: %s" % str(self["MIRC"]["H"]),
+                "CLIMB: %s" % str(self["CLIMB"]),
+                "CLASSIC: %s" % str(self["CLASSIC"]["H"]),
+            ]
+        )
         print(res)
         return res
