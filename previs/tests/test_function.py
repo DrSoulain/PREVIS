@@ -72,4 +72,3 @@ def test_survey():
     true_magL = -2.13
     assert len(d) == len(test_list_target)
     assert magL == pytest.approx(true_magL, 0.01)
-
