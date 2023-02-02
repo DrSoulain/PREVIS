@@ -3,7 +3,7 @@ from pathlib import Path
 from numpy import bool_
 
 import pytest
-from previs import load, save, survey
+from previs import load, save, survey, search
 from previs.utils import sanitize_booleans
 
 TEST_DIR = Path(__file__).parent
@@ -25,19 +25,6 @@ def test_json_sanitizing(dic):
     with pytest.raises(TypeError):
         json.dumps(dic)
     json.dumps(sanitize_booleans(dic))
-
-
-@pytest.mark.timeout(120)
-def test_reproduce_survey():
-    s1 = load(small_survey_file)
-    stars = list(s1.keys())
-
-    s2 = survey(stars)
-    assert isinstance(s2, dict)
-    assert len(s1) == len(s2)
-    for star in s1:
-        assert star in s2
-        assert set(list(s1[star].keys())) == set(list(s2[star].keys()))
 
 
 def test_overwrite(tmpdir):
@@ -63,3 +50,26 @@ def test_save_survey(tmpdir, filepath):
     # json validation
     with open(savepath, mode="rt") as ofile:
         json.load(ofile)
+
+
+def test_search():
+    test_target = "WR104"
+    d = search(test_target)
+    magL = d["Mag"]["magL"]
+    distance = d["Gaia_dr2"]["Dkpc"]
+
+    true_magL = -2.13
+    true_distance = 4.0
+    assert magL == pytest.approx(true_magL, 0.01)
+    assert distance == pytest.approx(true_distance, 0.1)
+    assert d["Guiding_star"]["VLTI"] == "Science star"
+
+
+def test_survey():
+    test_list_target = ["WR118", "WR104"]
+    d = survey(test_list_target)
+    magL = d[test_list_target[1]]["Mag"]["magL"]
+    true_magL = -2.13
+    assert len(d) == len(test_list_target)
+    assert magL == pytest.approx(true_magL, 0.01)
+
