@@ -9,3 +9,5 @@ myexample.py
 *.egg-info/
 build/
 .pytest_cache/
+*_results
+__pycache__

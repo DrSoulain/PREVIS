@@ -66,6 +66,9 @@ amical = [
     "data/vizier_catalog_references.json"
 ]
 
+[project.scripts]
+previs = "previs._cli.main:main"
+
 [tool.black]
 line-length = 88
 

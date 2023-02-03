@@ -92,9 +92,7 @@ def search(star, source="ESO", check=False, verbose=False):
 
     start_time = time.time()
     if type(star) != str:
-        if verbose:
-            cprint("Error: input need to be a target name (str format).", "red")
-        return None
+        raise NameError("Input need to be a target name (str).")
 
     star_user = star
     star = star.upper()
@@ -127,9 +125,7 @@ def search(star, source="ESO", check=False, verbose=False):
     except Exception:
         pass
     if not data["Simbad"]:
-        if verbose:
-            cprint("## Error: %s not in Simbad!" % star_user, "red")
-        return data
+        raise ValueError("%s not in Simbad!" % star_user)
     # --------------------------------------
     #                 SED
     # --------------------------------------
@@ -314,11 +310,7 @@ def search(star, source="ESO", check=False, verbose=False):
 
 
 def f(out, star):
-    # try:
     out[star] = search(star, check=False, verbose=False)
-    # except Exception:
-    #     print(star)
-    #     pass
     return out
 
 
@@ -335,6 +327,10 @@ def survey(list_star):
     """
     if check_servers_response() is None:
         return None
+
+    if len(list_star) == 0:
+        raise ValueError("The target list is empty.")
+
     cprint("\nStarting survey on %i stars:" % len(list_star), "cyan")
     cprint("-------------------------", "cyan")
 
