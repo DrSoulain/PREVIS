@@ -63,13 +63,24 @@ An example script [example.py](example.py) is included to test the possibilities
 research using `previs.search`, a visualisation solution for the VLTI (`previs.plot_VLTI`) and CHARA (`previs.plot_CHARA`).
 The example also presents the survey capabilities of the module.
 
-If you want to simply use the [example.py](example.py), you can run it in interactive session:
+⚡ Last updates (02/2023) : PREVIS is now usable in command line.
+
+```bash
+# Check the observability of Betelgeuse from the VLTI and CHARA
+previs search -t Betelgeuse -p
+# Same for several targets
+previs survey -t Betelgeuse vega -p
+```
+> Note: you can check input parameters with `previs search -h`
+
+**PREVIS** can be used in command line (since v1.0) or through scripts. If you want to simply use the [example.py](example.py), you can run it in
+interactive session.
 
 ```bash
 ipython --matplotlib -i example.py
 ```
 
-For instance, if you use `previs.search` to fetch data about the star Altair, you can display the resulting observability with the VLTI instruments with `previs.plot_VLTI`:
+For instance, if you use `previs.search` to fetch data about the star CI Tau, you can display the resulting observability with the VLTI instruments with `previs.plot_VLTI`:
 
 <p align="center">
 <img src="doc/figure_1.png" width="50%">
