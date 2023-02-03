@@ -30,7 +30,6 @@ dependencies = [
     "pandas",
     "matplotlib",
     "numpy",
-    "lxml",
     "termcolor",
     "uncertainties",
     "multiprocess",
