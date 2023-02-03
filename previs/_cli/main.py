@@ -1,3 +1,4 @@
+import sys
 from argparse import ArgumentParser
 from typing import List
 from typing import Optional
@@ -88,4 +89,4 @@ def main(argv: Optional[List[str]] = None) -> int:
 
 
 if __name__ == "__main__":
-    exit(main())
+    sys.exit(main())
