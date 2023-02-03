@@ -199,7 +199,7 @@ def count_survey(survey, limit="imaging"):
 
     list_no_simbad = []
     for star in list_star:
-        if survey[x] is not None:
+        if survey[star] is not None:
             if survey[star]["Simbad"]:
                 if type(survey[star]["Guiding_star"]["VLTI"]) == list:
                     if (len(survey[star]["Guiding_star"]["VLTI"][0]) > 0) or (

@@ -1,8 +1,10 @@
 #!/usr/bin/env python
+from matplotlib import pyplot as plt
+
 import previs
 
 # Perform previs research on one object:
-data = previs.search("Altair", verbose=True)
+data = previs.search("CI Tau", verbose=True)
 
 # data contains informations stored as dictionnary. You can
 # read the api_reference.md to get all detailled informations
@@ -34,7 +36,7 @@ fig.show()
 observability_mat = data["Ins"]["MATISSE"]["AT"]["noft"]["L"]["LR"]
 
 # You can also perform previs.search on a list of stars using previs.survey
-list_stars = ["Betelgeuse", "Altair", "WR112", "WR104", "HD100203"]
+list_stars = ["Betelgeuse", "CI Tau", "WR112", "WR104", "HD100203"]
 survey = previs.survey(list_stars)
 
 # The previs.search on one star can take up to 30 sec, you may want to
@@ -56,3 +58,4 @@ fig = previs.plot_histo_survey(count_survey, plot_HR=True)
 # plot_HR is set as True to plot high spectral resolution informations (default=False)
 
 fig.show()
+plt.show()
