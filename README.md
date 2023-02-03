@@ -2,8 +2,8 @@
 
 (**P**ython **R**equest **E**ngine for **V**irtual **I**nterferometric **S**urvey)
 
-[![PyPI](https://img.shields.io/pypi/v/previs-astro.svg?logo=pypi&logoColor=white&label=PyPI)](https://pypi.org/project/previs/)
-[![PyPI](https://img.shields.io/badge/requires-Python%20≥%203.8-blue?logo=python&logoColor=white)](https://pypi.org/project/previs/)
+[![PyPI](https://img.shields.io/pypi/v/previs-astro.svg?logo=pypi&logoColor=white&label=PyPI)](https://pypi.org/project/previs-astro/)
+[![PyPI](https://img.shields.io/badge/requires-Python%20≥%203.8-blue?logo=python&logoColor=white)](https://pypi.org/project/previs-astro/)
 ![Licence](https://img.shields.io/github/license/DrSoulain/PREVIS)
 [![astropy](http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat)](http://www.astropy.org/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)

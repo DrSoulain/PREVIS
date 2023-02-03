@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "previs-astro"
-version = "1.0"
+version = "1.0.post"
 authors = [
     { name = "Anthony Soulain", email = "anthony.soulain@univ-grenoble-alpes.fr" },
 ]
