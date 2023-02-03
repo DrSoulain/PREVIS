@@ -2,7 +2,8 @@
 
 (**P**ython **R**equest **E**ngine for **V**irtual **I**nterferometric **S**urvey)
 
-[![version](http://img.shields.io/badge/PREVIS-v0.2dev-orange.svg?style=flat)](https://github.com/DrSoulain/PREVIS/)
+[![PyPI](https://img.shields.io/pypi/v/previs-astro.svg?logo=pypi&logoColor=white&label=PyPI)](https://pypi.org/project/previs/)
+[![PyPI](https://img.shields.io/badge/requires-Python%20≥%203.8-blue?logo=python&logoColor=white)](https://pypi.org/project/previs/)
 ![Licence](https://img.shields.io/github/license/DrSoulain/PREVIS)
 [![astropy](http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat)](http://www.astropy.org/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
@@ -38,28 +39,17 @@ It is recommended (though not mandatory) to create a separate environment with `
 Then, within your Conda env (`conda activate <env_name>`):
 
 ```bash
-# Firstly, clone PREVIS repository on your computer
-git clone https://github.com/DrSoulain/PREVIS.git
-
-cd PREVIS/
-
-# Install main dependencies
-conda install --file requirements.txt
-
-# Some dependencies are not in the general Conda channel,
-# so we specify the desired channels
-conda install -c astropy astroquery
-conda install -c conda-forge uncertainties
-
-# Finally, install PREVIS
-pip install .
+pip install previs-astro
 ```
 
 ## What can PREVIS do for you?
 
-PREVIS is developed and thought to be used in interactive session, so we recommend to use it into an ipython session. A detailed descriptions of previs functions and outputs can be found in the [api_reference.md](doc/api_reference.md) document.
+PREVIS is developed and thought to be used in interactive session, so we
+recommend to use it into an ipython session. A detailed descriptions of previs
+functions and outputs can be found in the
+[api_reference.md](https://github.com//DrSoulain/PREVIS/main/doc/api_reference.md) document.
 
-An example script [example.py](example.py) is included to test the possibilities offered by PREVIS. The example includes a single target
+An example script [example.py](https://github.com/DrSoulain/PREVIS/blob/main/example.py) is included to test the possibilities offered by PREVIS. The example includes a single target
 research using `previs.search`, a visualisation solution for the VLTI (`previs.plot_VLTI`) and CHARA (`previs.plot_CHARA`).
 The example also presents the survey capabilities of the module.
 
@@ -73,7 +63,7 @@ previs survey -t Betelgeuse vega -p
 ```
 > Note: you can check input parameters with `previs search -h`
 
-**PREVIS** can be used in command line (since v1.0) or through scripts. If you want to simply use the [example.py](example.py), you can run it in
+**PREVIS** can be used in command line (since v1.0) or through scripts. If you want to simply use the [example.py](https://github.com/DrSoulain/PREVIS/blob/main/example.py), you can run it in
 interactive session.
 
 ```bash
@@ -83,7 +73,7 @@ ipython --matplotlib -i example.py
 For instance, if you use `previs.search` to fetch data about the star CI Tau, you can display the resulting observability with the VLTI instruments with `previs.plot_VLTI`:
 
 <p align="center">
-<img src="doc/figure_1.png" width="50%">
+<img src="https://raw.githubusercontent.com/DrSoulain/PREVIS/main/doc/figure_1.png" width="300"></a>
 </p>
 
 Such a graph represents multiple informations:
@@ -103,14 +93,14 @@ Such a graph represents multiple informations:
 Now, if you use `previs.survey` on a large list of stars, e.g: the 666 Wolf-Rayet stars of the galaxy. `previs.count` indicates that 284 stars are observable from the VLTI (42.6%) and 64 from CHARA (9.6%). You can display the histogram of the result using `previs.plot_histo_survey`:
 
 <p align="center">
-<img src="doc/desc_survey_large.jpeg" width="100%">
+<img src="https://raw.githubusercontent.com/DrSoulain/PREVIS/main/doc/desc_survey_large.jpeg" width="600"></a>
 </p>
 
 In this case, you can see that those stars are not observable with all instruments and depend of the considered mode. For instance, 20 stars are observables with MATISSE in low spectral resolution with the AT in N band (dark blue bar).
 
-The background bars for MATISSE and MIRC indicate respectively, the fringe tracker possibility (GRA4MAT) and the future update MYSTIC operating in K-band. In this case, 152 stars are observable with MATISSE in L-band with the UT but 223 if you use the fringe tracker (see ft/noft of `previs.search` result and [desc_survey_large.jpeg](doc/desc_survey_large.jpeg)).
+The background bars for MATISSE and MIRC indicate respectively, the fringe tracker possibility (GRA4MAT) and the future update MYSTIC operating in K-band. In this case, 152 stars are observable with MATISSE in L-band with the UT but 223 if you use the fringe tracker (see ft/noft of `previs.search` result and [desc_survey_large.jpeg](https://github.com/DrSoulain/PREVIS/blob/main/doc/desc_survey_large.jpeg)).
 
-A smaller survey is presented in [example.py](example.py), where you can plot the high spectral resolution results (see. [desc_survey_example.jpeg](doc/desc_survey_example.jpeg)).
+A smaller survey is presented in [example.py](https://github.com/DrSoulain/PREVIS/blob/main/example.py), where you can plot the high spectral resolution results (see. [desc_survey_example.jpeg](https://github.com/DrSoulain/PREVIS/blob/main/doc/desc_survey_example.jpeg)).
 
 ## Acknowledgements
 

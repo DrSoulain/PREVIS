@@ -3,7 +3,7 @@ requires = ["setuptools>=61.2"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "previs"
+name = "previs-astro"
 version = "1.0"
 authors = [
     { name = "Anthony Soulain", email = "anthony.soulain@univ-grenoble-alpes.fr" },
@@ -30,9 +30,7 @@ dependencies = [
     "pandas",
     "matplotlib",
     "numpy",
-    "lxml",
     "termcolor",
-    "tqdm",
     "uncertainties",
     "multiprocess",
 ]
@@ -45,7 +43,7 @@ content-type = "text/markdown"
 text = "MIT"
 
 [project.urls]
-Homepage = "https://github.com/SydneyAstrophotonicInstrumentationLab/AMICAL"
+Homepage = "https://github.com/DrSoulain/PREVIS"
 
 [tool.setuptools]
 license-files = [
@@ -61,7 +59,7 @@ exclude = [
 namespaces = false
 
 [tool.setuptools.package-data]
-amical = [
+previs = [
     "data/eso_limits_matisse.json",
     "data/vizier_catalog_references.json"
 ]
