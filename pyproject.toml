@@ -23,6 +23,7 @@ classifiers = [
 requires-python = ">=3.8"
 dependencies = [
     "astropy",
+    "lxml",
     "astroquery",
     "matplotlib",
     "scipy",
