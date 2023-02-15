@@ -8,4 +8,4 @@ from .utils import count_survey
 from .utils import load
 from .utils import save
 
-__version__ = "1.0"
+__version__ = "1.0.1"

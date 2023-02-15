@@ -6,7 +6,9 @@ import previs
 
 
 def perform_search(args):
-    d = previs.search(args.target, check=args.check, verbose=args.verbose)
+    d = previs.search(
+        args.target, min_elev=args.min_elev, check=args.check, verbose=args.verbose
+    )
 
     if args.save_to is not None:
         if not os.path.exists(args.save_to):

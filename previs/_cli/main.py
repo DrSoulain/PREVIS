@@ -34,6 +34,13 @@ def main(argv: Optional[List[str]] = None) -> int:
     )
 
     search_parser.add_argument(
+        "--min_elev",
+        default=30,
+        type=float,
+        help="Minimal elevation of the target to be observed on site (default: %(default)s deg).",
+    )
+
+    search_parser.add_argument(
         "-c",
         "--check",
         action="store_true",

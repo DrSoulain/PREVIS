@@ -53,7 +53,7 @@ warnings.filterwarnings("ignore")
 warnings.filterwarnings("ignore", module="scipy.interpolate.interp1d")
 
 
-def search(star, source="ESO", check=False, verbose=False):
+def search(star, source="ESO", min_elev=30, check=False, verbose=False):
     """Perform a large search to get informations about a star or a list of stars (observability, magnitude, distance, sed, etc.)
 
     Parameters
@@ -285,7 +285,6 @@ def search(star, source="ESO", check=False, verbose=False):
     L_chara = 34.2236
     Obs = {"VLTI": False, "CHARA": False}
 
-    min_elev = 40
     if c.dec.deg <= ((90 - min_elev) - abs(L_paranal)):
         Obs["VLTI"] = True
     if c.dec.deg >= (L_chara - (90 - min_elev)):
