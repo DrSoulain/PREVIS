@@ -1,10 +1,8 @@
 import sys
 from argparse import ArgumentParser
-from typing import List
-from typing import Optional
+from typing import List, Optional
 
-from previs._cli.commands import perform_search
-from previs._cli.commands import perform_survey
+from previs._cli.commands import perform_search, perform_survey
 
 
 def main(argv: Optional[List[str]] = None) -> int:

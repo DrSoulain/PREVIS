@@ -28,6 +28,7 @@ on one or a list of targets.
 
 --------------------------------------------------------------------
 """
+
 import time
 import warnings
 
@@ -39,15 +40,15 @@ from astroquery.vizier import Vizier
 from termcolor import cprint
 from uncertainties import ufloat
 
-from previs.instr import chara_limit
-from previs.instr import gravity_limit
-from previs.instr import ivis_limit
-from previs.instr import matisse_limit
-from previs.instr import pionier_limit
-from previs.sed import getSed
-from previs.sed import sed2mag
-from previs.utils import check_servers_response
-from previs.utils import printtime
+from previs.instr import (
+    chara_limit,
+    gravity_limit,
+    ivis_limit,
+    matisse_limit,
+    pionier_limit,
+)
+from previs.sed import getSed, sed2mag
+from previs.utils import check_servers_response, printtime
 
 warnings.filterwarnings("ignore")
 warnings.filterwarnings("ignore", module="scipy.interpolate.interp1d")
@@ -106,26 +107,28 @@ def search(star, source="ESO", min_elev=30, check=False, verbose=False):
     # --------------------------------------
     coord = {}
     customSimbad = Simbad()
-    customSimbad.add_votable_fields("parallax", "sptype", "id", "flux(V)", "flux(B)")
+    customSimbad.add_votable_fields("parallax", "sp_type", "V", "B")
 
     try:
         objet = customSimbad.query_object(star)
-        coord[star] = np.array([objet["RA"][0], objet["DEC"][0]])
+        coord[star] = np.array([objet["ra"][0], objet["dec"][0]])
         coordo = str(coord[star][0]) + " " + str(coord[star][1])
         c = ac.SkyCoord(coordo, unit=(u.hourangle, u.deg))
         data["Coord"] = coordo
 
-        plx = ufloat(objet["PLX_VALUE"].data[0], objet["PLX_ERROR"].data[0])
+        plx = ufloat(objet["plx_value"][0], objet["plx_err"][0])
         d = 1 / plx
         data["Distance"] = {"d": d.nominal_value, "e_d": d.std_dev}
         data["Simbad"] = True
-        aa = str(objet["SP_TYPE"].data[0])
-        sptype = aa.split("b")[1].split("'")[1]
-        data["Sp_type"] = sptype
+        aa = str(objet["sp_type"].data[0])
+        # print(aa)
+        # sptype = aa.split("b")[1].split("'")[1]
+        data["Sp_type"] = aa  # sptype
     except Exception:
         pass
+
     if not data["Simbad"]:
-        raise ValueError("%s not in Simbad!" % star_user)
+        raise ValueError(f"{star_user} not in Simbad!")
     # --------------------------------------
     #                 SED
     # --------------------------------------
@@ -249,7 +252,7 @@ def search(star, source="ESO", min_elev=30, check=False, verbose=False):
         res = v.query_region(star, radius="57s", catalog="I/337/gaia")
 
         try:
-            Gmag = np.ma.getdata(res["I/337/gaia"]["__Gmag_"])
+            Gmag = np.ma.getdata(res["G_RP"])
         except TypeError:
             return None
         cond1 = Gmag <= 12.5
@@ -333,7 +336,7 @@ def survey(list_star):
     cprint("\nStarting survey on %i stars:" % len(list_star), "cyan")
     cprint("-------------------------", "cyan")
 
-    from multiprocess import Process, Manager
+    from multiprocess import Manager, Process
 
     manager = Manager()
     d = manager.dict()

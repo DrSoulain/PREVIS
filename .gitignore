@@ -12,3 +12,7 @@ build/
 *_results
 __pycache__
 dist/
+
+script_tests/
+.venv
+uv.lock

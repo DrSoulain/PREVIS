@@ -27,16 +27,12 @@ def test_search(target):
 
 @pytest.mark.usefixtures("close_figures")
 def test_failed_search():
-    with pytest.warns(UserWarning):
-        test_false_target = "unknown"
-        with pytest.raises(ValueError, match=f"{test_false_target} not in Simbad!"):
-            ret = main(
-                [
-                    "search",
-                    "--target",
-                    test_false_target,
-                ]
-            )
+    from astroquery.exceptions import NoResultsWarning
+
+    test_false_target = "unknown"
+    with pytest.raises(ValueError, match=f"{test_false_target} not in Simbad!"):
+        with pytest.warns((UserWarning, NoResultsWarning)):
+            ret = main(["search", "--target", test_false_target])
             assert ret == 2
 
 

@@ -36,6 +36,16 @@ dependencies = [
     "multiprocess",
 ]
 
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "coverage>=7",
+    "ruff>=0.6.0",
+    "basedpyright>=1.19.0",
+    "ipykernel",
+    "pre-commit",
+]
+
 [project.readme]
 file = "README.md"
 content-type = "text/markdown"
@@ -47,23 +57,15 @@ text = "MIT"
 Homepage = "https://github.com/DrSoulain/PREVIS"
 
 [tool.setuptools]
-license-files = [
-    "LICENSE",
-]
+license-files = ["LICENSE"]
 include-package-data = false
 
 [tool.setuptools.packages.find]
-exclude = [
-    "tests*",
-    "doc*",
-]
+exclude = ["tests*", "doc*"]
 namespaces = false
 
 [tool.setuptools.package-data]
-previs = [
-    "data/eso_limits_matisse.json",
-    "data/vizier_catalog_references.json"
-]
+previs = ["data/eso_limits_matisse.json", "data/vizier_catalog_references.json"]
 
 [project.scripts]
 previs = "previs._cli.main:main"
