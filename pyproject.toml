@@ -1,17 +1,19 @@
 [build-system]
-requires = ["setuptools>=61.2"]
-build-backend = "setuptools.build_meta"
+requires = ["flit-core>=3.11,<4"]
+build-backend = "flit_core.buildapi"
 
 [project]
 name = "previs-astro"
 version = "1.0.1"
+description = "Python Request Engine for Virtual Interferometric Survey"
 authors = [
     { name = "Anthony Soulain", email = "anthony.soulain@univ-grenoble-alpes.fr" },
 ]
+license = "MIT"
+license-files = ["LICENSE"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: MacOS :: MacOS X",
     "Operating System :: POSIX :: AIX",
     "Operating System :: POSIX :: Linux",
@@ -20,7 +22,7 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Astronomy",
     "Typing :: Typed",
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 dependencies = [
     "astropy",
     "lxml",
@@ -40,42 +42,32 @@ dependencies = [
 file = "README.md"
 content-type = "text/markdown"
 
-[project.license]
-text = "MIT"
-
 [project.urls]
 Homepage = "https://github.com/DrSoulain/PREVIS"
 
-[tool.setuptools]
-license-files = [
-    "LICENSE",
+[dependency-groups]
+test = [
+    "pytest>=7.2.1",
 ]
-include-package-data = false
 
-[tool.setuptools.packages.find]
-exclude = [
-    "tests*",
-    "doc*",
-]
-namespaces = false
+[tool.flit.module]
+name = "previs"
 
-[tool.setuptools.package-data]
-previs = [
-    "data/eso_limits_matisse.json",
-    "data/vizier_catalog_references.json"
+[tool.flit.sdist]
+include = [
+    "previs/data/eso_limits_matisse.json",
+    "previs/data/vizier_catalog_references.json"
 ]
 
 [project.scripts]
 previs = "previs._cli.main:main"
 
-[tool.black]
-line-length = 88
-
 [tool.mypy]
-python_version = 3.8
+python_version = 3.10
 ignore_missing_imports = true
 warn_unused_configs = true
 warn_unused_ignores = true
 warn_unreachable = true
 show_error_context = true
 show_error_codes = true
+

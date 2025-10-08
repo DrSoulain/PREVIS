@@ -2,7 +2,7 @@ import pytest
 from matplotlib import pyplot as plt
 
 from previs._cli.main import main
-
+from astroquery.exceptions import NoResultsWarning
 
 @pytest.fixture()
 def close_figures():
@@ -27,7 +27,7 @@ def test_search(target):
 
 @pytest.mark.usefixtures("close_figures")
 def test_failed_search():
-    with pytest.warns(UserWarning):
+    with pytest.warns((UserWarning, NoResultsWarning)):
         test_false_target = "unknown"
         with pytest.raises(ValueError, match=f"{test_false_target} not in Simbad!"):
             ret = main(

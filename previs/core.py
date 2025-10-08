@@ -106,26 +106,27 @@ def search(star, source="ESO", min_elev=30, check=False, verbose=False):
     # --------------------------------------
     coord = {}
     customSimbad = Simbad()
-    customSimbad.add_votable_fields("parallax", "sptype", "id", "flux(V)", "flux(B)")
+    customSimbad.add_votable_fields("parallax", "sp_type", "ids", "V", "B")
 
     try:
         objet = customSimbad.query_object(star)
-        coord[star] = np.array([objet["RA"][0], objet["DEC"][0]])
+        coord[star] = np.array([objet["ra"][0], objet["dec"][0]])
         coordo = str(coord[star][0]) + " " + str(coord[star][1])
         c = ac.SkyCoord(coordo, unit=(u.hourangle, u.deg))
         data["Coord"] = coordo
 
-        plx = ufloat(objet["PLX_VALUE"].data[0], objet["PLX_ERROR"].data[0])
+        plx = ufloat(objet["plx_value"].data[0], objet["plx_err"].data[0])
         d = 1 / plx
         data["Distance"] = {"d": d.nominal_value, "e_d": d.std_dev}
         data["Simbad"] = True
-        aa = str(objet["SP_TYPE"].data[0])
-        sptype = aa.split("b")[1].split("'")[1]
+        aa = str(objet["sp_type"].data[0])
+        if "b" in aa:
+            sptype = aa.split("b")[1].split("'")[1]
+        else:
+            sptype = aa
         data["Sp_type"] = sptype
-    except Exception:
-        pass
-    if not data["Simbad"]:
-        raise ValueError("%s not in Simbad!" % star_user)
+    except Exception as exc:
+        raise ValueError("%s not in Simbad!" % star_user) from exc
     # --------------------------------------
     #                 SED
     # --------------------------------------
@@ -249,17 +250,18 @@ def search(star, source="ESO", min_elev=30, check=False, verbose=False):
         res = v.query_region(star, radius="57s", catalog="I/337/gaia")
 
         try:
-            Gmag = np.ma.getdata(res["I/337/gaia"]["__Gmag_"])
+            Gmag = np.ma.getdata(res["I/337/gaia"]["<Gmag>"])
         except TypeError:
             return None
+
         cond1 = Gmag <= 12.5
         cond2 = (Gmag <= 15) & (Gmag > 12.5)
 
-        gmag1 = np.ma.getdata(res["I/337/gaia"]["__Gmag_"][cond1])
+        gmag1 = np.ma.getdata(res["I/337/gaia"]["<Gmag>"][cond1])
         ra1 = np.ma.getdata(res["I/337/gaia"]["RA_ICRS"][cond1])
         dec1 = np.ma.getdata(res["I/337/gaia"]["DE_ICRS"][cond1])
 
-        gmag2 = np.ma.getdata(res["I/337/gaia"]["__Gmag_"][cond2])
+        gmag2 = np.ma.getdata(res["I/337/gaia"]["<Gmag>"][cond2])
         ra2 = np.ma.getdata(res["I/337/gaia"]["RA_ICRS"][cond2])
         dec2 = np.ma.getdata(res["I/337/gaia"]["DE_ICRS"][cond2])
 
